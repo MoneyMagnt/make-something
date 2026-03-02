@@ -103,8 +103,8 @@ export function ZyraSiteNav({
     <>
       <Navbar
         className={joinClasses(
-          "!fixed left-0 right-0 !top-0 w-full z-30 border-b border-white/30 bg-white/20 backdrop-blur-2xl max-sm:border-white/10 max-sm:bg-slate-950/92 dark:border-slate-700/55 dark:bg-slate-900/30",
-          navbarClassName
+          navbarClassName,
+          "!fixed left-0 right-0 !top-0 w-full z-30 border-b border-white/30 bg-white/20 backdrop-blur-2xl max-sm:border-white/10 max-sm:bg-slate-950/92 dark:border-slate-700/55 dark:bg-slate-900/30"
         )}
       >
         <NavbarBrand className="px-1 py-1">

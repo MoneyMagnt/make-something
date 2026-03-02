@@ -184,7 +184,7 @@ export default function AdminPage() {
 
       <ZyraSiteNav
         active="admin"
-        navbarClassName="relative z-10 bg-transparent border-b-0"
+        navbarClassName="bg-transparent border-b-0"
         activeLinkClassName="text-violet-300"
         brand={
           <span className="flex items-center gap-2">

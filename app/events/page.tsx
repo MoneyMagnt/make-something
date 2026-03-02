@@ -235,7 +235,7 @@ export default function EventsPage() {
 
       <ZyraSiteNav
         active="events"
-        navbarClassName={`relative z-10 border-b bg-gradient-to-r backdrop-blur-2xl ${navToneClass}`}
+        navbarClassName={`border-b bg-gradient-to-r backdrop-blur-2xl ${navToneClass}`}
         brand={
           <div className="flex items-center gap-2.5 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
             <span>{state.brandName}</span>
