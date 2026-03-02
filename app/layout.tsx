@@ -3,17 +3,17 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "makesomething ☀️",
+  title: "zyra",
   description: "build your first app with ai. look what i made!",
   metadataBase: new URL("https://makesomething.so"),
   openGraph: {
-    title: "makesomething ☀️",
+    title: "zyra",
     description: "look what i made!",
-    siteName: "makesomething",
+    siteName: "zyra",
   },
   twitter: {
     card: "summary_large_image",
-    title: "makesomething ☀️",
+    title: "zyra",
     description: "look what i made!",
   },
 };

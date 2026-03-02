@@ -9,7 +9,7 @@ export default function ThemeToggle() {
   const isDark = theme === "dark";
 
   return (
-    <div className="fixed right-4 top-4 z-[9997]">
+    <div className="fixed right-4 top-4 z-[9997] hidden sm:block">
       <Tooltip content={`switch to ${nextTheme} mode`} placement="left">
         <div className="rounded-full border border-white/65 bg-white/65 px-2.5 py-1.5 backdrop-blur-2xl shadow-[0_14px_42px_rgba(15,23,42,0.22)] dark:border-slate-700/75 dark:bg-slate-900/65">
           <Switch
