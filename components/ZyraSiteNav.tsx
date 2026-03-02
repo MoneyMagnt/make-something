@@ -100,77 +100,79 @@ export function ZyraSiteNav({
   }, [isMobileMenuOpen]);
 
   return (
-    <Navbar
-      className={joinClasses(
-        "sticky top-0 inset-x-0 w-full relative z-30 border-b border-white/30 bg-white/20 backdrop-blur-2xl max-sm:border-white/10 max-sm:bg-slate-950/92 dark:border-slate-700/55 dark:bg-slate-900/30",
-        navbarClassName
-      )}
-    >
-      <NavbarBrand className="px-1 py-1">
-        <Link
-          href="/"
-          className={joinClasses(
-            "inline-flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 no-underline max-sm:text-slate-100 dark:text-slate-100",
-            brandClassName
-          )}
-        >
-          {brand}
-        </Link>
-      </NavbarBrand>
-
-      <NavbarContent
-        justify="start"
-        className={joinClasses("hidden flex-1 items-center gap-6 pl-4 md:gap-8 lg:gap-10 sm:flex", quickLinksClassName)}
+    <>
+      <Navbar
+        className={joinClasses(
+          "!fixed left-0 right-0 !top-0 w-full z-30 border-b border-white/30 bg-white/20 backdrop-blur-2xl max-sm:border-white/10 max-sm:bg-slate-950/92 dark:border-slate-700/55 dark:bg-slate-900/30",
+          navbarClassName
+        )}
       >
-        {navItems.map((item) => (
+        <NavbarBrand className="px-1 py-1">
           <Link
-            key={item.key}
-            href={item.href}
+            href="/"
             className={joinClasses(
-              "relative shrink-0 text-[1.03rem] font-semibold tracking-tight no-underline transition-colors duration-200",
-              active === item.key
-                ? joinClasses(
-                    "text-slate-900 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-cyan-500/80 dark:text-slate-100 dark:after:bg-cyan-300/80",
-                    activeLinkClassName
-                  )
-                : joinClasses(
-                    "text-slate-800/90 hover:text-slate-900 dark:text-slate-100/90 dark:hover:text-slate-100",
-                    linkClassName
-                  )
+              "inline-flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 no-underline max-sm:text-slate-100 dark:text-slate-100",
+              brandClassName
             )}
           >
-            {item.label}
+            {brand}
           </Link>
-        ))}
-      </NavbarContent>
+        </NavbarBrand>
 
-      <NavbarContent justify="end" className="sm:hidden">
-        <div className="flex items-center gap-2.5">
-          <div className="rounded-full border border-white/20 bg-white/12 px-2.5 py-1.5 backdrop-blur-xl">
-            <Switch
-              size="sm"
-              isSelected={theme === "dark"}
-              onValueChange={(selected) => setTheme(selected ? "dark" : "light")}
-              aria-label={theme === "dark" ? "switch to light mode" : "switch to dark mode"}
-            />
+        <NavbarContent
+          justify="start"
+          className={joinClasses("hidden flex-1 items-center gap-6 pl-4 md:gap-8 lg:gap-10 sm:flex", quickLinksClassName)}
+        >
+          {navItems.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className={joinClasses(
+                "relative shrink-0 text-[1.03rem] font-semibold tracking-tight no-underline transition-colors duration-200",
+                active === item.key
+                  ? joinClasses(
+                      "text-slate-900 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-cyan-500/80 dark:text-slate-100 dark:after:bg-cyan-300/80",
+                      activeLinkClassName
+                    )
+                  : joinClasses(
+                      "text-slate-800/90 hover:text-slate-900 dark:text-slate-100/90 dark:hover:text-slate-100",
+                      linkClassName
+                    )
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </NavbarContent>
+
+        <NavbarContent justify="end" className="sm:hidden">
+          <div className="flex items-center gap-2.5">
+            <div className="rounded-full border border-white/20 bg-white/12 px-2.5 py-1.5 backdrop-blur-xl">
+              <Switch
+                size="sm"
+                isSelected={theme === "dark"}
+                onValueChange={(selected) => setTheme(selected ? "dark" : "light")}
+                aria-label={theme === "dark" ? "switch to light mode" : "switch to dark mode"}
+              />
+            </div>
+            <Button
+              type="button"
+              className="h-11 min-w-11 border border-white/20 bg-white/12 px-0 text-white backdrop-blur-xl"
+              aria-label="open navigation menu"
+              aria-haspopup="menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="zyra-mobile-menu"
+              onPress={() => setIsMobileMenuOpen((open) => !open)}
+            >
+              <span className="inline-flex flex-col gap-1">
+                <span className="block h-[2.5px] w-5 rounded-full bg-current" />
+                <span className="block h-[2.5px] w-5 rounded-full bg-current" />
+                <span className="block h-[2.5px] w-5 rounded-full bg-current" />
+              </span>
+            </Button>
           </div>
-          <Button
-            type="button"
-            className="h-11 min-w-11 border border-white/20 bg-white/12 px-0 text-white backdrop-blur-xl"
-            aria-label="open navigation menu"
-            aria-haspopup="menu"
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="zyra-mobile-menu"
-            onPress={() => setIsMobileMenuOpen((open) => !open)}
-          >
-            <span className="inline-flex flex-col gap-1">
-              <span className="block h-[2.5px] w-5 rounded-full bg-current" />
-              <span className="block h-[2.5px] w-5 rounded-full bg-current" />
-              <span className="block h-[2.5px] w-5 rounded-full bg-current" />
-            </span>
-          </Button>
-        </div>
-      </NavbarContent>
+        </NavbarContent>
+      </Navbar>
 
       {typeof window !== "undefined" && isMobileMenuOpen
         ? createPortal(
@@ -231,6 +233,8 @@ export function ZyraSiteNav({
             document.body
           )
         : null}
-    </Navbar>
+
+      <div aria-hidden className="h-[4.8rem]" />
+    </>
   );
 }
