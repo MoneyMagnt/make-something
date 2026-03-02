@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 
 type ThemeMode = "light" | "dark";
 
@@ -11,11 +12,20 @@ type ThemeModeContextValue = {
 };
 
 const STORAGE_KEY = "make_something_theme_mode";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 const ThemeModeContext = createContext<ThemeModeContextValue | null>(null);
 
 function getPreferredTheme(): ThemeMode {
   if (typeof window === "undefined") {
+    return "light";
+  }
+
+  const root = document.documentElement;
+  if (root.classList.contains("dark")) {
+    return "dark";
+  }
+  if (root.classList.contains("light")) {
     return "light";
   }
 
@@ -34,13 +44,44 @@ function applyTheme(theme: ThemeMode) {
   root.style.colorScheme = theme;
 }
 
+function persistTheme(theme: ThemeMode) {
+  localStorage.setItem(STORAGE_KEY, theme);
+  document.cookie = `${STORAGE_KEY}=${theme}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
+}
+
 export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [theme, setThemeState] = useState<ThemeMode>(getPreferredTheme);
+
+  const setTheme = (nextTheme: ThemeMode) => {
+    applyTheme(nextTheme);
+    persistTheme(nextTheme);
+    setThemeState(nextTheme);
+  };
+
+  useLayoutEffect(() => {
+    applyTheme(theme);
+    persistTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     applyTheme(theme);
-    localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
+  }, [pathname, theme]);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY) {
+        return;
+      }
+
+      if (event.newValue === "light" || event.newValue === "dark") {
+        setThemeState(event.newValue);
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -60,8 +101,8 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<ThemeModeContextValue>(
     () => ({
       theme,
-      setTheme: setThemeState,
-      toggleTheme: () => setThemeState((prev) => (prev === "dark" ? "light" : "dark")),
+      setTheme,
+      toggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
     }),
     [theme]
   );

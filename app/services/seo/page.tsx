@@ -1,11 +1,9 @@
-﻿"use client";
+"use client";
 
 import {
-  Button,
   Card,
   CardBody,
   Chip,
-  Link,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
@@ -33,7 +31,7 @@ const reveal = {
 export default function SeoServicePage() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(59,130,246,0.15),transparent)] dark:bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(37,99,235,0.2),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(59,130,246,0.15),transparent)] dark:bg-[radial-gradient(1140px_700px_at_8%_-12%,rgba(6,182,212,0.25),transparent_60%),radial-gradient(980px_560px_at_92%_8%,rgba(37,99,235,0.28),transparent_62%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(4,18,39,0.9)_45%,rgba(9,24,52,0.95)_100%)]" />
 
       <ZyraSiteNav
         active="services"
@@ -88,16 +86,12 @@ export default function SeoServicePage() {
         </motion.section>
 
         <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.12 }} className="mt-9">
-          <Card className="border border-cyan-200/80 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_16px_42px_rgba(14,165,233,0.32)] dark:border-cyan-300/40">
-            <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <Card className="border border-cyan-200/80 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 text-white shadow-[0_16px_42px_rgba(14,165,233,0.32)] dark:border-cyan-200/25 dark:bg-[linear-gradient(118deg,rgba(8,47,73,0.98)_0%,rgba(30,64,175,0.96)_56%,rgba(12,74,110,0.98)_100%)] dark:shadow-[0_22px_62px_rgba(8,145,178,0.34)]">
+            <CardBody className="gap-2">
               <p className="text-base sm:text-lg">ready to make search your strongest revenue channel?</p>
-              <Button
-                as={Link}
-                href="https://wa.me/233556877954"
-                className="w-fit border border-white/55 bg-white text-slate-900 font-semibold"
-              >
-                book seo audit
-              </Button>
+              <p className="text-sm text-cyan-50/95">
+                tap chat on whatsapp
+              </p>
             </CardBody>
           </Card>
         </motion.section>

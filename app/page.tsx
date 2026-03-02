@@ -1,11 +1,9 @@
 ﻿"use client";
 
 import {
-  Button,
   Card,
   CardBody,
   Chip,
-  Link,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
@@ -15,21 +13,18 @@ const SERVICES = [
     title: "seo growth system",
     body: "capture high-intent search demand and convert it into qualified leads.",
     points: ["technical cleanup", "keyword intent mapping", "conversion pages"],
-    href: "/services/seo",
     tone: "from-cyan-500 to-blue-500",
   },
   {
     title: "content studio",
     body: "build a weekly content machine that drives trust, saves, and inbound action.",
     points: ["campaign hooks", "short + long-form assets", "performance loop"],
-    href: "/services/content",
     tone: "from-emerald-500 to-teal-500",
   },
   {
     title: "influencer strategy",
     body: "launch creator campaigns tied to business outcomes, not vanity reach.",
     points: ["creator matching", "offer narrative", "launch operations"],
-    href: "/services/influencer",
     tone: "from-indigo-500 to-violet-500",
   },
 ];
@@ -66,7 +61,7 @@ const reveal = {
 export default function Home() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.23),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(59,130,246,0.17),transparent)] dark:bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(37,99,235,0.26),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.23),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(59,130,246,0.17),transparent)] dark:bg-[radial-gradient(1240px_740px_at_8%_-14%,rgba(6,182,212,0.27),transparent_58%),radial-gradient(1120px_680px_at_92%_10%,rgba(59,130,246,0.3),transparent_60%),radial-gradient(940px_560px_at_50%_115%,rgba(14,116,144,0.26),transparent_64%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(3,15,34,0.9)_45%,rgba(8,20,45,0.95)_100%)]" />
 
       <ZyraSiteNav
         active="home"
@@ -93,23 +88,6 @@ export default function Home() {
               zyra blends seo, content, and influencer execution into one focused growth engine for founders who want predictable outcomes.
             </p>
 
-            <div className="flex flex-wrap gap-3">
-              <Button
-                as={Link}
-                href="https://wa.me/233556877954"
-                className="h-12 border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 text-sm font-semibold uppercase tracking-[0.06em] text-white shadow-[0_16px_42px_rgba(14,165,233,0.35)]"
-              >
-                book a free growth audit
-              </Button>
-              <Button
-                as={Link}
-                href="/events"
-                variant="flat"
-                className="h-12 border border-slate-200/80 bg-white/80 px-6 text-sm font-semibold uppercase tracking-[0.06em] text-slate-900 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/70 dark:text-slate-100"
-              >
-                view our events
-              </Button>
-            </div>
           </div>
 
           <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
@@ -170,13 +148,6 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                  <Button
-                    as={Link}
-                    href={item.href}
-                    className="mt-1 w-fit border border-cyan-300/60 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                  >
-                    open service
-                  </Button>
                 </CardBody>
               </Card>
             ))}
@@ -240,21 +211,15 @@ export default function Home() {
         </motion.section>
 
         <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.3 }} className="mt-14">
-          <Card className="border border-cyan-200/80 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_18px_48px_rgba(14,165,233,0.33)] dark:border-cyan-300/40">
-            <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <Card className="border border-cyan-200/80 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 text-white shadow-[0_18px_48px_rgba(14,165,233,0.33)] dark:border-cyan-200/25 dark:bg-[linear-gradient(118deg,rgba(8,47,73,0.98)_0%,rgba(30,64,175,0.96)_56%,rgba(12,74,110,0.98)_100%)] dark:shadow-[0_22px_62px_rgba(8,145,178,0.34)]">
+            <CardBody className="gap-2">
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-cyan-100">next step</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-cyan-100 dark:text-cyan-50">next step</p>
                 <p className="mt-1 font-[family-name:var(--font-space-grotesk)] text-2xl font-bold">
                   let’s map your first 90-day growth sprint.
                 </p>
               </div>
-              <Button
-                as={Link}
-                href="https://wa.me/233556877954"
-                className="w-fit border border-white/55 bg-white text-slate-900 font-semibold"
-              >
-                chat on whatsapp
-              </Button>
+              <p className="text-sm text-cyan-50/95">tap chat on whatsapp</p>
             </CardBody>
           </Card>
         </motion.section>
