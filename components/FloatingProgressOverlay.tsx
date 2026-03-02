@@ -23,13 +23,14 @@ function computeCurrentStep(data: MilestoneData): number {
 
 // ── dev-only guard ──
 export default function FloatingProgressOverlay() {
-  if (process.env.NODE_ENV === "production") return null;
-
   const [expanded, setExpanded] = useState(false);
   const [currentMilestone, setCurrentMilestone] = useState(1);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval>;
+    if (process.env.NODE_ENV === "production") {
+      return;
+    }
+
 
     const fetchMilestones = () => {
       fetch("/milestones.json")
@@ -47,10 +48,14 @@ export default function FloatingProgressOverlay() {
     };
 
     fetchMilestones();
-    timer = setInterval(fetchMilestones, 5000);
+    const timer = setInterval(fetchMilestones, 5000);
 
     return () => clearInterval(timer);
   }, []);
+
+  if (process.env.NODE_ENV === "production") {
+    return null;
+  }
 
   const completedCount = currentMilestone - 1; // step 1 = 0 done, step 6 = 5 done
   const pct = Math.round((completedCount / MILESTONES.length) * 100);
@@ -237,3 +242,5 @@ export default function FloatingProgressOverlay() {
     </>
   );
 }
+
+

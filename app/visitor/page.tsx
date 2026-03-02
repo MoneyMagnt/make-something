@@ -69,7 +69,6 @@ const makeId = () => Math.random().toString(36).slice(2, 10);
 
 export default function VisitorPage() {
   const [state, setState] = useState<AdminState>(defaultState);
-  const [visitorCount, setVisitorCount] = useState(0);
   const [activeEvent, setActiveEvent] = useState<"We Outside" | "VENUS">("We Outside");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -95,15 +94,12 @@ export default function VisitorPage() {
 
   useEffect(() => {
     if (sessionStorage.getItem(VISITOR_SESSION_KEY)) {
-      const current = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
-      setVisitorCount(current);
       return;
     }
 
     const next = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0") + 1;
     localStorage.setItem(VISITOR_COUNT_KEY, String(next));
     sessionStorage.setItem(VISITOR_SESSION_KEY, "1");
-    setVisitorCount(next);
   }, []);
 
   useEffect(() => {
@@ -129,7 +125,7 @@ export default function VisitorPage() {
   const subheadColor = isVenus ? "#e9d5ff" : "#fef3c7";
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden" style={themeStyle}>
+    <div className="min-h-screen relative overflow-x-hidden transition-colors dark:text-slate-100" style={themeStyle}>
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div
           className="absolute inset-0 opacity-40"
@@ -321,7 +317,7 @@ export default function VisitorPage() {
             transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
           >
             <Button
-              className="bg-white text-slate-900 font-semibold shadow-lg"
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white border border-cyan-300/60 font-semibold shadow-lg shadow-cyan-500/25 hover:from-cyan-400 hover:to-blue-400 dark:from-cyan-400 dark:to-blue-500 dark:text-white dark:border-cyan-300/40 dark:shadow-cyan-400/20"
               onPress={() => setRevealOpen((prev) => !prev)}
             >
               join the experience
