@@ -7,7 +7,6 @@ import {
   Chip,
   Image,
   Input,
-  Link,
   Table,
   TableBody,
   TableCell,
@@ -18,7 +17,9 @@ import {
 } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import NextLink from "next/link";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
+import { useThemeMode } from "@/components/ThemeModeProvider";
 import { ADMIN_ACCESS_KEY, ADMIN_PASSCODE } from "@/lib/adminAccess";
 
 const STORAGE_KEY = "zyra_admin_state_v1";
@@ -107,6 +108,7 @@ const loadInitialState = () => {
 };
 
 export default function AdminPage() {
+  const { theme } = useThemeMode();
   const [initialState] = useState(loadInitialState);
   const [state, setState] = useState<AdminState>(initialState.state);
   const [visitorCount] = useState(initialState.visitorCount);
@@ -140,9 +142,12 @@ export default function AdminPage() {
 
   const themeStyle = useMemo(
     () => ({
-      background: `radial-gradient(1200px 600px at 10% -10%, ${state.primary}33, transparent), radial-gradient(900px 500px at 90% 10%, ${state.secondary}33, transparent)`,
+      background:
+        theme === "dark"
+          ? `radial-gradient(1240px 720px at 8% -12%, ${state.primary}66, transparent 58%), radial-gradient(1080px 640px at 92% -8%, ${state.secondary}66, transparent 60%), linear-gradient(180deg, #020617 0%, #0b1124 46%, #111827 100%)`
+          : `radial-gradient(1200px 600px at 10% -10%, ${state.primary}33, transparent), radial-gradient(900px 500px at 90% 10%, ${state.secondary}33, transparent), linear-gradient(180deg, #f8fbff 0%, #eef4ff 58%, #e8efff 100%)`,
     }),
-    [state.primary, state.secondary]
+    [state.primary, state.secondary, theme]
   );
 
   const passUsage = `${state.passes.length}/${state.passLimit}`;
@@ -161,10 +166,10 @@ export default function AdminPage() {
   }, [state.passes, state.attendees]);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden transition-colors dark:text-slate-100" style={themeStyle}>
+    <div className="relative min-h-screen overflow-x-hidden text-slate-900 transition-colors dark:text-slate-100" style={themeStyle}>
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 opacity-35"
+          className="absolute inset-0 opacity-35 dark:opacity-25"
           style={{
             backgroundImage: "url(/233-events-logo.png)",
             backgroundRepeat: "no-repeat",
@@ -173,13 +178,13 @@ export default function AdminPage() {
           }}
         />
         <div
-          className="absolute inset-0 mix-blend-multiply opacity-70"
+          className="absolute inset-0 mix-blend-multiply opacity-70 dark:mix-blend-screen dark:opacity-55"
           style={{
             background:
               "radial-gradient(700px 360px at 20% 20%, rgba(59,130,246,0.55), transparent), radial-gradient(600px 320px at 80% 25%, rgba(139,92,246,0.55), transparent), linear-gradient(120deg, rgba(59,130,246,0.25), rgba(139,92,246,0.25))",
           }}
         />
-        <div className="absolute inset-0 bg-white/10" />
+        <div className="absolute inset-0 bg-white/12 dark:bg-slate-950/35" />
       </div>
 
       <ZyraSiteNav
@@ -197,9 +202,9 @@ export default function AdminPage() {
 
       {!isAuthed ? (
         <main className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 px-6">
-          <Card className="w-full bg-white/80 backdrop-blur border border-blue-100/60">
+          <Card className="w-full border border-blue-100/60 bg-white/80 backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/78">
             <CardBody className="gap-4">
-              <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-slate-900">
+              <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-slate-900 dark:text-slate-100">
                 Admin access
               </h1>
               <Input
@@ -215,7 +220,7 @@ export default function AdminPage() {
                 enter
               </Button>
               {passcode && passcode !== ADMIN_PASSCODE ? (
-                <p className="text-sm text-rose-600">wrong passcode</p>
+                <p className="text-sm text-rose-600 dark:text-rose-300">wrong passcode</p>
               ) : null}
             </CardBody>
           </Card>
@@ -225,7 +230,7 @@ export default function AdminPage() {
           <main className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 pb-16 pt-8">
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <Button
-                as={Link}
+                as={NextLink}
                 href="/events"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -234,7 +239,7 @@ export default function AdminPage() {
                 preview events site
               </Button>
               <Button
-                as={Link}
+                as={NextLink}
                 href="/"
                 variant="flat"
                 className="border border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100"
@@ -259,10 +264,10 @@ export default function AdminPage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="mb-8"
             >
-              <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl sm:text-4xl font-bold text-slate-900">
+              <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
                 {state.headline}
               </h1>
-              <p className="text-slate-600 mt-2">{state.subhead}</p>
+              <p className="mt-2 text-slate-600 dark:text-slate-300">{state.subhead}</p>
             </motion.section>
 
             <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -279,8 +284,8 @@ export default function AdminPage() {
                     size="sm"
                     className={
                       activeTab === item.key
-                        ? "bg-slate-900 text-white"
-                        : "bg-white/90 text-slate-700"
+                        ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
+                        : "bg-white/90 text-slate-700 dark:bg-slate-900/75 dark:text-slate-200"
                     }
                     onPress={() => setActiveTab(item.key)}
                   >

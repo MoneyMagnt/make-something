@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   Button,
@@ -173,15 +173,20 @@ export default function EventsPage() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const write = () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    };
+
+    const timeoutId = window.setTimeout(write, 180);
+    return () => window.clearTimeout(timeoutId);
   }, [state]);
 
   const activeMeta = useMemo(() => EVENTS.find((item) => item.name === activeEvent) ?? EVENTS[0], [activeEvent]);
   const navToneClass =
     theme === "dark"
       ? activeEvent === "VENUS"
-        ? "from-indigo-600/50 via-fuchsia-600/30 to-slate-900/25 border-indigo-300/20"
-        : "from-emerald-500/45 via-cyan-500/30 to-slate-900/25 border-cyan-300/20"
+        ? "from-indigo-900/82 via-violet-800/70 to-slate-950/85 border-violet-300/25"
+        : "from-emerald-900/82 via-cyan-900/70 to-slate-950/85 border-cyan-300/25"
       : activeEvent === "VENUS"
         ? "from-violet-400/70 via-fuchsia-400/62 to-rose-200/55 border-fuchsia-400/55"
         : "from-emerald-400/70 via-cyan-400/62 to-blue-200/55 border-cyan-400/55";
@@ -190,8 +195,8 @@ export default function EventsPage() {
       background:
         theme === "dark"
           ? activeEvent === "VENUS"
-            ? `radial-gradient(1180px 720px at 8% -12%, ${activeMeta.auraA}, transparent 64%), radial-gradient(1020px 620px at 90% -8%, ${activeMeta.auraB}, transparent 62%), radial-gradient(1000px 640px at 50% 112%, rgba(59,130,246,0.3), transparent 70%), linear-gradient(180deg, #2f0f74 0%, #1b1f63 44%, #0b1237 100%)`
-            : `radial-gradient(1180px 720px at 8% -12%, ${activeMeta.auraA}, transparent 64%), radial-gradient(1020px 620px at 90% -8%, ${activeMeta.auraB}, transparent 62%), radial-gradient(1000px 640px at 50% 112%, rgba(56,189,248,0.3), transparent 70%), linear-gradient(180deg, #1f5c4b 0%, #123f63 44%, #0a1538 100%)`
+            ? `radial-gradient(1220px 760px at 8% -14%, ${activeMeta.auraA}, transparent 62%), radial-gradient(1080px 660px at 92% -10%, ${activeMeta.auraB}, transparent 60%), radial-gradient(1060px 680px at 50% 112%, rgba(129,140,248,0.34), transparent 68%), linear-gradient(180deg, #18093f 0%, #12143f 46%, #060d2a 100%)`
+            : `radial-gradient(1220px 760px at 8% -14%, ${activeMeta.auraA}, transparent 62%), radial-gradient(1080px 660px at 92% -10%, ${activeMeta.auraB}, transparent 60%), radial-gradient(1060px 680px at 50% 112%, rgba(14,165,233,0.34), transparent 68%), linear-gradient(180deg, #0f3e33 0%, #0c2f49 46%, #060d2a 100%)`
           : activeEvent === "VENUS"
             ? `radial-gradient(1120px 680px at 10% -14%, rgba(139,92,246,0.54), transparent 64%), radial-gradient(980px 580px at 90% -8%, rgba(236,72,153,0.46), transparent 62%), radial-gradient(980px 600px at 50% 112%, rgba(99,102,241,0.32), transparent 70%), linear-gradient(180deg, #f6f0ff 0%, #eceeff 52%, #d8e3ff 100%)`
             : `radial-gradient(1120px 680px at 10% -14%, rgba(16,185,129,0.52), transparent 64%), radial-gradient(980px 580px at 90% -8%, rgba(6,182,212,0.46), transparent 62%), radial-gradient(980px 600px at 50% 112%, rgba(59,130,246,0.3), transparent 70%), linear-gradient(180deg, #ecfffb 0%, #ebf8ff 52%, #d3e7ff 100%)`,
@@ -221,21 +226,21 @@ export default function EventsPage() {
   }, [state.photos, state.videos]);
 
   return (
-    <div className="relative min-h-screen overflow-x-clip text-slate-900 transition-[background] duration-500 ease-out dark:text-slate-100" style={themeStyle}>
+    <div className="relative min-h-screen overflow-x-clip text-slate-900 transition-colors duration-300 ease-out dark:text-slate-100" style={themeStyle}>
       <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-white/8 backdrop-blur-[2px] dark:bg-slate-900/10" />
+        <div className="absolute inset-0 bg-white/6 dark:bg-slate-950/24" />
         <div
-          className="absolute inset-0 bg-center bg-no-repeat opacity-[0.13] mix-blend-multiply transition-opacity duration-500 dark:opacity-[0.2] dark:mix-blend-screen"
+          className="absolute inset-0 bg-center bg-no-repeat opacity-[0.1] transition-opacity duration-300 dark:opacity-[0.16]"
           style={{
             backgroundImage: `url(${activeMeta.logo})`,
-            backgroundSize: "min(62vw, 500px)",
+            backgroundSize: "min(52vw, 420px)",
           }}
         />
       </div>
 
       <ZyraSiteNav
         active="events"
-        navbarClassName={`border-b bg-gradient-to-r backdrop-blur-2xl ${navToneClass}`}
+        navbarClassName={`border-b bg-gradient-to-r backdrop-blur-lg ${navToneClass}`}
         brand={
           <div className="flex items-center gap-2.5 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
             <span>{state.brandName}</span>
@@ -253,7 +258,7 @@ export default function EventsPage() {
 
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
         <section className="mb-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="border border-white/45 bg-white/45 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-900/45">
+          <Card className="border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-5">
               <Chip className="w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
                 house of legendary parties
@@ -279,7 +284,7 @@ export default function EventsPage() {
                     className={`h-auto justify-start border p-3 ${
                       activeEvent === event.name
                         ? "border-cyan-300/80 bg-cyan-50 text-slate-900 dark:border-cyan-400/50 dark:bg-cyan-900/30 dark:text-slate-100"
-                        : "border-white/45 bg-white/55 text-slate-800 dark:border-slate-700/55 dark:bg-slate-900/50 dark:text-slate-200"
+                        : "border-white/45 bg-white/55 text-slate-800 dark:border-slate-700/55 dark:bg-slate-950/62 dark:text-slate-200"
                     }`}
                     onPress={() => setActiveEvent(event.name)}
                   >
@@ -293,7 +298,7 @@ export default function EventsPage() {
             </CardBody>
           </Card>
 
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-900/45">
+          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
@@ -307,13 +312,13 @@ export default function EventsPage() {
                 <p className="text-sm text-white/85">{activeMeta.venue}, {activeMeta.city}</p>
               </div>
 
-              <div className="relative z-10 rounded-2xl border border-white/45 bg-white/58 p-4 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-950/52">
+              <div className="relative z-10 rounded-2xl border border-white/45 bg-white/58 p-4 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">free pass tracker</p>
                 <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">{passesLeft} left</p>
                 <p className="text-sm text-slate-600 dark:text-slate-400">out of {state.passLimit} total passes</p>
               </div>
 
-              <div className="relative z-10 rounded-2xl border border-white/45 bg-white/58 p-4 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-950/52">
+              <div className="relative z-10 rounded-2xl border border-white/45 bg-white/58 p-4 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">starting price</p>
                 <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {tickets[0]?.price || activeMeta.fallbackPrice}
@@ -331,7 +336,7 @@ export default function EventsPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-                <Card key={activeMeta.name} className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-900/45 md:col-span-2">
+                <Card key={activeMeta.name} className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58 md:col-span-2">
                   <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
                     <div className="pointer-events-none absolute inset-0">
                       <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
@@ -353,7 +358,7 @@ export default function EventsPage() {
                       <Chip className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">active vibe</Chip>
                     </div>
 
-                    <div className="relative z-10 rounded-xl border border-white/45 bg-white/58 px-3 py-2 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-950/52">
+                    <div className="relative z-10 rounded-xl border border-white/45 bg-white/58 px-3 py-2 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
                       <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">from</p>
                       <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{tickets[0]?.price || activeMeta.fallbackPrice}</p>
                     </div>
@@ -367,7 +372,7 @@ export default function EventsPage() {
                       </Button>
                       <Button
                         variant="flat"
-                        className="border border-white/45 bg-white/58 text-slate-800 dark:border-slate-700/55 dark:bg-slate-900/55 dark:text-slate-100"
+                        className="border border-white/45 bg-white/58 text-slate-800 dark:border-slate-700/55 dark:bg-slate-950/66 dark:text-slate-100"
                         onPress={() => {
                           setActiveEvent(activeMeta.name);
                         }}
@@ -381,7 +386,7 @@ export default function EventsPage() {
         </section>
 
         <section className="mb-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-900/45">
+          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
@@ -398,7 +403,7 @@ export default function EventsPage() {
 
               <div className="grid gap-3">
                 {tickets.map((ticket) => (
-                  <Card key={ticket.id} className="border border-white/45 bg-white/58 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-950/52">
+                  <Card key={ticket.id} className="border border-white/45 bg-white/58 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
                     <CardBody className="flex flex-row items-center justify-between gap-3">
                       <div>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">{ticket.name}</p>
@@ -426,7 +431,7 @@ export default function EventsPage() {
             </CardBody>
           </Card>
 
-          <Card className="border border-white/45 bg-white/45 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-900/45">
+          <Card className="border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-4">
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
                 latest drops for {activeMeta.name.toLowerCase()}
@@ -436,7 +441,7 @@ export default function EventsPage() {
               ) : (
                 <div className="grid gap-2">
                   {mediaFeed.map((item) => (
-                    <Card key={item.id} className="border border-white/45 bg-white/55 backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
+                    <Card key={item.id} className="border border-white/45 bg-white/55 backdrop-blur-md dark:border-slate-700/55 dark:bg-slate-950/72">
                       <CardBody className="gap-1">
                         <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{item.type}</p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
@@ -451,7 +456,7 @@ export default function EventsPage() {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-2">
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-900/45">
+          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
@@ -494,7 +499,7 @@ export default function EventsPage() {
             </CardBody>
           </Card>
 
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-2xl dark:border-slate-700/55 dark:bg-slate-900/45">
+          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
@@ -539,4 +544,5 @@ export default function EventsPage() {
     </div>
   );
 }
+
 

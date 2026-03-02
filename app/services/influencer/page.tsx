@@ -1,11 +1,9 @@
-﻿"use client";
+"use client";
 
 import {
-  Button,
   Card,
   CardBody,
   Chip,
-  Link,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
@@ -42,7 +40,7 @@ const reveal = {
 export default function InfluencerServicePage() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(99,102,241,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(139,92,246,0.16),transparent)] dark:bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(99,102,241,0.22),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(139,92,246,0.24),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(99,102,241,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(139,92,246,0.16),transparent)] dark:bg-[radial-gradient(1140px_700px_at_8%_-12%,rgba(99,102,241,0.25),transparent_60%),radial-gradient(980px_560px_at_92%_8%,rgba(139,92,246,0.28),transparent_62%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(24,20,60,0.9)_45%,rgba(30,27,75,0.95)_100%)]" />
 
       <ZyraSiteNav
         active="services"
@@ -97,16 +95,12 @@ export default function InfluencerServicePage() {
         </motion.section>
 
         <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.12 }} className="mt-9">
-          <Card className="border border-violet-200/80 bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-[0_16px_42px_rgba(99,102,241,0.32)] dark:border-violet-300/40">
-            <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <Card className="border border-violet-200/80 bg-gradient-to-r from-indigo-500 via-violet-500 to-violet-600 text-white shadow-[0_16px_42px_rgba(99,102,241,0.32)] dark:border-violet-200/25 dark:bg-[linear-gradient(118deg,rgba(30,27,75,0.98)_0%,rgba(67,56,202,0.96)_56%,rgba(91,33,182,0.98)_100%)] dark:shadow-[0_22px_62px_rgba(99,102,241,0.34)]">
+            <CardBody className="gap-2">
               <p className="text-base sm:text-lg">ready to launch creator campaigns that convert?</p>
-              <Button
-                as={Link}
-                href="https://wa.me/233556877954"
-                className="w-fit border border-white/55 bg-white text-slate-900 font-semibold"
-              >
-                start influencer sprint
-              </Button>
+              <p className="text-sm text-violet-50/95">
+                tap chat on whatsapp
+              </p>
             </CardBody>
           </Card>
         </motion.section>

@@ -2,12 +2,12 @@
 
 import {
   Button,
-  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
   Switch,
 } from "@heroui/react";
+import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
@@ -108,7 +108,7 @@ export function ZyraSiteNav({
         )}
       >
         <NavbarBrand className="px-1 py-1">
-          <Link
+          <NextLink
             href="/"
             className={joinClasses(
               "inline-flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 no-underline max-sm:text-slate-100 dark:text-slate-100",
@@ -116,7 +116,7 @@ export function ZyraSiteNav({
             )}
           >
             {brand}
-          </Link>
+          </NextLink>
         </NavbarBrand>
 
         <NavbarContent
@@ -124,7 +124,7 @@ export function ZyraSiteNav({
           className={joinClasses("hidden flex-1 items-center gap-6 pl-4 md:gap-8 lg:gap-10 sm:flex", quickLinksClassName)}
         >
           {navItems.map((item) => (
-            <Link
+            <NextLink
               key={item.key}
               href={item.href}
               className={joinClasses(
@@ -141,7 +141,7 @@ export function ZyraSiteNav({
               )}
             >
               {item.label}
-            </Link>
+            </NextLink>
           ))}
         </NavbarContent>
 
