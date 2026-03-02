@@ -1,3 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <text y="0.9em" font-size="90">☀️</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="zyra gh icon">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#ffffff" stroke="#0a0a0a" stroke-width="2" />
+  <path
+    d="M14 16H50V24H30L50 48H14V40H34L14 16Z"
+    fill="#0a0a0a"
+  />
 </svg>

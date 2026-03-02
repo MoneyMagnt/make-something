@@ -23,7 +23,15 @@
   color-scheme: dark;
 }
 
+html,
 body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  overflow-y: auto;
   transition: background-color 220ms ease, color 220ms ease;
 }
 
