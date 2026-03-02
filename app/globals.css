@@ -14,3 +14,63 @@
   --font-bricolage: "Bricolage Grotesque", system-ui, sans-serif;
   --font-instrument-serif: "Instrument Serif", Georgia, serif;
 }
+
+:root {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+body {
+  transition: background-color 220ms ease, color 220ms ease;
+}
+
+.dark body {
+  background-color: #020617;
+  color: #e2e8f0;
+}
+
+.dark .text-slate-900 {
+  color: rgb(226 232 240) !important;
+}
+
+.dark .text-slate-700 {
+  color: rgb(203 213 225) !important;
+}
+
+.dark .text-slate-600 {
+  color: rgb(148 163 184) !important;
+}
+
+.dark .text-slate-500 {
+  color: rgb(148 163 184 / 0.85) !important;
+}
+
+.dark .bg-white\/95,
+.dark .bg-white\/90,
+.dark .bg-white\/80,
+.dark .bg-white\/70,
+.dark .bg-white\/50,
+.dark .bg-white\/25,
+.dark .bg-white\/20 {
+  background-color: rgb(15 23 42 / 0.72) !important;
+}
+
+.dark .bg-black\/10 {
+  background-color: rgb(100 116 139 / 0.3) !important;
+}
+
+.dark .bg-slate-900 {
+  background-color: rgb(30 41 59 / 0.92) !important;
+  color: rgb(226 232 240) !important;
+}
+
+.dark .border-slate-200\/70,
+.dark .border-blue-100\/60,
+.dark .border-violet-100\/60,
+.dark .border-white\/50,
+.dark .border-white\/40 {
+  border-color: rgb(100 116 139 / 0.45) !important;
+}

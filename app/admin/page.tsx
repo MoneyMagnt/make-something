@@ -73,9 +73,44 @@ const defaultState: AdminState = {
 
 const makeId = () => Math.random().toString(36).slice(2, 10);
 
+const loadInitialState = () => {
+  if (typeof window === "undefined") {
+    return { state: defaultState, passLimitInput: String(defaultState.passLimit), visitorCount: 0 };
+  }
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) {
+    const currentVisitors = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
+    return {
+      state: defaultState,
+      passLimitInput: String(defaultState.passLimit),
+      visitorCount: currentVisitors,
+    };
+  }
+
+  try {
+    const parsed = JSON.parse(saved) as AdminState;
+    const merged = { ...defaultState, ...parsed };
+    const currentVisitors = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
+    return {
+      state: merged,
+      passLimitInput: String(merged.passLimit ?? defaultState.passLimit),
+      visitorCount: currentVisitors,
+    };
+  } catch {
+    const currentVisitors = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
+    return {
+      state: defaultState,
+      passLimitInput: String(defaultState.passLimit),
+      visitorCount: currentVisitors,
+    };
+  }
+};
+
 export default function AdminPage() {
-  const [state, setState] = useState<AdminState>(defaultState);
-  const [visitorCount, setVisitorCount] = useState(0);
+  const [initialState] = useState(loadInitialState);
+  const [state, setState] = useState<AdminState>(initialState.state);
+  const [visitorCount] = useState(initialState.visitorCount);
   const [passcode, setPasscode] = useState("");
   const [isAuthed, setIsAuthed] = useState(false);
   const [activeTab, setActiveTab] = useState("design");
@@ -90,34 +125,15 @@ export default function AdminPage() {
   const [ticketName, setTicketName] = useState("");
   const [ticketPrice, setTicketPrice] = useState("");
   const [ticketLink, setTicketLink] = useState("");
-  const [passLimitInput, setPassLimitInput] = useState("200");
+  const [passLimitInput, setPassLimitInput] = useState(initialState.passLimitInput);
 
   const tryAuth = () => {
     setIsAuthed(passcode === "233");
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as AdminState;
-        setState({ ...defaultState, ...parsed });
-        setPassLimitInput(String(parsed.passLimit ?? 200));
-      } catch {
-        setState(defaultState);
-        setPassLimitInput(String(defaultState.passLimit));
-      }
-    }
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
-
-  useEffect(() => {
-    const current = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
-    setVisitorCount(current);
-  }, []);
 
   const themeStyle = useMemo(
     () => ({
@@ -142,7 +158,7 @@ export default function AdminPage() {
   }, [state.passes, state.attendees]);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden" style={themeStyle}>
+    <div className="min-h-screen relative overflow-x-hidden transition-colors dark:text-slate-100" style={themeStyle}>
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div
           className="absolute inset-0 opacity-35"
