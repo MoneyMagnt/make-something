@@ -6,11 +6,9 @@ import {
   CardBody,
   Chip,
   Link,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
 } from "@heroui/react";
 import { motion } from "framer-motion";
+import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 
 const SERVICES = [
   {
@@ -48,22 +46,15 @@ export default function ServicesPage() {
     <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.22),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(59,130,246,0.16),transparent)] dark:bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(37,99,235,0.22),transparent)]" />
 
-      <Navbar className="bg-transparent">
-        <NavbarBrand className="flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-          zyra
-          <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">services</Chip>
-        </NavbarBrand>
-        <NavbarContent justify="end">
-          <Button
-            as={Link}
-            href="/"
-            variant="flat"
-            className="border border-slate-200/80 bg-white/70 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100"
-          >
-            back home
-          </Button>
-        </NavbarContent>
-      </Navbar>
+      <ZyraSiteNav
+        active="services"
+        brand={
+          <>
+            <span>zyra</span>
+            <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">services</Chip>
+          </>
+        }
+      />
 
       <main className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
         <motion.section {...reveal} className="mb-10">

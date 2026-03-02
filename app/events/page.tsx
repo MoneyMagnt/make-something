@@ -8,12 +8,11 @@ import {
   Image,
   Input,
   Link,
-  Navbar,
-  NavbarBrand,
   Textarea,
 } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
+import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 
 const STORAGE_KEY = "zyra_admin_state_v1";
 const VISITOR_COUNT_KEY = "zyra_visitor_count_v1";
@@ -186,7 +185,6 @@ export default function EventsPage() {
       : activeEvent === "VENUS"
         ? "from-violet-400/70 via-fuchsia-400/62 to-rose-200/55 border-fuchsia-400/55"
         : "from-emerald-400/70 via-cyan-400/62 to-blue-200/55 border-cyan-400/55";
-
   const themeStyle = useMemo(
     () => ({
       background:
@@ -235,8 +233,10 @@ export default function EventsPage() {
         />
       </div>
 
-      <Navbar className={`relative z-10 border-b bg-gradient-to-r backdrop-blur-2xl ${navToneClass}`}>
-        <NavbarBrand className="px-1 py-1">
+      <ZyraSiteNav
+        active="events"
+        navbarClassName={`relative z-10 border-b bg-gradient-to-r backdrop-blur-2xl ${navToneClass}`}
+        brand={
           <div className="flex items-center gap-2.5 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
             <span>{state.brandName}</span>
             <span className="rounded-full border border-transparent bg-transparent px-0 py-0 shadow-none">
@@ -248,8 +248,8 @@ export default function EventsPage() {
               />
             </span>
           </div>
-        </NavbarBrand>
-      </Navbar>
+        }
+      />
 
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
         <section className="mb-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">

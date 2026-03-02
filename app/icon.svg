@@ -1,3 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <text y="0.9em" font-size="90">☀️</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="zyra gh icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg)" />
+  <path d="M16 20h32v7l-18 16h18v7H16v-7l18-16H16z" fill="url(#accent)" />
+  <rect x="42" y="9" width="12" height="10" rx="5" fill="#0b1220" stroke="#38bdf8" stroke-width="1.5" />
+  <text x="48" y="16" text-anchor="middle" font-size="6.5" font-family="Arial, sans-serif" font-weight="700" fill="#e2e8f0">gh</text>
 </svg>
