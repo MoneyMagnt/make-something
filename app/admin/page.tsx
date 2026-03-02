@@ -222,12 +222,12 @@ export default function AdminPage() {
             <NavbarContent justify="end">
               <Button
                 as={Link}
-                href="/visitor"
+                href="/events"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-slate-900 text-white"
               >
-                preview visitor site
+                preview events site
               </Button>
               <Button className="bg-white text-slate-900" onPress={() => setIsAuthed(false)}>
                 log out
@@ -664,3 +664,4 @@ export default function AdminPage() {
     </div>
   );
 }
+

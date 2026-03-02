@@ -11,330 +11,266 @@ import {
   NavbarContent,
 } from "@heroui/react";
 import { motion } from "framer-motion";
-import SignalMeshGraphic from "@/components/SignalMeshGraphic";
+
+const SERVICES = [
+  {
+    title: "seo growth system",
+    body: "capture high-intent search demand and convert it into qualified leads.",
+    points: ["technical cleanup", "keyword intent mapping", "conversion pages"],
+    href: "/services/seo",
+    tone: "from-cyan-500 to-blue-500",
+  },
+  {
+    title: "content studio",
+    body: "build a weekly content machine that drives trust, saves, and inbound action.",
+    points: ["campaign hooks", "short + long-form assets", "performance loop"],
+    href: "/services/content",
+    tone: "from-emerald-500 to-teal-500",
+  },
+  {
+    title: "influencer strategy",
+    body: "launch creator campaigns tied to business outcomes, not vanity reach.",
+    points: ["creator matching", "offer narrative", "launch operations"],
+    href: "/services/influencer",
+    tone: "from-indigo-500 to-violet-500",
+  },
+];
+
+const FAQS = [
+  {
+    q: "do you only work with event brands?",
+    a: "no. events were our first proving ground, but we also work with founders and growth-focused teams.",
+  },
+  {
+    q: "how soon can we start?",
+    a: "most projects start within 7 days after a discovery call and clear scope.",
+  },
+  {
+    q: "can we begin with one service only?",
+    a: "yes. we can start with one channel and expand after we validate wins.",
+  },
+];
+
+const STATS = [
+  { label: "events produced", value: "25+" },
+  { label: "attendees reached", value: "7k+" },
+  { label: "avg kickoff window", value: "7 days" },
+  { label: "reporting rhythm", value: "weekly" },
+];
+
+const reveal = {
+  initial: { opacity: 0, y: 14 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.45, ease: "easeOut" as const },
+};
 
 export default function Home() {
   return (
-    <div className="min-h-screen relative overflow-x-hidden transition-colors bg-[radial-gradient(1100px_600px_at_10%_-10%,rgba(15,23,42,0.35),transparent),radial-gradient(900px_500px_at_90%_10%,rgba(59,130,246,0.28),transparent)] dark:bg-[radial-gradient(1100px_600px_at_10%_-10%,rgba(30,41,59,0.85),transparent),radial-gradient(900px_500px_at_90%_10%,rgba(37,99,235,0.34),transparent)]">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-55 mix-blend-multiply dark:opacity-35 dark:mix-blend-screen"
-        style={{
-          backgroundImage: "url(/zyra-gradient-hub.webp)",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      />
-      <motion.div
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-        initial={{ opacity: 0.16, y: 12 }}
-        animate={{ opacity: 0.24, y: -12 }}
-        transition={{ duration: 7, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-      >
-        <span className="relative font-[family-name:var(--font-space-grotesk)] text-[22vw] leading-none font-extrabold text-slate-900/40 dark:text-slate-100/28">
-          <span className="absolute inset-0 blur-[16px] text-slate-900/30 dark:text-slate-100/20">ZYRA</span>
-          <span className="bg-gradient-to-b from-slate-900/40 via-slate-900/20 to-transparent bg-clip-text text-transparent dark:from-slate-100/35 dark:via-slate-100/20">
-            ZYRA
-          </span>
-        </span>
-      </motion.div>
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.23),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(59,130,246,0.17),transparent)] dark:bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(37,99,235,0.26),transparent)]" />
+
       <Navbar className="bg-transparent">
-        <NavbarBrand className="flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
+        <NavbarBrand className="flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
           zyra
-          <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">gh</Chip>
+          <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">accra</Chip>
         </NavbarBrand>
         <NavbarContent justify="end" className="hidden sm:flex">
           <Button
             as={Link}
             href="/services"
             variant="flat"
-            className="bg-white/20 text-slate-900 border border-white/40 dark:bg-slate-900/70 dark:text-slate-100 dark:border-slate-700/80"
+            className="border border-slate-200/80 bg-white/70 text-slate-800 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100"
           >
             services
           </Button>
         </NavbarContent>
       </Navbar>
 
-      <main className="mx-auto max-w-6xl px-6 pb-20 pt-12">
-        <motion.section
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="grid gap-12 lg:grid-cols-[1.25fr_0.75fr]"
-        >
-          <div className="flex flex-col gap-6">
-            <h1 className="font-[family-name:var(--font-bricolage)] text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-              we help ghana brands turn attention into revenue in 90 days.
+      <main className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
+        <motion.section {...reveal} className="grid items-start gap-8 lg:grid-cols-[1.12fr_0.88fr]">
+          <div className="space-y-6">
+            <Chip className="border border-cyan-200 bg-cyan-100/80 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+              growth studio for ambitious brands
+            </Chip>
+
+            <h1 className="font-[family-name:var(--font-bricolage)] text-4xl font-extrabold leading-[0.95] tracking-tight text-slate-950 sm:text-6xl dark:text-slate-100">
+              we build demand systems that turn attention into revenue.
             </h1>
-            <p className="text-lg text-slate-700 dark:text-slate-300">
-              zyra builds ai-powered seo, content, and influencer systems for founders who want predictable growth,
-              not random posting.
+
+            <p className="max-w-2xl text-base text-slate-700 sm:text-lg dark:text-slate-300">
+              zyra blends seo, content, and influencer execution into one focused growth engine for founders who want predictable outcomes.
             </p>
+
             <div className="flex flex-wrap gap-3">
               <Button
                 as={Link}
                 href="https://wa.me/233556877954"
-                className="bg-white/25 text-slate-900 border border-white/50 backdrop-blur-2xl shadow-[0_18px_50px_rgba(15,23,42,0.18)] dark:bg-slate-900/70 dark:text-slate-100 dark:border-slate-700/80"
+                className="h-12 border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 text-sm font-semibold uppercase tracking-[0.06em] text-white shadow-[0_16px_42px_rgba(14,165,233,0.35)]"
               >
                 book a free growth audit
               </Button>
               <Button
                 as={Link}
-                href="/visitor"
+                href="/events"
                 variant="flat"
-                className="bg-white/25 text-slate-900 border border-white/50 backdrop-blur-2xl shadow-[0_18px_50px_rgba(15,23,42,0.18)] dark:bg-slate-900/70 dark:text-slate-100 dark:border-slate-700/80"
+                className="h-12 border border-slate-200/80 bg-white/80 px-6 text-sm font-semibold uppercase tracking-[0.06em] text-slate-900 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/70 dark:text-slate-100"
               >
                 view our events
               </Button>
             </div>
-            <div className="flex flex-wrap gap-3 text-sm text-slate-700 dark:text-slate-300">
-              <Chip className="bg-black/10 text-slate-900 dark:bg-slate-700/60 dark:text-slate-100">ai‑first growth systems</Chip>
-              <Chip className="bg-black/10 text-slate-900 dark:bg-slate-700/60 dark:text-slate-100">luxury‑grade creative</Chip>
-              <Chip className="bg-black/10 text-slate-900 dark:bg-slate-700/60 dark:text-slate-100">ghana‑rooted, global taste</Chip>
-              <Chip className="bg-black/10 text-slate-900 dark:bg-slate-700/60 dark:text-slate-100">90-day sprint model</Chip>
-            </div>
           </div>
 
-          <div className="grid gap-6">
-            <SignalMeshGraphic />
-            <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
-              <CardBody className="gap-5">
-                <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
-                  what we do
+          <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
+            <CardBody className="gap-5">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                  why teams pick zyra
                 </h2>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {[
-                    { title: "data analytics", icon: "Δ" },
-                    { title: "seo strategy", icon: "◎" },
-                    { title: "content creation", icon: "✶" },
-                    { title: "influencer partnerships", icon: "◆" },
-                  ].map((item) => (
-                    <div
-                      key={item.title}
-                      className="flex items-center gap-3 rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 dark:bg-slate-950/70 dark:border-slate-700/70"
-                    >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white dark:bg-slate-700">
-                        {item.icon}
-                      </div>
-                      <span className="text-slate-700 dark:text-slate-300">{item.title}</span>
-                    </div>
-                  ))}
+                <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">proof-first</Chip>
+              </div>
+
+              <div className="grid gap-3 text-sm text-slate-700 dark:text-slate-300">
+                <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-slate-700/70 dark:bg-slate-950/70">
+                  no guesswork. we run every sprint against clear revenue or pipeline goals.
                 </div>
-              </CardBody>
-            </Card>
-          </div>
+                <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-slate-700/70 dark:bg-slate-950/70">
+                  one operating team for strategy + execution, so speed stays high.
+                </div>
+                <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-slate-700/70 dark:bg-slate-950/70">
+                  weekly reporting with what changed, what won, and what ships next.
+                </div>
+              </div>
+            </CardBody>
+          </Card>
         </motion.section>
 
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-          className="mt-12 grid gap-6 md:grid-cols-3"
-        >
-          {[
-            {
-              title: "seo growth system",
-              body: "intent mapping, technical cleanup, and conversion pages that pull qualified demand.",
-              href: "/services/seo",
-              chip: "demand engine",
-            },
-            {
-              title: "content studio",
-              body: "campaign concepts, hooks, and weekly assets designed for saves, shares, and trust.",
-              href: "/services/content",
-              chip: "content engine",
-            },
-            {
-              title: "influencer strategy",
-              body: "creator matching, offer design, and launch coordination tied to business outcomes.",
-              href: "/services/influencer",
-              chip: "distribution engine",
-            },
-          ].map((item) => (
-            <Card key={item.title} className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
-              <CardBody className="gap-4">
-                <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-slate-900 dark:text-slate-100">
-                  {item.title}
-                </h3>
-                <p className="text-slate-600 text-sm dark:text-slate-400">{item.body}</p>
-                <div className="flex items-center justify-between gap-2 pt-1">
-                  <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">{item.chip}</Chip>
-                  <Button
-                    as={Link}
-                    href={item.href}
-                    size="sm"
-                    variant="flat"
-                    className="bg-white/60 text-slate-900 border border-slate-200/70 dark:bg-slate-950/70 dark:text-slate-100 dark:border-slate-700/70"
-                  >
-                    open service
-                  </Button>
-                </div>
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.08 }} className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {STATS.map((item) => (
+            <Card key={item.label} className="border border-slate-200/70 bg-white/80 dark:border-slate-700/80 dark:bg-slate-900/70">
+              <CardBody className="gap-1">
+                <p className="font-[family-name:var(--font-space-grotesk)] text-2xl font-extrabold text-slate-900 dark:text-slate-100">{item.value}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{item.label}</p>
               </CardBody>
             </Card>
           ))}
         </motion.section>
 
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-          className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]"
-        >
-          <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.15 }} className="mt-14">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+              what we execute
+            </h2>
+            <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">3 focused lanes</Chip>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {SERVICES.map((item) => (
+              <Card key={item.title} className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
+                <CardBody className="gap-4">
+                  <div className={`h-1.5 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
+                  <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">{item.title}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
+                  <div className="grid gap-2 text-sm text-slate-700 dark:text-slate-300">
+                    {item.points.map((point) => (
+                      <div key={point} className="flex items-center gap-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-slate-300" />
+                        <span>{point}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    as={Link}
+                    href={item.href}
+                    className="mt-1 w-fit border border-cyan-300/60 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
+                  >
+                    open service
+                  </Button>
+                </CardBody>
+              </Card>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.22 }} className="mt-14 grid gap-6 lg:grid-cols-[1.06fr_0.94fr]">
+          <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
             <CardBody className="gap-4">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
-                how we work
+              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
+                how we run growth
               </h2>
-              <div className="grid gap-3 text-sm text-slate-700 dark:text-slate-300">
-                <div className="flex items-center justify-between">
-                  <span>week 1: growth diagnosis</span>
-                  <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">audit + goals</Chip>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>weeks 2-4: strategy build</span>
-                  <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">plan + assets</Chip>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>weeks 5-8: launch + iterate</span>
-                  <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">deployment</Chip>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>weeks 9-12: scale winners</span>
-                  <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">optimization</Chip>
-                </div>
+
+              <div className="grid gap-3">
+                {[
+                  {
+                    step: "01",
+                    title: "diagnose",
+                    body: "we audit channels, identify leaks, and set one clear scorecard.",
+                  },
+                  {
+                    step: "02",
+                    title: "build",
+                    body: "we ship the strategy, content, and conversion assets quickly.",
+                  },
+                  {
+                    step: "03",
+                    title: "scale",
+                    body: "we keep what works, cut what doesn’t, and compound weekly.",
+                  },
+                ].map((item) => (
+                  <div key={item.step} className="flex gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-3.5 dark:border-slate-700/70 dark:bg-slate-950/70">
+                    <span className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-cyan-600 dark:text-cyan-300">
+                      {item.step}
+                    </span>
+                    <div>
+                      <p className="font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardBody>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
+          <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
             <CardBody className="gap-4">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
-                engagement options
+              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
+                quick faq
               </h2>
-              <div className="grid gap-3 text-sm">
-                {[
-                  {
-                    name: "starter sprint",
-                    detail: "one channel, 30-day reset, clear next steps",
-                  },
-                  {
-                    name: "growth partner",
-                    detail: "multi-channel execution for 90-day growth cycles",
-                  },
-                  {
-                    name: "custom scale",
-                    detail: "full-stack strategy for teams ready to push hard",
-                  },
-                ].map((tier) => (
-                  <div
-                    key={tier.name}
-                    className="rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 dark:bg-slate-950/70 dark:border-slate-700/70"
-                  >
-                    <p className="font-semibold text-slate-900 dark:text-slate-100">{tier.name}</p>
-                    <p className="text-slate-600 dark:text-slate-400">{tier.detail}</p>
+              <div className="grid gap-3">
+                {FAQS.map((item) => (
+                  <div key={item.q} className="rounded-2xl border border-slate-200/70 bg-white/80 p-3.5 dark:border-slate-700/70 dark:bg-slate-950/70">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.q}</p>
+                    <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">{item.a}</p>
                   </div>
                 ))}
+              </div>
+            </CardBody>
+          </Card>
+        </motion.section>
+
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.3 }} className="mt-14">
+          <Card className="border border-cyan-200/80 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_18px_48px_rgba(14,165,233,0.33)] dark:border-cyan-300/40">
+            <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-cyan-100">next step</p>
+                <p className="mt-1 font-[family-name:var(--font-space-grotesk)] text-2xl font-bold">
+                  let’s map your first 90-day growth sprint.
+                </p>
               </div>
               <Button
                 as={Link}
                 href="https://wa.me/233556877954"
-                className="w-fit bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100"
+                className="w-fit border border-white/55 bg-white text-slate-900 font-semibold"
               >
-                choose your growth path
+                chat on whatsapp
               </Button>
             </CardBody>
           </Card>
         </motion.section>
-
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
-          className="mt-12 grid gap-6 md:grid-cols-3"
-        >
-          {[
-            {
-              title: "local insight, global quality",
-              body: "ghana-rooted strategy built with world-class creative standards.",
-            },
-            {
-              title: "hands-on team",
-              body: "you work directly with strategists and creators, not endless layers.",
-            },
-            {
-              title: "measurable progress",
-              body: "weekly reporting tied to reach, qualified leads, and conversion quality.",
-            },
-          ].map((item) => (
-            <Card key={item.title} className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
-              <CardBody className="gap-3">
-                <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-slate-900 dark:text-slate-100">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
-              </CardBody>
-            </Card>
-          ))}
-        </motion.section>
-
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45, ease: "easeOut" }}
-          className="mt-12"
-        >
-          <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
-            <CardBody className="gap-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
-                  recent growth wins
-                </h2>
-                <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">proof over promises</Chip>
-              </div>
-
-              <div className="grid gap-5 md:grid-cols-2">
-                <Card className="bg-white/85 border border-slate-200/70 dark:bg-slate-950/70 dark:border-slate-700/70">
-                  <CardBody className="gap-3">
-                    <p className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">campaign sprint</p>
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">organic demand boost</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      content + creator rollout designed to increase top-of-funnel reach and qualified traffic.
-                    </p>
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      <Chip className="bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200">+42% organic reach</Chip>
-                      <Chip className="bg-cyan-100 text-cyan-900 dark:bg-cyan-900/40 dark:text-cyan-200">3x content saves</Chip>
-                    </div>
-                  </CardBody>
-                </Card>
-
-                <Card className="bg-white/85 border border-slate-200/70 dark:bg-slate-950/70 dark:border-slate-700/70">
-                  <CardBody className="gap-3">
-                    <p className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">funnel upgrade</p>
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">higher quality leads</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      messaging, seo intent mapping, and conversion cleanup built around buyer behavior.
-                    </p>
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      <Chip className="bg-violet-100 text-violet-900 dark:bg-violet-900/40 dark:text-violet-200">2.3x lead quality</Chip>
-                      <Chip className="bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">60-day delivery window</Chip>
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            </CardBody>
-          </Card>
-        </motion.section>
-
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex justify-center md:hidden">
-          <Button
-            as={Link}
-            href="https://wa.me/233556877954"
-            className="w-full max-w-md bg-white/20 text-slate-900 border border-white/40 backdrop-blur-xl shadow-[0_12px_40px_rgba(15,23,42,0.18)] dark:bg-slate-900/70 dark:text-slate-100 dark:border-slate-700/80"
-          >
-            chat on WhatsApp
-          </Button>
-        </div>
       </main>
     </div>
   );
 }
+
+
+

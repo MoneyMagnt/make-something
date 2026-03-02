@@ -1,34 +1,55 @@
-"use client";
+﻿"use client";
 
-import { Button, Card, CardBody, Chip, Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Chip,
+  Link,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+} from "@heroui/react";
 import { motion } from "framer-motion";
 
 const SERVICES = [
   {
     title: "seo growth system",
-    summary: "rank for intent-heavy keywords and convert that traffic into revenue.",
+    summary: "rank for high-intent searches and convert that traffic into pipeline.",
     outcomes: ["technical cleanup", "intent mapping", "high-conversion pages"],
     href: "/services/seo",
+    tone: "from-cyan-500 to-blue-500",
   },
   {
     title: "content studio",
-    summary: "build a content engine that drives demand every week.",
-    outcomes: ["campaign concepts", "social + long-form assets", "content performance loop"],
+    summary: "create a publishing rhythm that compounds trust and demand every week.",
+    outcomes: ["campaign concepts", "asset production", "performance loop"],
     href: "/services/content",
+    tone: "from-emerald-500 to-teal-500",
   },
   {
     title: "influencer strategy",
-    summary: "activate creators who move both culture and business metrics.",
-    outcomes: ["creator selection", "offer and narrative design", "launch operations"],
+    summary: "activate creators who move both culture and buying action.",
+    outcomes: ["creator fit checks", "offer design", "launch operations"],
     href: "/services/influencer",
+    tone: "from-indigo-500 to-violet-500",
   },
 ];
 
+const reveal = {
+  initial: { opacity: 0, y: 12 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-70px" },
+  transition: { duration: 0.4, ease: "easeOut" as const },
+};
+
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen relative overflow-x-hidden transition-colors bg-[radial-gradient(1100px_600px_at_10%_-10%,rgba(15,23,42,0.35),transparent),radial-gradient(900px_500px_at_90%_10%,rgba(59,130,246,0.28),transparent)] dark:bg-[radial-gradient(1100px_600px_at_10%_-10%,rgba(30,41,59,0.85),transparent),radial-gradient(900px_500px_at_90%_10%,rgba(37,99,235,0.34),transparent)]">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.22),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(59,130,246,0.16),transparent)] dark:bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(37,99,235,0.22),transparent)]" />
+
       <Navbar className="bg-transparent">
-        <NavbarBrand className="flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
+        <NavbarBrand className="flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
           zyra
           <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">services</Chip>
         </NavbarBrand>
@@ -37,48 +58,39 @@ export default function ServicesPage() {
             as={Link}
             href="/"
             variant="flat"
-            className="bg-white/20 text-slate-900 border border-white/40 dark:bg-slate-900/70 dark:text-slate-100 dark:border-slate-700/80"
+            className="border border-slate-200/80 bg-white/70 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100"
           >
             back home
           </Button>
         </NavbarContent>
       </Navbar>
 
-      <main className="mx-auto max-w-6xl px-6 pb-20 pt-10">
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          className="mb-10"
-        >
-          <h1 className="font-[family-name:var(--font-bricolage)] text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-            choose your growth engine
+      <main className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
+        <motion.section {...reveal} className="mb-10">
+          <h1 className="font-[family-name:var(--font-bricolage)] text-4xl font-extrabold tracking-tight text-slate-950 sm:text-6xl dark:text-slate-100">
+            pick your growth lane
           </h1>
-          <p className="mt-3 max-w-3xl text-lg text-slate-700 dark:text-slate-300">
-            each path is built to drive clear outcomes. pick the lane you want to accelerate first, then we stack from there.
+          <p className="mt-3 max-w-3xl text-base text-slate-700 sm:text-lg dark:text-slate-300">
+            start with one focused channel, prove the outcome, then expand. every service is built to move clear commercial metrics.
           </p>
         </motion.section>
 
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.12, ease: "easeOut" }}
-          className="grid gap-6 md:grid-cols-3"
-        >
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.06 }} className="grid gap-5 md:grid-cols-3">
           {SERVICES.map((service) => (
             <Card
               key={service.title}
-              className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80"
+              className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75"
             >
               <CardBody className="gap-4">
-                <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
+                <div className={`h-1.5 w-16 rounded-full bg-gradient-to-r ${service.tone}`} />
+                <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
                   {service.title}
                 </h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400">{service.summary}</p>
-                <div className="grid gap-2">
+                <div className="grid gap-2 text-sm text-slate-700 dark:text-slate-300">
                   {service.outcomes.map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                      <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" />
+                    <div key={item} className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-slate-300" />
                       <span>{item}</span>
                     </div>
                   ))}
@@ -86,7 +98,7 @@ export default function ServicesPage() {
                 <Button
                   as={Link}
                   href={service.href}
-                  className="w-fit bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100"
+                  className="mt-1 w-fit border border-cyan-300/60 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
                 >
                   open playbook
                 </Button>
@@ -95,22 +107,17 @@ export default function ServicesPage() {
           ))}
         </motion.section>
 
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
-          className="mt-10"
-        >
-          <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.12 }} className="mt-10">
+          <Card className="border border-cyan-200/80 bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_16px_42px_rgba(14,165,233,0.32)] dark:border-cyan-300/40">
             <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm text-slate-600 dark:text-slate-400">not sure which path fits best?</p>
-                <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">book a free growth audit and we’ll map it together.</p>
+                <p className="text-sm text-cyan-100">not sure which one fits first?</p>
+                <p className="text-lg font-semibold">book a free growth audit and we’ll map the right starting lane.</p>
               </div>
               <Button
                 as={Link}
                 href="https://wa.me/233556877954"
-                className="w-fit bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
+                className="w-fit border border-white/55 bg-white text-slate-900 font-semibold"
               >
                 chat on whatsapp
               </Button>
@@ -121,3 +128,5 @@ export default function ServicesPage() {
     </div>
   );
 }
+
+

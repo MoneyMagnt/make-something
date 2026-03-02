@@ -1,20 +1,53 @@
-"use client";
+﻿"use client";
 
-import { Button, Card, CardBody, Chip, Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Chip,
+  Link,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+} from "@heroui/react";
 import { motion } from "framer-motion";
 
 const DELIVERABLES = [
   "monthly campaign concepts with clear messaging hooks",
-  "short-form and long-form content plan",
-  "creative direction and content publishing rhythm",
+  "short-form and long-form content planning",
+  "creative direction and publishing rhythm",
   "weekly performance feedback loop",
 ];
 
+const OUTCOMES = [
+  {
+    title: "higher save and share rates",
+    body: "content becomes useful enough to revisit and pass along.",
+  },
+  {
+    title: "stronger brand recall",
+    body: "a consistent voice and visual language people remember.",
+  },
+  {
+    title: "faster buyer confidence",
+    body: "objections are handled through content before sales calls.",
+  },
+];
+
+const reveal = {
+  initial: { opacity: 0, y: 12 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-70px" },
+  transition: { duration: 0.4, ease: "easeOut" as const },
+};
+
 export default function ContentServicePage() {
   return (
-    <div className="min-h-screen relative overflow-x-hidden transition-colors bg-[radial-gradient(1100px_600px_at_10%_-10%,rgba(15,23,42,0.35),transparent),radial-gradient(900px_500px_at_90%_10%,rgba(16,185,129,0.28),transparent)] dark:bg-[radial-gradient(1100px_600px_at_10%_-10%,rgba(30,41,59,0.85),transparent),radial-gradient(900px_500px_at_90%_10%,rgba(5,150,105,0.28),transparent)]">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(16,185,129,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(20,184,166,0.16),transparent)] dark:bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(16,185,129,0.22),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(13,148,136,0.2),transparent)]" />
+
       <Navbar className="bg-transparent">
-        <NavbarBrand className="flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
+        <NavbarBrand className="flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
           zyra
           <Chip className="bg-emerald-600 text-white">content</Chip>
         </NavbarBrand>
@@ -23,43 +56,33 @@ export default function ContentServicePage() {
             as={Link}
             href="/services"
             variant="flat"
-            className="bg-white/20 text-slate-900 border border-white/40 dark:bg-slate-900/70 dark:text-slate-100 dark:border-slate-700/80"
+            className="border border-slate-200/80 bg-white/70 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100"
           >
             all services
           </Button>
         </NavbarContent>
       </Navbar>
 
-      <main className="mx-auto max-w-5xl px-6 pb-20 pt-10">
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="mb-10"
-        >
-          <h1 className="font-[family-name:var(--font-bricolage)] text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+      <main className="relative mx-auto max-w-5xl px-5 pb-24 pt-10 sm:px-6">
+        <motion.section {...reveal} className="mb-10">
+          <h1 className="font-[family-name:var(--font-bricolage)] text-4xl font-extrabold tracking-tight text-slate-950 sm:text-6xl dark:text-slate-100">
             content studio
           </h1>
-          <p className="mt-3 max-w-3xl text-lg text-slate-700 dark:text-slate-300">
+          <p className="mt-3 max-w-3xl text-base text-slate-700 sm:text-lg dark:text-slate-300">
             we build story-led content systems that make your brand easier to trust and harder to ignore.
           </p>
         </motion.section>
 
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]"
-        >
-          <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.06 }} className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
             <CardBody className="gap-4">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
+              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
                 what you get
               </h2>
-              <div className="grid gap-3">
+              <div className="grid gap-3 text-sm text-slate-700 dark:text-slate-300">
                 {DELIVERABLES.map((item) => (
-                  <div key={item} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <div key={item} className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -67,41 +90,30 @@ export default function ContentServicePage() {
             </CardBody>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
-            <CardBody className="gap-4">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900 dark:text-slate-100">
+          <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
+            <CardBody className="gap-3">
+              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
                 outcomes we target
               </h2>
-              <div className="grid gap-3 text-sm">
-                <div className="rounded-xl border border-slate-200/70 bg-white/70 p-3 dark:bg-slate-950/70 dark:border-slate-700/70">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">higher content saves</p>
-                  <p className="text-slate-600 dark:text-slate-400">make content worth revisiting and sharing</p>
+              {OUTCOMES.map((item) => (
+                <div key={item.title} className="rounded-2xl border border-slate-200/70 bg-white/80 p-3 dark:border-slate-700/70 dark:bg-slate-950/70">
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
                 </div>
-                <div className="rounded-xl border border-slate-200/70 bg-white/70 p-3 dark:bg-slate-950/70 dark:border-slate-700/70">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">stronger brand recall</p>
-                  <p className="text-slate-600 dark:text-slate-400">create a recognizable, consistent voice</p>
-                </div>
-                <div className="rounded-xl border border-slate-200/70 bg-white/70 p-3 dark:bg-slate-950/70 dark:border-slate-700/70">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">faster buyer confidence</p>
-                  <p className="text-slate-600 dark:text-slate-400">answer objections with content before sales calls</p>
-                </div>
-              </div>
+              ))}
             </CardBody>
           </Card>
         </motion.section>
 
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.18, ease: "easeOut" }}
-          className="mt-8"
-        >
-          <Card className="bg-white/80 backdrop-blur border border-slate-200/70 dark:bg-slate-900/70 dark:border-slate-700/80">
+        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.12 }} className="mt-9">
+          <Card className="border border-emerald-200/80 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-[0_16px_42px_rgba(16,185,129,0.32)] dark:border-emerald-300/40">
             <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-slate-700 dark:text-slate-300">
-                need a content engine that compounds weekly?
-              </p>
-              <Button as={Link} href="https://wa.me/233556877954" className="w-fit bg-emerald-600 text-white">
+              <p className="text-base sm:text-lg">want content that compounds every single week?</p>
+              <Button
+                as={Link}
+                href="https://wa.me/233556877954"
+                className="w-fit border border-white/55 bg-white text-slate-900 font-semibold"
+              >
                 plan content sprint
               </Button>
             </CardBody>
@@ -111,3 +123,5 @@ export default function ContentServicePage() {
     </div>
   );
 }
+
+
