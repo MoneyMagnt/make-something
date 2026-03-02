@@ -7,11 +7,11 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: system-ui, sans-serif;
+  --font-sans: var(--font-zyra-manrope), system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-manrope: "Manrope", system-ui, sans-serif;
-  --font-space-grotesk: "Space Grotesk", system-ui, sans-serif;
-  --font-bricolage: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-manrope: var(--font-zyra-manrope), system-ui, sans-serif;
+  --font-space-grotesk: var(--font-zyra-manrope), system-ui, sans-serif;
+  --font-bricolage: var(--font-zyra-manrope), system-ui, sans-serif;
   --font-instrument-serif: "Instrument Serif", Georgia, serif;
 }
 

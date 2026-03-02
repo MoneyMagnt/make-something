@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-export const alt = "makesomething";
+export const alt = "zyra growth studio";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -36,19 +36,35 @@ export default async function OgImage() {
           alt=""
           style={{ display: "flex" }}
         />
-        <div
-          style={{
-            fontFamily: "Manrope",
-            fontSize: 96,
-            fontWeight: 700,
-            color: "#ffffff",
-            letterSpacing: "-0.03em",
-            lineHeight: 1,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          i madesomething :)
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div
+            style={{
+              fontFamily: "Manrope",
+              fontSize: 96,
+              fontWeight: 700,
+              color: "#ffffff",
+              letterSpacing: "-0.03em",
+              lineHeight: 1,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            zyra
+          </div>
+          <div
+            style={{
+              fontFamily: "Manrope",
+              fontSize: 36,
+              fontWeight: 700,
+              color: "#a5f3fc",
+              letterSpacing: "-0.01em",
+              lineHeight: 1.15,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            we build demand systems that turn attention into revenue.
+          </div>
         </div>
       </div>
     ),

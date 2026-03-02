@@ -1,21 +1,29 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-zyra-manrope",
+});
+
 export const metadata: Metadata = {
   title: "zyra",
-  description: "build your first app with ai. look what i made!",
-  metadataBase: new URL("https://makesomething.so"),
+  description: "we build demand systems that turn attention into revenue.",
+  metadataBase: new URL("https://skill-deploy-fazf432rq2.vercel.app"),
   openGraph: {
     title: "zyra",
-    description: "look what i made!",
+    description: "we build demand systems that turn attention into revenue.",
     siteName: "zyra",
   },
   twitter: {
     card: "summary_large_image",
     title: "zyra",
-    description: "look what i made!",
+    description: "we build demand systems that turn attention into revenue.",
   },
 };
 
@@ -64,7 +72,7 @@ export default async function RootLayout({
   const initialTheme = await getInitialThemeClass();
 
   return (
-    <html lang="en" className={initialTheme} suppressHydrationWarning>
+    <html lang="en" className={`${initialTheme} ${manrope.variable}`} suppressHydrationWarning>
       <head>
         <script
           id="theme-boot"
