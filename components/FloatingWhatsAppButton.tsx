@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Button, Link, Tooltip } from "@heroui/react";
 import { motion } from "framer-motion";
@@ -37,7 +37,7 @@ export default function FloatingWhatsAppButton() {
             href="https://wa.me/233556877954"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="chat on whatsapp"
+            aria-label="tap the whatsapp icon to chat"
             radius="full"
             className="h-14 w-14 min-w-14 border border-emerald-300/60 bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-[0_14px_36px_rgba(16,185,129,0.4)] md:hidden"
           >

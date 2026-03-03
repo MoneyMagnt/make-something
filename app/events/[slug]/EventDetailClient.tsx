@@ -2,6 +2,7 @@
 
 import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
+import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import type { EventMeta, TicketItem } from "@/lib/eventsData";
 
 type EventDetailClientProps = {
@@ -37,17 +38,7 @@ export function EventDetailClient({
             ? "from-indigo-900/82 via-violet-800/70 to-slate-950/85 border-violet-300/25"
             : "from-emerald-900/82 via-cyan-900/70 to-slate-950/85 border-cyan-300/25"
         }`}
-        brand={
-          <div className="flex items-center gap-2.5 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-            <span>zyra</span>
-            <Image
-              removeWrapper
-              alt="233 events logo"
-              src="/233-events-logo.png"
-              className="h-8 w-auto drop-shadow-[0_4px_10px_rgba(15,23,42,0.35)]"
-            />
-          </div>
-        }
+        brand={<ZyraBrandMark />}
       />
 
       <main className="relative z-10 mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6">
