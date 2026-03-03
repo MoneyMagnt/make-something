@@ -3,10 +3,10 @@
 import {
   Card,
   CardBody,
-  Chip,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
+import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 
 const SERVICES = [
   {
@@ -43,12 +43,7 @@ export default function ServicesPage() {
 
       <ZyraSiteNav
         active="services"
-        brand={
-          <>
-            <span>zyra</span>
-            <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">services</Chip>
-          </>
-        }
+        brand={<ZyraBrandMark />}
       />
 
       <main className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
@@ -93,7 +88,8 @@ export default function ServicesPage() {
                 <p className="text-sm text-cyan-100 dark:text-cyan-50">not sure which one fits first?</p>
                 <p className="text-lg font-semibold">we’ll map the right starting lane for your brand.</p>
               </div>
-              <p className="text-sm text-cyan-50/95">tap chat on whatsapp</p>
+              <p className="text-sm text-cyan-50/95 sm:hidden">tap the whatsapp icon to chat</p>
+              <p className="hidden text-sm text-cyan-50/95 sm:block">click chat on whatsapp</p>
             </CardBody>
           </Card>
         </motion.section>

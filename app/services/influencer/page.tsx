@@ -3,10 +3,10 @@
 import {
   Card,
   CardBody,
-  Chip,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
+import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 
 const DELIVERABLES = [
   "creator shortlist based on audience fit and brand tone",
@@ -44,12 +44,7 @@ export default function InfluencerServicePage() {
 
       <ZyraSiteNav
         active="services"
-        brand={
-          <>
-            <span>zyra</span>
-            <Chip className="bg-violet-600 text-white">influencer</Chip>
-          </>
-        }
+        brand={<ZyraBrandMark />}
       />
 
       <main className="relative mx-auto max-w-5xl px-5 pb-24 pt-10 sm:px-6">
@@ -98,9 +93,8 @@ export default function InfluencerServicePage() {
           <Card className="border border-violet-200/80 bg-gradient-to-r from-indigo-500 via-violet-500 to-violet-600 text-white shadow-[0_16px_42px_rgba(99,102,241,0.32)] dark:border-violet-200/25 dark:bg-[linear-gradient(118deg,rgba(30,27,75,0.98)_0%,rgba(67,56,202,0.96)_56%,rgba(91,33,182,0.98)_100%)] dark:shadow-[0_22px_62px_rgba(99,102,241,0.34)]">
             <CardBody className="gap-2">
               <p className="text-base sm:text-lg">ready to launch creator campaigns that convert?</p>
-              <p className="text-sm text-violet-50/95">
-                tap chat on whatsapp
-              </p>
+              <p className="text-sm text-violet-50/95 sm:hidden">tap the whatsapp icon to chat</p>
+              <p className="hidden text-sm text-violet-50/95 sm:block">click chat on whatsapp</p>
             </CardBody>
           </Card>
         </motion.section>

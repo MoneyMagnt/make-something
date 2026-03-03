@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from "react";
 import Script from "next/script";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
+import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import {
   DEFAULT_EVENT_TICKETS,
   EVENTS,
@@ -265,19 +266,7 @@ export default function EventsPage() {
       <ZyraSiteNav
         active="events"
         navbarClassName={`border-b bg-gradient-to-r backdrop-blur-lg ${navToneClass}`}
-        brand={
-          <div className="flex items-center gap-2.5 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-            <span>{state.brandName}</span>
-            <span className="rounded-full border border-transparent bg-transparent px-0 py-0 shadow-none">
-              <Image
-                removeWrapper
-                alt="233 events logo"
-                src="/233-events-logo.png"
-                className="h-8 w-auto drop-shadow-[0_4px_10px_rgba(15,23,42,0.35)]"
-              />
-            </span>
-          </div>
-        }
+        brand={<ZyraBrandMark />}
       />
 
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">

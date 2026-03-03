@@ -104,14 +104,14 @@ export function ZyraSiteNav({
       <Navbar
         className={joinClasses(
           navbarClassName,
-          "!fixed left-0 right-0 !top-0 w-full z-30 border-b border-white/30 bg-white/20 backdrop-blur-2xl max-sm:border-white/10 max-sm:bg-slate-950/92 dark:border-slate-700/55 dark:bg-slate-900/30"
+          "!fixed left-0 right-0 !top-0 z-30 h-[4.6rem] w-full border-b border-white/30 bg-white/20 px-2.5 backdrop-blur-2xl max-sm:border-slate-200/75 max-sm:bg-white/92 min-[430px]:h-[4.85rem] min-[430px]:px-3.5 sm:h-[4.8rem] sm:px-4 dark:border-slate-700/55 dark:bg-slate-900/30 dark:max-sm:border-slate-700/75 dark:max-sm:bg-slate-950/94"
         )}
       >
-        <NavbarBrand className="px-1 py-1">
+        <NavbarBrand className="min-w-0 flex-1 px-0.5 py-1 pr-1 min-[430px]:px-1 sm:flex-none">
           <NextLink
             href="/"
             className={joinClasses(
-              "inline-flex items-center gap-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 no-underline max-sm:text-slate-100 dark:text-slate-100",
+              "inline-flex max-w-[calc(100vw-10.6rem)] items-center gap-1.5 overflow-hidden font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 no-underline min-[430px]:max-w-[calc(100vw-11.4rem)] min-[430px]:gap-2 max-sm:text-slate-900 sm:max-w-none dark:text-slate-100 dark:max-sm:text-slate-100",
               brandClassName
             )}
           >
@@ -145,9 +145,9 @@ export function ZyraSiteNav({
           ))}
         </NavbarContent>
 
-        <NavbarContent justify="end" className="sm:hidden">
-          <div className="flex items-center gap-2.5">
-            <div className="rounded-full border border-white/20 bg-white/12 px-2.5 py-1.5 backdrop-blur-xl">
+        <NavbarContent justify="end" className="shrink-0 sm:hidden">
+          <div className="flex items-center gap-1.5 min-[430px]:gap-2">
+            <div className="flex h-10 items-center rounded-full border border-slate-300/70 bg-white/78 px-2 py-1.5 backdrop-blur-xl min-[430px]:h-10 min-[430px]:px-2.5 dark:border-white/20 dark:bg-white/12">
               <Switch
                 size="sm"
                 isSelected={theme === "dark"}
@@ -157,17 +157,17 @@ export function ZyraSiteNav({
             </div>
             <Button
               type="button"
-              className="h-11 min-w-11 border border-white/20 bg-white/12 px-0 text-white backdrop-blur-xl"
+              className="h-10 min-w-10 border border-slate-300/70 bg-white/78 px-0 text-slate-800 backdrop-blur-xl min-[430px]:h-10 min-[430px]:min-w-10 dark:border-white/20 dark:bg-white/12 dark:text-white"
               aria-label="open navigation menu"
               aria-haspopup="menu"
               aria-expanded={isMobileMenuOpen}
               aria-controls="zyra-mobile-menu"
               onPress={() => setIsMobileMenuOpen((open) => !open)}
             >
-              <span className="inline-flex flex-col gap-1">
-                <span className="block h-[2.5px] w-5 rounded-full bg-current" />
-                <span className="block h-[2.5px] w-5 rounded-full bg-current" />
-                <span className="block h-[2.5px] w-5 rounded-full bg-current" />
+              <span className="inline-flex flex-col gap-[4px]">
+                <span className="block h-[2.25px] w-[1.125rem] rounded-full bg-current min-[430px]:w-5" />
+                <span className="block h-[2.25px] w-[1.125rem] rounded-full bg-current min-[430px]:w-5" />
+                <span className="block h-[2.25px] w-[1.125rem] rounded-full bg-current min-[430px]:w-5" />
               </span>
             </Button>
           </div>
@@ -188,7 +188,7 @@ export function ZyraSiteNav({
                 id="zyra-mobile-menu"
                 role="menu"
                 aria-label="mobile navigation"
-                className="fixed inset-x-3 top-[4.8rem] z-[11001] mx-auto w-[min(92vw,21.5rem)] overflow-hidden rounded-3xl border border-white/65 bg-white/96 shadow-[0_24px_60px_rgba(2,6,23,0.28)] backdrop-blur-xl dark:border-slate-700/75 dark:bg-slate-900/96"
+                className="fixed inset-x-3 top-[4.6rem] z-[11001] mx-auto w-[min(92vw,21.5rem)] overflow-hidden rounded-3xl border border-white/65 bg-white/96 shadow-[0_24px_60px_rgba(2,6,23,0.28)] backdrop-blur-xl min-[430px]:top-[4.85rem] dark:border-slate-700/75 dark:bg-slate-900/96"
               >
                 <div className="flex items-center justify-between border-b border-slate-200/70 bg-gradient-to-r from-cyan-50/90 to-blue-50/80 px-4 py-3 dark:border-slate-700/70 dark:from-cyan-900/20 dark:to-blue-900/10">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
@@ -234,7 +234,7 @@ export function ZyraSiteNav({
           )
         : null}
 
-      <div aria-hidden className="h-[4.8rem]" />
+      <div aria-hidden className="h-[4.6rem] min-[430px]:h-[4.85rem] sm:h-[4.8rem]" />
     </>
   );
 }
