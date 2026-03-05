@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import {
+  Button,
   Card,
   CardBody,
   Link,
@@ -11,6 +12,11 @@ import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
 import { LOCATION_SERVICE_PAGES } from "@/lib/locationServicePages";
 import { SITE_URL } from "@/lib/site";
+
+const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
+const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
+  "hi zyra, i want to book a growth audit."
+)}`;
 
 const SERVICES = [
   {
@@ -69,6 +75,12 @@ const RESULTS_FOCUS = [
   },
 ];
 
+const SERVICES_PROOF = [
+  { label: "contacts in database", value: "7300+" },
+  { label: "avg kickoff window", value: "7 days" },
+  { label: "reporting rhythm", value: "weekly" },
+];
+
 const servicesJsonLd = JSON.stringify([
   {
     "@context": "https://schema.org",
@@ -117,9 +129,36 @@ export default function ServicesPage() {
           <p className="mt-3 max-w-3xl text-base text-slate-700 sm:text-lg dark:text-slate-300">
             start with one lane, then plug into our ai content, activation, and analytics system to scale what works.
           </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Button
+              as={Link}
+              href={GROWTH_AUDIT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-slate-900 px-6 font-semibold text-white dark:bg-slate-100 dark:text-slate-900"
+            >
+              book growth audit
+            </Button>
+            <Button
+              as={Link}
+              href="#service-lanes"
+              variant="bordered"
+              className="border-slate-300 bg-white/70 px-6 font-semibold text-slate-900 dark:border-slate-600 dark:bg-slate-900/60 dark:text-slate-100"
+            >
+              view lanes
+            </Button>
+          </div>
+          <div className="mt-4 grid max-w-3xl gap-2 sm:grid-cols-3">
+            {SERVICES_PROOF.map((item) => (
+              <div key={item.label} className="rounded-xl border border-slate-200/70 bg-white/80 px-3 py-2 dark:border-slate-700/70 dark:bg-slate-950/70">
+                <p className="font-[family-name:var(--font-space-grotesk)] text-base font-bold text-slate-900 dark:text-slate-100">{item.value}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400">{item.label}</p>
+              </div>
+            ))}
+          </div>
         </motion.section>
 
-        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.06 }} className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <motion.section id="service-lanes" {...reveal} transition={{ ...reveal.transition, delay: 0.06 }} className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {SERVICES.map((service) => (
             <Card
               key={service.title}

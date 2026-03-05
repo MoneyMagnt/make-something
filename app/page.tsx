@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import {
+  Button,
   Card,
   CardBody,
   Chip,
@@ -11,6 +12,11 @@ import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+
+const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
+const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
+  "hi zyra, i want to book a growth audit."
+)}`;
 
 const SERVICES = [
   {
@@ -62,6 +68,12 @@ const STATS = [
   { label: "events produced", value: "25+" },
   { label: "attendees reached", value: "7000+" },
   { label: "contacts in database (growing)", value: "7300+" },
+  { label: "avg kickoff window", value: "7 days" },
+  { label: "reporting rhythm", value: "weekly" },
+];
+
+const ABOVE_FOLD_PROOF = [
+  { label: "contacts in database", value: "7300+" },
   { label: "avg kickoff window", value: "7 days" },
   { label: "reporting rhythm", value: "weekly" },
 ];
@@ -186,7 +198,33 @@ export default function Home() {
             <p className="max-w-2xl text-base text-slate-700 sm:text-lg dark:text-slate-300">
               zyra combines seo, ai-assisted content creation, influencer campaigns, founder website sprints, sms activation, and weekly analytics so growth is faster, cleaner, and measurable.
             </p>
-
+            <div className="flex flex-wrap gap-3">
+              <Button
+                as={Link}
+                href={GROWTH_AUDIT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-slate-900 px-6 font-semibold text-white dark:bg-slate-100 dark:text-slate-900"
+              >
+                book growth audit
+              </Button>
+              <Button
+                as={Link}
+                href="#proof"
+                variant="bordered"
+                className="border-slate-300 bg-white/70 px-6 font-semibold text-slate-900 dark:border-slate-600 dark:bg-slate-900/60 dark:text-slate-100"
+              >
+                see proof
+              </Button>
+            </div>
+            <div className="grid max-w-2xl gap-2 sm:grid-cols-3">
+              {ABOVE_FOLD_PROOF.map((item) => (
+                <div key={item.label} className="rounded-xl border border-slate-200/70 bg-white/80 px-3 py-2 dark:border-slate-700/70 dark:bg-slate-950/70">
+                  <p className="font-[family-name:var(--font-space-grotesk)] text-base font-bold text-slate-900 dark:text-slate-100">{item.value}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">{item.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
