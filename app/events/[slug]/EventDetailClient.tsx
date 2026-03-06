@@ -412,7 +412,7 @@ export function EventDetailClient({
             </p>
           </div>
 
-          {eventControl.passesEnabled ? (
+          {eventControl.passesEnabled && !showVenusPassGuide ? (
             <div className="rounded-2xl bg-white/62 p-4 backdrop-blur-lg dark:bg-slate-900/60">
               <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">free pass window</p>
               <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">free pass up to {eventControl.passLimit}</p>
@@ -426,9 +426,10 @@ export function EventDetailClient({
                 <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-100">
                   how to get your VENUS pass
                 </p>
-                <Chip className="bg-emerald-700 text-white dark:bg-emerald-600">
-                  3 quick steps
-                </Chip>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Chip className="bg-emerald-700 text-white dark:bg-emerald-600">3 quick steps</Chip>
+                  <Chip className="bg-slate-900 text-white dark:bg-slate-700">{passesLeft} passes left</Chip>
+                </div>
               </div>
               <div className="mt-3 grid gap-2 text-sm text-emerald-900 dark:text-emerald-100">
                 <p>1. tap <span className="font-semibold">get free pass now</span>.</p>
@@ -461,14 +462,6 @@ export function EventDetailClient({
                     pass window closed, buy ticket
                   </Button>
                 )}
-                <Button
-                  as={Link}
-                  href="#pass-flow"
-                  variant="bordered"
-                  className="border-emerald-500/50 bg-white/75 text-emerald-900 dark:border-emerald-400/50 dark:bg-slate-900/70 dark:text-emerald-100"
-                >
-                  see pass section
-                </Button>
               </div>
             </div>
           ) : null}
@@ -541,11 +534,6 @@ export function EventDetailClient({
                   tickets
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
-                  {hasLivePassWindow ? (
-                    <Chip className="bg-emerald-700 text-white dark:bg-emerald-600">
-                      free pass available
-                    </Chip>
-                  ) : null}
                   <Chip className="bg-slate-900 text-white dark:bg-slate-700">
                     {eventControl.liveTicketCount} tickets live
                   </Chip>
@@ -598,17 +586,13 @@ export function EventDetailClient({
                 </div>
 
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                  free pass flow
+                  pass action
                 </h2>
                 <Chip className="w-fit bg-slate-900 text-white dark:bg-slate-700">{passesLeft} passes left</Chip>
                 <div className="grid gap-3">
-                  <p className="text-sm text-slate-600 dark:text-slate-300">follow these steps:</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">1. tap the pass button below.</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">2. select the VENUS free-pass option on egotickets.</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">3. complete details and save your confirmation.</p>
-                  <Chip className="w-fit bg-slate-900 text-white dark:bg-slate-700">
-                    event: {event.name.toLowerCase()}
-                  </Chip>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    pass claims run on egotickets. use this button if you skipped the step above.
+                  </p>
                   {hasLivePassWindow && hasEgoticketsPassLink ? (
                     <Button
                       as={Link}
@@ -620,7 +604,7 @@ export function EventDetailClient({
                         trackFeature("ticket_click");
                       }}
                     >
-                      get free pass on egotickets
+                      get free pass now
                     </Button>
                   ) : (
                     <Button
