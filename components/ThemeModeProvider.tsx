@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 
-type ThemeMode = "light" | "dark";
+export type ThemeMode = "light" | "dark";
 
 type ThemeModeContextValue = {
   theme: ThemeMode;
@@ -49,9 +49,15 @@ function persistTheme(theme: ThemeMode) {
   document.cookie = `${STORAGE_KEY}=${theme}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
 }
 
-export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeModeProvider({
+  children,
+  initialTheme,
+}: {
+  children: React.ReactNode;
+  initialTheme: ThemeMode;
+}) {
   const pathname = usePathname();
-  const [theme, setThemeState] = useState<ThemeMode>(getPreferredTheme);
+  const [theme, setThemeState] = useState<ThemeMode>(initialTheme);
 
   const setTheme = (nextTheme: ThemeMode) => {
     applyTheme(nextTheme);
@@ -67,6 +73,10 @@ export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     applyTheme(theme);
   }, [pathname, theme]);
+
+  useEffect(() => {
+    setThemeState(getPreferredTheme());
+  }, []);
 
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {

@@ -7,6 +7,7 @@ export type EventMeta = {
   day: string;
   month: string;
   dateLabel: string;
+  timeLabel: string;
   startDateIso?: string;
   venue: string;
   city: string;
@@ -16,6 +17,7 @@ export type EventMeta = {
   auraB: string;
   fallbackPrice: string;
   description: string;
+  egoticketsEventUrl?: string;
 };
 
 export type TicketItem = {
@@ -32,6 +34,7 @@ export const EVENTS: EventMeta[] = [
     day: "SOON",
     month: "COMING",
     dateLabel: "Coming soon",
+    timeLabel: "timing drops soon",
     venue: "Laboma Beach Front",
     city: "Labadi Beach, Accra",
     logo: "/Weoutside.logo.org2.png",
@@ -48,6 +51,7 @@ export const EVENTS: EventMeta[] = [
     day: "27",
     month: "MAR",
     dateLabel: "27 March 2026",
+    timeLabel: "8pm till late",
     startDateIso: "2026-03-27T20:00:00+00:00",
     venue: "Glass Lounge",
     city: "Accra",
@@ -75,4 +79,3 @@ export const VENUS_POST_PASS_PRICE = "GHS 50";
 export function getEventBySlug(slug: string): EventMeta | undefined {
   return EVENTS.find((event) => event.slug === slug);
 }
-

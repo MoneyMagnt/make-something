@@ -5,14 +5,20 @@ import { useRouter } from "next/navigation";
 import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton";
 import FloatingProgressOverlay from "@/components/FloatingProgressOverlay";
 import ThemeToggle from "@/components/ThemeToggle";
-import { ThemeModeProvider } from "@/components/ThemeModeProvider";
+import { ThemeModeProvider, type ThemeMode } from "@/components/ThemeModeProvider";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  initialTheme,
+}: {
+  children: React.ReactNode;
+  initialTheme: ThemeMode;
+}) {
   const router = useRouter();
 
   return (
     <HeroUIProvider navigate={router.push}>
-      <ThemeModeProvider>
+      <ThemeModeProvider initialTheme={initialTheme}>
         {children}
         <ThemeToggle />
         <FloatingWhatsAppButton />

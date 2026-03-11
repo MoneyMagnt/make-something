@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const manrope = localFont({
+  src: "./fonts/Manrope-Bold.ttf",
   display: "swap",
   variable: "--font-zyra-manrope",
 });
@@ -81,7 +80,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen overflow-x-clip bg-background text-foreground font-sans antialiased">
-        <Providers>{children}</Providers>
+        <Providers initialTheme={initialTheme}>{children}</Providers>
       </body>
     </html>
   );
