@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 import { Providers } from "./providers";
 
 const manrope = localFont({
@@ -14,7 +15,7 @@ const manrope = localFont({
 export const metadata: Metadata = {
   title: "zyra",
   description: "we build demand systems that turn attention into revenue.",
-  metadataBase: new URL("https://skill-deploy-fazf432rq2.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "zyra",
     description: "we build demand systems that turn attention into revenue.",
