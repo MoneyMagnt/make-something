@@ -17,6 +17,7 @@
     "@aws-sdk/s3-request-presigner": "^3.1006.0",
     "@heroui/react": "^2.8.9",
     "@mux/mux-player-react": "^3.11.5",
+    "@vercel/analytics": "^1.6.1",
     "@vercel/blob": "^2.3.1",
     "framer-motion": "^12.34.3",
     "next": "16.1.6",

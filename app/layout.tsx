@@ -1,6 +1,7 @@
 ﻿import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -69,6 +70,7 @@ export default async function RootLayout({
       </head>
       <body className="min-h-screen overflow-x-clip bg-background text-foreground font-sans antialiased">
         <Providers initialTheme={initialTheme}>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
