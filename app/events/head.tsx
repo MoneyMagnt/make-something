@@ -4,7 +4,7 @@ const title = "xeno the rev hosts venus | free passes live";
 const description =
   "free pass access is live before standard entry starts. tap for lineup, venue, and access.";
 const url = `${SITE_URL}/events`;
-const image = `${SITE_URL}/events/opengraph-image?v=20260312c`;
+const image = `${SITE_URL}/events/opengraph-image?v=20260312d`;
 
 export default function Head() {
   return (
@@ -28,3 +28,4 @@ export default function Head() {
     </>
   );
 }
+

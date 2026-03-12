@@ -75,7 +75,7 @@ export default async function EventsOgImage() {
                   boxShadow: "0 0 18px rgba(34,211,238,0.7)",
                 }}
               />
-              free passes live
+              tickets live
             </div>
             <div
               style={{
@@ -100,15 +100,15 @@ export default async function EventsOgImage() {
               height={190}
               style={{ objectFit: "contain", objectPosition: "left center" }}
             />
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 820 }}>
-              <div style={{ fontSize: 58, lineHeight: 1.02, fontWeight: 700 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 760 }}>
+              <div style={{ fontSize: 30, letterSpacing: 2.4, textTransform: "uppercase", color: "rgba(255,255,255,0.7)" }}>
+                nightlife experience by zyra
+              </div>
+              <div style={{ fontSize: 56, lineHeight: 1.04, fontWeight: 700 }}>
                 xeno the rev hosts venus
               </div>
-              <div style={{ fontSize: 30, color: "rgba(255,255,255,0.82)" }}>
+              <div style={{ fontSize: 28, color: "rgba(255,255,255,0.78)" }}>
                 free pass access is live before standard entry starts
-              </div>
-              <div style={{ fontSize: 24, color: "#67e8f9", letterSpacing: 1.8, textTransform: "uppercase" }}>
-                tap for lineup, venue, and access
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default async function EventsOgImage() {
                 glass lounge
               </div>
               <div style={{ fontSize: 24, color: "rgba(255,255,255,0.86)" }}>
-                host, mcs, djs, and event actions in one link
+                tap for lineup, venue, and access
               </div>
             </div>
             <div style={{ fontSize: 24, color: "#67e8f9", fontWeight: 700 }}>
