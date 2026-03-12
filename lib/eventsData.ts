@@ -76,7 +76,7 @@ export const EVENTS: EventMeta[] = [
       {
         role: "host",
         name: "Xeno The Rev",
-        image: "/lineup/xeno-the-rev.jpg",
+        image: "/lineup/xeno-the-rev-20260312.jpeg",
         socialUrl: "https://snapchat.com/t/yocjSfV6",
       },
       {
@@ -136,4 +136,5 @@ export const VENUS_POST_PASS_PRICE = "GHS 50";
 export function getEventBySlug(slug: string): EventMeta | undefined {
   return EVENTS.find((event) => event.slug === slug);
 }
+
 

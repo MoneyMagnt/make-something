@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EventDetailClient } from "./EventDetailClient";
 import {
@@ -44,13 +44,13 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
       title,
       description,
       siteName: SITE_NAME,
-      images: [{ url: `${SITE_URL}/opengraph-image` }],
+      images: [{ url: `${SITE_URL}${event.logo}` }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [`${SITE_URL}/opengraph-image`],
+      images: [`${SITE_URL}${event.logo}`],
     },
   };
 }
@@ -115,4 +115,5 @@ export default async function EventDetailPage({ params }: EventPageProps) {
     </>
   );
 }
+
 

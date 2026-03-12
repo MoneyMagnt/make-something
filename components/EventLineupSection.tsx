@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
+import Image from "next/image";
 import { useRef } from "react";
 import type { EventLineupMember } from "@/lib/eventsData";
 
@@ -153,11 +154,7 @@ export function EventLineupSection({
                   <Card className="min-h-full overflow-hidden border border-slate-200/85 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:border-cyan-300 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-slate-700/55 dark:bg-slate-950/70 dark:group-hover:border-cyan-500/45">
                     <div className="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-slate-900">
                       {member.image ? (
-                        <img
-                          src={member.image}
-                          alt={member.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
+                        <Image src={member.image} alt={member.name} fill sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                       ) : (
                         <div
                           className={`flex h-full w-full items-end bg-gradient-to-br ${getLineupTone(member.role)} p-5`}
@@ -218,6 +215,8 @@ export function EventLineupSection({
     </section>
   );
 }
+
+
 
 
 

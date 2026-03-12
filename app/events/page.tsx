@@ -1,8 +1,7 @@
 ﻿"use client";
 
 import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
-import MuxPlayer from "@mux/mux-player-react";
-import { upload } from "@vercel/blob/client";
+import dynamic from "next/dynamic";
 import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 import { EventLineupSection } from "@/components/EventLineupSection";
@@ -18,6 +17,10 @@ import {
   type EventPublicSnapshot,
 } from "@/lib/eventOps";
 import { SITE_URL } from "@/lib/site";
+
+const MuxPlayer = dynamic(() => import("@mux/mux-player-react"), {
+  ssr: false,
+});
 
 const FAN_CAM_REFRESH_MS = 60000;
 const MUX_POLL_MS = 3000;
@@ -280,6 +283,8 @@ const uploadFileToFanCamStorage = async (input: {
   } catch {
     // Continue to legacy fallback below.
   }
+
+  const { upload } = await import("@vercel/blob/client");
 
   const uploaded = await upload(input.fallbackPath, input.file, {
     access: "public",
@@ -1114,6 +1119,8 @@ export default function EventsPage() {
     </div>
   );
 }
+
+
 
 
 

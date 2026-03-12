@@ -1,12 +1,9 @@
-﻿"use client";
-
-import ZyraHomeDesktop from "@/components/ZyraHomeDesktop";
+﻿import ZyraHomeDesktop from "@/components/ZyraHomeDesktop";
 import ZyraHomeMobile from "@/components/ZyraHomeMobile";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
-import { useScreenProfile } from "@/lib/useScreenProfile";
 
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
@@ -187,7 +184,6 @@ const homeJsonLd = JSON.stringify([
 ]);
 
 export default function Home() {
-  const screenProfile = useScreenProfile();
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -196,11 +192,10 @@ export default function Home() {
 
       <ZyraSiteNav active="home" brand={<ZyraBrandMark />} />
 
-      <main data-screen={screenProfile ?? "detecting"} className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
+      <main className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
         <div className="lg:hidden">
           <ZyraHomeMobile
             growthAuditUrl={GROWTH_AUDIT_URL}
-            screenProfile={screenProfile}
             stats={STATS}
             aboveFoldProof={ABOVE_FOLD_PROOF}
             whyZyra={WHY_ZYRA}
@@ -231,4 +226,6 @@ export default function Home() {
     </div>
   );
 }
+
+
 

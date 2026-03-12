@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
 import { motion } from "framer-motion";
@@ -8,7 +8,6 @@ import {
   BRAND_SIGNAL_STRIPS,
   getServiceVisual,
 } from "@/lib/brandVisuals";
-import type { ScreenProfile } from "@/lib/useScreenProfile";
 
 type StatItem = {
   label: string;
@@ -48,7 +47,6 @@ type FaqItem = {
 
 type ZyraHomeMobileProps = {
   growthAuditUrl: string;
-  screenProfile: ScreenProfile | null;
   stats: StatItem[];
   aboveFoldProof: StatItem[];
   whyZyra: string[];
@@ -66,17 +64,9 @@ const reveal = {
   transition: { duration: 0.45, ease: "easeOut" as const },
 };
 
-function getCtaHint(screenProfile: ScreenProfile | null) {
-  if (screenProfile === "tablet") {
-    return "click chat on whatsapp to book your growth audit";
-  }
-
-  return "tap chat on whatsapp to book your growth audit";
-}
 
 export default function ZyraHomeMobile({
   growthAuditUrl,
-  screenProfile,
   stats,
   aboveFoldProof,
   whyZyra,
@@ -381,7 +371,7 @@ export default function ZyraHomeMobile({
               <p className="mt-3 font-[family-name:var(--font-instrument-serif)] text-3xl text-white">
                 book the audit and we map the first lane worth shipping.
               </p>
-              <p className="mt-3 text-sm leading-7 text-white/80">{getCtaHint(screenProfile)}</p>
+              <p className="mt-3 text-sm leading-7 text-white/80">chat on whatsapp to book your growth audit</p>
             </div>
             <div className="relative z-10">
               <Button
@@ -400,3 +390,4 @@ export default function ZyraHomeMobile({
     </>
   );
 }
+
