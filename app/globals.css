@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @plugin '../hero.ts';
 
@@ -23,6 +23,14 @@
   color-scheme: dark;
 }
 
+html {
+  background-color: #f8fafc;
+}
+
+html.dark {
+  background-color: #020617;
+}
+
 html,
 body {
   max-width: 100%;
@@ -32,12 +40,19 @@ body {
 body {
   margin: 0;
   overflow-y: auto;
-  transition: background-color 220ms ease, color 220ms ease;
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
 .dark body {
   background-color: #020617;
   color: #e2e8f0;
+}
+
+html[data-theme-ready="false"] *,
+html[data-theme-ready="false"] *::before,
+html[data-theme-ready="false"] *::after {
+  transition: none !important;
 }
 
 .dark .text-slate-900 {

@@ -1,184 +1,846 @@
-"use client";
+﻿"use client";
 
-import {
-  Button,
-  Card,
-  CardBody,
-  Chip,
-  Image,
-  Input,
-  Link,
-  Textarea,
-} from "@heroui/react";
-import { useEffect, useMemo, useState } from "react";
-import Script from "next/script";
+import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
+import MuxPlayer from "@mux/mux-player-react";
+import { upload } from "@vercel/blob/client";
+import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
+import { EventLineupSection } from "@/components/EventLineupSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
+import { DEFAULT_EVENT_TICKETS, EVENTS } from "@/lib/eventsData";
+import type { EventMeta, EventName } from "@/lib/eventsData";
 import {
-  DEFAULT_EVENT_TICKETS,
-  EVENTS,
-  VENUS_FREE_PASS_LIMIT,
-  VENUS_POST_PASS_PRICE,
-} from "@/lib/eventsData";
-import type { EventMeta, EventName, TicketItem } from "@/lib/eventsData";
+  EVENT_CONTROL_DEFAULTS,
+  EVENT_TRACK_SESSION_KEY,
+  type EventControl,
+  type EventFeatureKey,
+  type EventPublicSnapshot,
+} from "@/lib/eventOps";
 import { SITE_URL } from "@/lib/site";
 
-const STORAGE_KEY = "zyra_admin_state_v1";
-const VISITOR_COUNT_KEY = "zyra_visitor_count_v1";
-const VISITOR_SESSION_KEY = "zyra_visitor_counted_v1";
+const FAN_CAM_REFRESH_MS = 60000;
+const MUX_POLL_MS = 3000;
+const MUX_MAX_POLL_ATTEMPTS = 80;
+const ACTIVE_EVENT_STORAGE_KEY = "zyra_events_active_event_v1";
+const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
+const isDocumentVisible = () =>
+  typeof document === "undefined" || document.visibilityState === "visible";
 
-type PassItem = {
+type FanCamMomentStatus = "ready" | "processing" | "failed";
+
+type FanCamMoment = {
   id: string;
+  event: EventName;
+  kind: "image" | "video";
   name: string;
-  email: string;
-  phone: string;
-  event: string;
-};
-type VideoItem = { id: string; title: string; url: string };
-type PhotoItem = { id: string; caption: string; url: string };
-type ReservationItem = {
-  id: string;
-  name: string;
-  phone: string;
-  event: string;
-  notes: string;
+  createdAt: number;
+  status: FanCamMomentStatus;
+  src?: string;
+  playbackId?: string;
+  muxUploadId?: string;
 };
 
-type AdminState = {
-  brandName: string;
-  headline: string;
-  subhead: string;
-  primary: string;
-  secondary: string;
-  passLimit: number;
-  tickets: TicketItem[];
-  passes: PassItem[];
-  videos: VideoItem[];
-  photos: PhotoItem[];
-  reservations: ReservationItem[];
+type FanCamListResponse = {
+  items?: unknown;
 };
 
-const defaultState: AdminState = {
-  brandName: "zyra",
-  headline: "legendary moments",
-  subhead: "book tickets, reserve tables, and pull up with your people",
-  primary: "#2563eb",
-  secondary: "#7c3aed",
-  passLimit: 200,
-  tickets: [],
-  passes: [],
-  videos: [],
-  photos: [],
-  reservations: [],
+type FanCamCreateResponse = {
+  item?: unknown;
+  editToken?: string;
 };
 
-const makeId = () => Math.random().toString(36).slice(2, 10);
-
-const loadInitialState = (): AdminState => {
-  if (typeof window === "undefined") {
-    return defaultState;
-  }
-
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) {
-    return defaultState;
-  }
-
-  try {
-    const parsed = JSON.parse(saved) as Partial<AdminState>;
-    return { ...defaultState, ...parsed };
-  } catch {
-    return defaultState;
-  }
+type FanCamS3UploadTargetResponse = {
+  uploadUrl?: string;
+  publicUrl?: string;
 };
 
-function EventBrandName({
-  event,
-  size = "md",
-}: {
-  event: EventMeta;
-  size?: "sm" | "md" | "lg";
-}) {
-  const imageSize =
-    size === "sm" ? "h-6" : size === "lg" ? "h-10" : "h-8";
-  const textSize =
-    size === "sm" ? "text-sm" : size === "lg" ? "text-xl" : "text-base";
+type MuxUploadStatusResponse = {
+  uploadStatus?: string;
+  assetStatus?: string | null;
+  playbackId?: string | null;
+  errorMessage?: string | null;
+};
 
+function EventBrandName({ event, selected = false }: { event: EventMeta; selected?: boolean }) {
   return (
-    <span className="inline-flex items-center gap-2">
-      <Image removeWrapper alt={`${event.name} logo`} src={event.logo} className={`${imageSize} w-auto`} />
-      <span className={`font-[family-name:var(--font-space-grotesk)] font-bold ${textSize}`}>{event.name}</span>
+    <span className="inline-flex items-center gap-2.5">
+      <Image removeWrapper alt={`${event.name} logo`} src={event.logo} className={`h-8 w-auto ${selected ? "drop-shadow-[0_8px_18px_rgba(255,255,255,0.16)]" : ""}`} />
+      <span className={`font-[family-name:var(--font-space-grotesk)] text-base font-bold sm:text-lg ${selected ? "text-slate-950 dark:text-white" : "text-slate-900 dark:text-slate-100"}`}>
+        {event.name}
+      </span>
     </span>
   );
 }
 
+const getOrCreateTrackingSessionId = () => {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  try {
+    const existing = localStorage.getItem(EVENT_TRACK_SESSION_KEY);
+    if (existing && existing.trim().length > 0) {
+      return existing;
+    }
+
+    const nextId =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem(EVENT_TRACK_SESSION_KEY, nextId);
+    return nextId;
+  } catch {
+    return "";
+  }
+};
+
+const normalizeFanCamMoment = (entry: unknown): FanCamMoment | null => {
+  if (!entry || typeof entry !== "object") {
+    return null;
+  }
+
+  const item = entry as {
+    id?: unknown;
+    event?: unknown;
+    kind?: unknown;
+    name?: unknown;
+    createdAt?: unknown;
+    mediaStatus?: unknown;
+    src?: unknown;
+    playbackId?: unknown;
+    muxUploadId?: unknown;
+  };
+
+  const id = typeof item.id === "string" ? item.id : "";
+  const event = item.event === "VENUS" || item.event === "We Outside" ? item.event : null;
+  const kind = item.kind === "image" || item.kind === "video" ? item.kind : null;
+  const name = typeof item.name === "string" ? item.name : "";
+  const createdAt = typeof item.createdAt === "number" ? item.createdAt : 0;
+  const src = typeof item.src === "string" ? item.src : undefined;
+  const playbackId = typeof item.playbackId === "string" ? item.playbackId : undefined;
+  const muxUploadId = typeof item.muxUploadId === "string" ? item.muxUploadId : undefined;
+  const status: FanCamMomentStatus =
+    item.mediaStatus === "processing" || item.mediaStatus === "failed" ? item.mediaStatus : "ready";
+
+  if (!id || !event || !kind || !name || !createdAt) {
+    return null;
+  }
+
+  if (kind === "image" && !src) {
+    return null;
+  }
+
+  if (kind === "video" && !src && !playbackId && status === "ready") {
+    return null;
+  }
+
+  return {
+    id,
+    event,
+    kind,
+    name,
+    createdAt,
+    status,
+    src,
+    playbackId,
+    muxUploadId,
+  };
+};
+
+const toSafeEventControl = (entry: unknown, fallback: EventControl): EventControl => {
+  if (!entry || typeof entry !== "object") {
+    return fallback;
+  }
+
+  const item = entry as Partial<EventControl>;
+  const passLimit =
+    typeof item.passLimit === "number" && Number.isFinite(item.passLimit)
+      ? Math.max(0, Math.floor(item.passLimit))
+      : fallback.passLimit;
+  const liveTicketCount =
+    typeof item.liveTicketCount === "number" && Number.isFinite(item.liveTicketCount)
+      ? Math.max(0, Math.floor(item.liveTicketCount))
+      : fallback.liveTicketCount;
+
+  return {
+    passesEnabled:
+      typeof item.passesEnabled === "boolean" ? item.passesEnabled : fallback.passesEnabled,
+    passLimit,
+    liveTicketCount,
+  };
+};
+
+const toSafePassUsage = (entry: unknown): Record<EventName, number> => {
+  const fallback = { ...EMPTY_PASS_USAGE };
+  if (!entry || typeof entry !== "object") {
+    return fallback;
+  }
+
+  const item = entry as Record<string, unknown>;
+  return {
+    VENUS:
+      typeof item.VENUS === "number" && Number.isFinite(item.VENUS)
+        ? Math.max(0, Math.floor(item.VENUS))
+        : 0,
+    "We Outside":
+      typeof item["We Outside"] === "number" && Number.isFinite(item["We Outside"])
+        ? Math.max(0, Math.floor(item["We Outside"]))
+        : 0,
+  };
+};
+
+const makeMomentId = () =>
+  typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const toPathSegment = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9.\-_]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const buildMapsUrl = (event: EventMeta) => {
+  const query = `${event.venue}, ${event.city}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+};
+
+const buildCalendarUrl = (event: EventMeta) => {
+  if (!event.startDateIso) {
+    return "";
+  }
+
+  const start = new Date(event.startDateIso);
+  if (Number.isNaN(start.getTime())) {
+    return "";
+  }
+
+  const end = new Date(start.getTime() + 6 * 60 * 60 * 1000);
+  const toCalendarStamp = (value: Date) =>
+    value.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+
+  const title = `${event.name} by zyra`;
+  const details = `${event.description}\n\nVenue: ${event.venue}, ${event.city}`;
+  const location = `${event.venue}, ${event.city}`;
+
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${toCalendarStamp(start)}/${toCalendarStamp(end)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+};
+
+const buildTableReservationUrl = (event: EventMeta) => {
+  const text = `hi zyra, i want to reserve table for ${event.name} on ${event.dateLabel} at ${event.venue}.`;
+  return `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(text)}`;
+};
+const EMPTY_PASS_USAGE: Record<EventName, number> = {
+  VENUS: 0,
+  "We Outside": 0,
+};
+
+const uploadFileToFanCamStorage = async (input: {
+  file: File;
+  event: EventName;
+  kind: "image" | "video";
+  fallbackPath: string;
+}) => {
+  try {
+    const targetResponse = await fetch("/api/fancam/s3-upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        kind: input.kind,
+        event: input.event,
+        fileName: input.file.name,
+        contentType: input.file.type || "application/octet-stream",
+        size: input.file.size,
+      }),
+    });
+
+    if (targetResponse.ok) {
+      const target = (await targetResponse.json()) as FanCamS3UploadTargetResponse;
+      if (target.uploadUrl && target.publicUrl) {
+        const uploadResponse = await fetch(target.uploadUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": input.file.type || "application/octet-stream",
+          },
+          body: input.file,
+        });
+
+        if (uploadResponse.ok) {
+          return target.publicUrl;
+        }
+      }
+    }
+  } catch {
+    // Continue to legacy fallback below.
+  }
+
+  const uploaded = await upload(input.fallbackPath, input.file, {
+    access: "public",
+    handleUploadUrl: "/api/fancam/blob-upload",
+    contentType: input.file.type || "application/octet-stream",
+    clientPayload: JSON.stringify({
+      kind: input.kind,
+      event: input.event,
+      fileName: input.file.name,
+    }),
+    multipart: input.file.size > 10 * 1024 * 1024,
+  });
+
+  return uploaded.url;
+};
+
 export default function EventsPage() {
   const { theme } = useThemeMode();
-  const [state, setState] = useState<AdminState>(loadInitialState);
-  const [activeEvent, setActiveEvent] = useState<EventName>("We Outside");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [reserveName, setReserveName] = useState("");
-  const [reservePhone, setReservePhone] = useState("");
-  const [reserveNotes, setReserveNotes] = useState("");
+  const [activeEvent, setActiveEvent] = useState<EventName>("VENUS");
+  const [hasLoadedPersistedEvent, setHasLoadedPersistedEvent] = useState(false);
+  const [eventControls, setEventControls] =
+    useState<Record<EventName, EventControl>>(EVENT_CONTROL_DEFAULTS);
+  const [passesUsedByEvent, setPassesUsedByEvent] =
+    useState<Record<EventName, number>>(EMPTY_PASS_USAGE);
+  const [fanCamMoments, setFanCamMoments] = useState<FanCamMoment[]>([]);
+  const [activeMomentIndex, setActiveMomentIndex] = useState(0);
+  const [fanCamError, setFanCamError] = useState("");
+  const [isUploadingFanCam, setIsUploadingFanCam] = useState(false);
+  const [fanCamUploadStatus, setFanCamUploadStatus] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const hasTrackedInitialPageView = useRef(false);
+  const fanCamEditTokens = useRef<Record<string, string>>({});
 
   useEffect(() => {
-    if (sessionStorage.getItem(VISITOR_SESSION_KEY)) {
+    if (typeof window === "undefined") {
+      setHasLoadedPersistedEvent(true);
       return;
     }
 
-    const next = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0") + 1;
-    localStorage.setItem(VISITOR_COUNT_KEY, String(next));
-    sessionStorage.setItem(VISITOR_SESSION_KEY, "1");
+    try {
+      const savedEvent = localStorage.getItem(ACTIVE_EVENT_STORAGE_KEY);
+      if (savedEvent === "VENUS" || savedEvent === "We Outside") {
+        setActiveEvent(savedEvent);
+      }
+    } finally {
+      setHasLoadedPersistedEvent(true);
+    }
   }, []);
 
   useEffect(() => {
-    const write = () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (!hasLoadedPersistedEvent || typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      localStorage.setItem(ACTIVE_EVENT_STORAGE_KEY, activeEvent);
+    } catch {
+      // Ignore storage write failures and keep the session working.
+    }
+  }, [activeEvent, hasLoadedPersistedEvent]);
+
+  useEffect(() => {
+    setActiveMomentIndex(0);
+  }, [activeEvent]);
+
+  const activeMeta = useMemo(
+    () => EVENTS.find((item) => item.name === activeEvent) ?? EVENTS[0],
+    [activeEvent]
+  );
+  const activeMoments = useMemo(() => fanCamMoments, [fanCamMoments]);
+  const activeMoment = activeMoments[activeMomentIndex];
+  const isVenusEvent = activeMeta.name === "VENUS";
+  const activeTickets = DEFAULT_EVENT_TICKETS[activeMeta.name];
+  const activeControl = eventControls[activeMeta.name] ?? EVENT_CONTROL_DEFAULTS[activeMeta.name];
+  const activePassesUsed = passesUsedByEvent[activeMeta.name] ?? 0;
+  const passesLeft = activeControl.passesEnabled
+    ? Math.max(0, activeControl.passLimit - activePassesUsed)
+    : 0;
+  const upcomingEntryPrice =
+    activeControl.passesEnabled
+      ? "free pass live"
+      : activeTickets[0]?.price ?? activeMeta.fallbackPrice;
+  const primaryTicketLink = useMemo(
+    () => activeTickets.find((ticket) => ticket.link)?.link ?? "",
+    [activeTickets]
+  );
+  const activeLineup = activeMeta.lineup ?? [];
+  const mapsUrl = useMemo(() => buildMapsUrl(activeMeta), [activeMeta]);
+  const calendarUrl = useMemo(() => buildCalendarUrl(activeMeta), [activeMeta]);
+  const tableReservationUrl = useMemo(() => buildTableReservationUrl(activeMeta), [activeMeta]);
+  const detailPageUrl = `/events/${activeMeta.slug}`;
+  const heroSummary =
+    activeMeta.name === "VENUS"
+      ? "Nightlife experience by zyra with free pass access before standard entry starts"
+      : activeMeta.description;
+  const egoticketsPassUrl = useMemo(() => {
+    if (!activeMeta.egoticketsEventUrl) {
+      return "";
+    }
+
+    try {
+      const url = new URL(activeMeta.egoticketsEventUrl);
+      url.searchParams.set("utm_source", "zyragh");
+      url.searchParams.set("utm_medium", "events_page_pass");
+      url.searchParams.set("utm_campaign", activeMeta.slug);
+      return url.toString();
+    } catch {
+      return activeMeta.egoticketsEventUrl;
+    }
+  }, [activeMeta.egoticketsEventUrl, activeMeta.slug]);
+  const primaryAction =
+    activeControl.passesEnabled && egoticketsPassUrl
+      ? {
+          href: egoticketsPassUrl,
+          label: "claim free pass",
+          detail: "free access is live now",
+          external: true,
+        }
+      : primaryTicketLink
+        ? {
+            href: primaryTicketLink,
+            label: "secure your spot",
+            detail: "entry is live now",
+            external: true,
+          }
+        : {
+            href: tableReservationUrl,
+            label: "reserve table",
+            detail: "jump to whatsapp and lock in your crew",
+            external: true,
+          };
+
+  useEffect(() => {
+    if (activeMoments.length <= 1) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveMomentIndex((currentIndex) =>
+        currentIndex >= activeMoments.length - 1 ? 0 : currentIndex + 1
+      );
+    }, 3600);
+
+    return () => window.clearInterval(intervalId);
+  }, [activeMoments.length]);
+
+  useEffect(() => {
+    if (activeMomentIndex < activeMoments.length) {
+      return;
+    }
+    setActiveMomentIndex(0);
+  }, [activeMomentIndex, activeMoments.length]);
+
+  const loadPublicEventSnapshot = useCallback(async () => {
+    const response = await fetch("/api/events/public", {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error("failed to fetch event controls");
+    }
+
+    const payload = (await response.json()) as Partial<EventPublicSnapshot>;
+    const rawControls = payload.controls ?? {};
+    const nextControls: Record<EventName, EventControl> = {
+      VENUS: toSafeEventControl((rawControls as Record<string, unknown>).VENUS, EVENT_CONTROL_DEFAULTS.VENUS),
+      "We Outside": toSafeEventControl(
+        (rawControls as Record<string, unknown>)["We Outside"],
+        EVENT_CONTROL_DEFAULTS["We Outside"]
+      ),
     };
 
-    const timeoutId = window.setTimeout(write, 180);
-    return () => window.clearTimeout(timeoutId);
-  }, [state]);
+    setEventControls(nextControls);
+    setPassesUsedByEvent(toSafePassUsage(payload.passesUsedByEvent));
+  }, []);
 
-  const activeMeta = useMemo(() => EVENTS.find((item) => item.name === activeEvent) ?? EVENTS[0], [activeEvent]);
+  const trackFeature = useCallback(
+    (feature: EventFeatureKey, eventName: EventName = activeEvent) => {
+      const sessionId = getOrCreateTrackingSessionId();
+      if (!sessionId) {
+        return;
+      }
+
+      void fetch("/api/events/track", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        keepalive: true,
+        body: JSON.stringify({
+          sessionId,
+          event: eventName,
+          feature,
+        }),
+      });
+    },
+    [activeEvent]
+  );
+
+  useEffect(() => {
+    if (!hasLoadedPersistedEvent || hasTrackedInitialPageView.current) {
+      return;
+    }
+
+    hasTrackedInitialPageView.current = true;
+    trackFeature("events_page_view", activeEvent);
+  }, [activeEvent, hasLoadedPersistedEvent, trackFeature]);
+
+  const loadFanCamMoments = useCallback(async () => {
+    const response = await fetch("/api/fancam/items", {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error("failed to fetch fan cam moments");
+    }
+
+    const payload = (await response.json()) as FanCamListResponse;
+    const rawItems = Array.isArray(payload.items) ? payload.items : [];
+    const normalized = rawItems
+      .map((entry) => normalizeFanCamMoment(entry))
+      .filter((item): item is FanCamMoment => item !== null);
+
+    setFanCamMoments(normalized);
+    setFanCamError("");
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncPublicData = async () => {
+      if (!isDocumentVisible()) {
+        return;
+      }
+
+      try {
+        await loadPublicEventSnapshot();
+      } catch {
+        if (isMounted) {
+          setFanCamError("event controls are syncing. refresh in a sec.");
+        }
+      }
+    };
+
+    void syncPublicData();
+    const intervalId = window.setInterval(() => {
+      void syncPublicData();
+    }, FAN_CAM_REFRESH_MS);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(intervalId);
+    };
+  }, [loadPublicEventSnapshot]);
+
+  const createFanCamItem = async (body: {
+    id: string;
+    event: EventName;
+    kind: "image" | "video";
+    name: string;
+    createdAt: number;
+    mediaStatus: FanCamMomentStatus;
+    src?: string;
+    playbackId?: string;
+    muxUploadId?: string;
+  }) => {
+    const response = await fetch("/api/fancam/items", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error("failed to register fan cam upload");
+    }
+
+    const payload = (await response.json()) as FanCamCreateResponse;
+    if (payload.editToken) {
+      fanCamEditTokens.current[body.id] = payload.editToken;
+    }
+  };
+
+  const patchFanCamItem = async (body: {
+    id: string;
+    mediaStatus?: FanCamMomentStatus;
+    src?: string;
+    playbackId?: string;
+    muxUploadId?: string;
+  }) => {
+    const editToken = fanCamEditTokens.current[body.id];
+    if (!editToken) {
+      throw new Error("missing edit token for upload patch");
+    }
+
+    const response = await fetch("/api/fancam/items", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "x-fancam-edit-token": editToken,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error("failed to update fan cam upload");
+    }
+
+    if (body.mediaStatus === "ready" || body.mediaStatus === "failed") {
+      delete fanCamEditTokens.current[body.id];
+    }
+  };
+
+  const pollMuxPlaybackId = async (uploadId: string) => {
+    for (let attempt = 0; attempt < MUX_MAX_POLL_ATTEMPTS; attempt += 1) {
+      await sleep(MUX_POLL_MS);
+
+      const statusResponse = await fetch(`/api/fancam/mux-upload-status?uploadId=${encodeURIComponent(uploadId)}`, {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!statusResponse.ok) {
+        continue;
+      }
+
+      const statusJson = (await statusResponse.json()) as MuxUploadStatusResponse;
+      if (statusJson.playbackId) {
+        return statusJson.playbackId;
+      }
+
+      const hasFailed =
+        statusJson.uploadStatus === "errored" ||
+        statusJson.uploadStatus === "cancelled" ||
+        statusJson.uploadStatus === "timed_out" ||
+        statusJson.assetStatus === "errored";
+
+      if (hasFailed) {
+        throw new Error(statusJson.errorMessage ?? "video processing failed");
+      }
+    }
+
+    return null;
+  };
+
+  const openFanCamPicker = () => {
+    trackFeature("fan_cam_upload_open", activeEvent);
+    fileInputRef.current?.click();
+  };
+
+  const onFanCamUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      setFanCamError("upload a clear image or video only.");
+      return;
+    }
+
+    const now = Date.now();
+    const momentId = makeMomentId();
+    const safeEvent = toPathSegment(activeEvent);
+    const safeFileName = toPathSegment(file.name || "upload");
+    const blobPath = `fan-cam/${safeEvent}/${now}-${safeFileName}`;
+
+    setFanCamError("");
+    setIsUploadingFanCam(true);
+
+    let uploadRegistered = false;
+
+    try {
+      if (file.type.startsWith("image/")) {
+        setFanCamUploadStatus("uploading original image...");
+        const uploadedImageUrl = await uploadFileToFanCamStorage({
+          file,
+          event: activeEvent,
+          kind: "image",
+          fallbackPath: blobPath,
+        });
+
+        await createFanCamItem({
+          id: momentId,
+          event: activeEvent,
+          kind: "image",
+          name: file.name,
+          createdAt: now,
+          mediaStatus: "ready",
+          src: uploadedImageUrl,
+        });
+
+        uploadRegistered = true;
+        setFanCamUploadStatus("image uploaded.");
+        await loadFanCamMoments();
+        setActiveMomentIndex(0);
+        return;
+      }
+
+      setFanCamUploadStatus("creating secure video upload...");
+      const createUploadResponse = await fetch("/api/fancam/mux-upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: activeEvent,
+          fileName: file.name,
+          contentType: file.type,
+          size: file.size,
+        }),
+      });
+
+      if (!createUploadResponse.ok) {
+        // Fallback path: if Mux is unavailable, store the original video in Blob.
+        setFanCamUploadStatus("video stream service unavailable. uploading original video...");
+        const uploadedVideoUrl = await uploadFileToFanCamStorage({
+          file,
+          event: activeEvent,
+          kind: "video",
+          fallbackPath: blobPath,
+        });
+
+        await createFanCamItem({
+          id: momentId,
+          event: activeEvent,
+          kind: "video",
+          name: file.name,
+          createdAt: now,
+          mediaStatus: "ready",
+          src: uploadedVideoUrl,
+        });
+        uploadRegistered = true;
+        setFanCamUploadStatus("video uploaded.");
+        await loadFanCamMoments();
+        return;
+      }
+
+      const createUploadJson = (await createUploadResponse.json()) as {
+        uploadId?: string;
+        uploadUrl?: string;
+      };
+
+      if (!createUploadJson.uploadId || !createUploadJson.uploadUrl) {
+        throw new Error("mux direct upload response was incomplete");
+      }
+
+      await createFanCamItem({
+        id: momentId,
+        event: activeEvent,
+        kind: "video",
+        name: file.name,
+        createdAt: now,
+        mediaStatus: "processing",
+        muxUploadId: createUploadJson.uploadId,
+      });
+      uploadRegistered = true;
+
+      setFanCamUploadStatus("uploading source video...");
+      const muxUploadResponse = await fetch(createUploadJson.uploadUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type || "application/octet-stream",
+        },
+        body: file,
+      });
+
+      if (!muxUploadResponse.ok) {
+        throw new Error("video upload to mux failed");
+      }
+
+      setFanCamUploadStatus("processing video for adaptive playback...");
+      const playbackId = await pollMuxPlaybackId(createUploadJson.uploadId);
+
+      if (!playbackId) {
+        await patchFanCamItem({
+          id: momentId,
+          mediaStatus: "failed",
+          muxUploadId: createUploadJson.uploadId,
+        });
+        setFanCamError("video upload finished, but processing is still running. check back in a bit.");
+        return;
+      }
+
+      await patchFanCamItem({
+        id: momentId,
+        mediaStatus: "ready",
+        playbackId,
+        muxUploadId: createUploadJson.uploadId,
+      });
+      setFanCamUploadStatus("video uploaded.");
+      await loadFanCamMoments();
+    } catch {
+      if (uploadRegistered) {
+        try {
+          setFanCamUploadStatus("recovering upload via direct video storage...");
+          const uploadedVideoUrl = await uploadFileToFanCamStorage({
+            file,
+            event: activeEvent,
+            kind: "video",
+            fallbackPath: blobPath,
+          });
+
+          await patchFanCamItem({
+            id: momentId,
+            mediaStatus: "ready",
+            src: uploadedVideoUrl,
+          });
+          setFanCamUploadStatus("video uploaded.");
+          await loadFanCamMoments();
+          return;
+        } catch {
+          // Fall through to failed marker below.
+        }
+      }
+
+      if (uploadRegistered) {
+        try {
+          await patchFanCamItem({
+            id: momentId,
+            mediaStatus: "failed",
+          });
+        } catch {
+          // Keep primary upload failure message.
+        }
+      }
+      setFanCamError("upload failed. try one more time.");
+    } finally {
+      setFanCamUploadStatus("");
+      setIsUploadingFanCam(false);
+    }
+  };
+
   const navToneClass =
     theme === "dark"
-      ? activeEvent === "VENUS"
+      ? isVenusEvent
         ? "from-indigo-900/82 via-violet-800/70 to-slate-950/85 border-violet-300/25"
         : "from-emerald-900/82 via-cyan-900/70 to-slate-950/85 border-cyan-300/25"
-      : activeEvent === "VENUS"
-        ? "from-violet-400/70 via-fuchsia-400/62 to-rose-200/55 border-fuchsia-400/55"
-        : "from-emerald-400/70 via-cyan-400/62 to-blue-200/55 border-cyan-400/55";
-  const themeStyle = useMemo(
+      : isVenusEvent
+        ? "from-violet-300/80 via-fuchsia-300/68 to-rose-200/55 border-fuchsia-400/55"
+        : "from-emerald-300/82 via-cyan-300/70 to-sky-200/60 border-cyan-400/55";
+
+  const pageStyle = useMemo(
     () => ({
       background:
         theme === "dark"
-          ? activeEvent === "VENUS"
-            ? `radial-gradient(1220px 760px at 8% -14%, ${activeMeta.auraA}, transparent 62%), radial-gradient(1080px 660px at 92% -10%, ${activeMeta.auraB}, transparent 60%), radial-gradient(1060px 680px at 50% 112%, rgba(129,140,248,0.34), transparent 68%), linear-gradient(180deg, #18093f 0%, #12143f 46%, #060d2a 100%)`
-            : `radial-gradient(1220px 760px at 8% -14%, ${activeMeta.auraA}, transparent 62%), radial-gradient(1080px 660px at 92% -10%, ${activeMeta.auraB}, transparent 60%), radial-gradient(1060px 680px at 50% 112%, rgba(14,165,233,0.34), transparent 68%), linear-gradient(180deg, #0f3e33 0%, #0c2f49 46%, #060d2a 100%)`
-          : activeEvent === "VENUS"
-            ? `radial-gradient(1120px 680px at 10% -14%, rgba(139,92,246,0.54), transparent 64%), radial-gradient(980px 580px at 90% -8%, rgba(236,72,153,0.46), transparent 62%), radial-gradient(980px 600px at 50% 112%, rgba(99,102,241,0.32), transparent 70%), linear-gradient(180deg, #f6f0ff 0%, #eceeff 52%, #d8e3ff 100%)`
-            : `radial-gradient(1120px 680px at 10% -14%, rgba(16,185,129,0.52), transparent 64%), radial-gradient(980px 580px at 90% -8%, rgba(6,182,212,0.46), transparent 62%), radial-gradient(980px 600px at 50% 112%, rgba(59,130,246,0.3), transparent 70%), linear-gradient(180deg, #ecfffb 0%, #ebf8ff 52%, #d3e7ff 100%)`,
+          ? isVenusEvent
+            ? "radial-gradient(1260px 780px at 8% -12%, rgba(129,140,248,0.34), transparent 60%), radial-gradient(1080px 650px at 92% -8%, rgba(217,70,239,0.28), transparent 62%), radial-gradient(980px 640px at 50% 112%, rgba(168,85,247,0.24), transparent 68%), linear-gradient(180deg, #140830 0%, #11183d 46%, #060d28 100%)"
+            : "radial-gradient(1260px 780px at 8% -12%, rgba(20,184,166,0.34), transparent 60%), radial-gradient(1080px 650px at 92% -8%, rgba(14,165,233,0.28), transparent 62%), radial-gradient(980px 640px at 50% 112%, rgba(45,212,191,0.24), transparent 68%), linear-gradient(180deg, #0b332b 0%, #0b2e44 46%, #060d28 100%)"
+          : isVenusEvent
+            ? "radial-gradient(1180px 700px at 10% -14%, rgba(167,139,250,0.52), transparent 64%), radial-gradient(980px 590px at 90% -8%, rgba(244,114,182,0.42), transparent 62%), radial-gradient(1040px 620px at 50% 112%, rgba(129,140,248,0.28), transparent 70%), linear-gradient(180deg, #fcf8ff 0%, #f6eeff 54%, #e7dcff 100%)"
+            : "radial-gradient(1180px 700px at 10% -14%, rgba(16,185,129,0.48), transparent 64%), radial-gradient(980px 590px at 90% -8%, rgba(6,182,212,0.44), transparent 62%), radial-gradient(1040px 620px at 50% 112%, rgba(59,130,246,0.28), transparent 70%), linear-gradient(180deg, #f0fffb 0%, #ecfbff 54%, #dbeeff 100%)",
     }),
-    [activeEvent, activeMeta.auraA, activeMeta.auraB, theme]
+    [isVenusEvent, theme]
   );
 
-  const isVenusEvent = activeMeta.name === "VENUS";
-  const tickets = DEFAULT_EVENT_TICKETS[activeMeta.name];
-  const venusPassesUsed = state.passes.filter((pass) => pass.event === "VENUS").length;
-  const passesLeft = isVenusEvent ? Math.max(0, VENUS_FREE_PASS_LIMIT - venusPassesUsed) : 0;
-  const isVenusPostPass = isVenusEvent && passesLeft === 0;
-  const primaryDisplayPrice = isVenusEvent
-    ? isVenusPostPass
-      ? VENUS_POST_PASS_PRICE
-      : "Free pass"
-    : tickets[0]?.price || activeMeta.fallbackPrice;
-  const displayTickets = isVenusEvent && !isVenusPostPass
-    ? tickets.map((ticket) => ({ ...ticket, name: `${ticket.name} (after free passes)` }))
-    : tickets;
   const eventsJsonLd = useMemo(() => {
     const itemList = {
       "@context": "https://schema.org",
@@ -231,31 +893,17 @@ export default function EventsPage() {
     return JSON.stringify(venusSchema ? [itemList, venusSchema] : [itemList]);
   }, []);
 
-  const mediaFeed = useMemo(() => {
-    const videos = state.videos.map((item) => ({
-      id: `video-${item.id}`,
-      title: item.title,
-      url: item.url,
-      type: "video",
-    }));
-
-    const photos = state.photos.map((item) => ({
-      id: `photo-${item.id}`,
-      title: item.caption,
-      url: item.url,
-      type: "photo",
-    }));
-
-    return [...videos, ...photos].slice(0, 6);
-  }, [state.photos, state.videos]);
-
   return (
-    <div className="relative min-h-screen overflow-x-clip text-slate-900 transition-colors duration-300 ease-out dark:text-slate-100" style={themeStyle}>
-      <Script id="events-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: eventsJsonLd }} />
+    <div
+      className="relative min-h-screen overflow-x-clip text-slate-900 dark:text-slate-100"
+      style={pageStyle}
+    >
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: eventsJsonLd }} />
+
       <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-white/6 dark:bg-slate-950/24" />
+        <div className="absolute inset-0 bg-white/10 dark:bg-slate-950/28" />
         <div
-          className="absolute inset-0 bg-center bg-no-repeat opacity-[0.1] transition-opacity duration-300 dark:opacity-[0.16]"
+          className="absolute inset-0 bg-center bg-no-repeat opacity-[0.11] transition-opacity duration-300 dark:opacity-[0.17]"
           style={{
             backgroundImage: `url(${activeMeta.logo})`,
             backgroundSize: "min(52vw, 420px)",
@@ -270,341 +918,194 @@ export default function EventsPage() {
       />
 
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
-        <section className="mb-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="gap-5">
-              <Chip className="w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-                house of legendary parties
-              </Chip>
-              <h1 className="font-[family-name:var(--font-bricolage)] text-3xl font-extrabold tracking-tight text-slate-950 sm:text-5xl dark:text-slate-100">
-                legendary moments
-              </h1>
-              <p className="text-sm text-slate-600 sm:text-base dark:text-slate-300">
-                {state.subhead || "we outside and venus only. direct tickets, direct reservations, no marketplace clutter."}
-              </p>
-
-              <div className="flex flex-wrap gap-2 text-sm text-slate-700 dark:text-slate-300">
-                <Chip className="bg-black/10 text-slate-800 dark:bg-slate-700/60 dark:text-slate-100">we outside</Chip>
-                <Chip className="bg-black/10 text-slate-800 dark:bg-slate-700/60 dark:text-slate-100">venus</Chip>
-                <Chip className="bg-black/10 text-slate-800 dark:bg-slate-700/60 dark:text-slate-100">accra nights</Chip>
-              </div>
-              <div className="flex flex-wrap gap-2 text-sm">
-                {EVENTS.map((event) => (
-                  <Link
-                    key={event.slug}
-                    href={`/events/${event.slug}`}
-                    className="rounded-full border border-white/45 bg-white/55 px-3 py-1 text-slate-700 no-underline dark:border-slate-700/55 dark:bg-slate-950/62 dark:text-slate-200"
-                  >
-                    {event.name} details
-                  </Link>
-                ))}
+        <section className="mb-8">
+          <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
+            <CardBody className="gap-6">
+              <div className="relative flex min-h-[9.5rem] flex-col items-center justify-center pt-1 text-center sm:min-h-[11rem] lg:min-h-[13rem]">
+                <Chip className="absolute left-0 top-0 w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+                  tickets live
+                </Chip>
+                <h1 className="sr-only">{activeMeta.name}</h1>
+                <Image
+                  removeWrapper
+                  alt={`${activeMeta.name} logo`}
+                  src={activeMeta.logo}
+                  className="mx-auto h-28 w-full max-w-[430px] object-contain sm:h-36 sm:max-w-[540px] lg:h-44 lg:max-w-[660px] xl:h-48 xl:max-w-[720px]"
+                />
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2">
-                {EVENTS.map((event) => (
-                  <Button
-                    key={event.name}
-                    variant="flat"
-                    className={`h-auto justify-start border p-3 ${
-                      activeEvent === event.name
-                        ? "border-cyan-300/80 bg-cyan-50 text-slate-900 dark:border-cyan-400/50 dark:bg-cyan-900/30 dark:text-slate-100"
-                        : "border-white/45 bg-white/55 text-slate-800 dark:border-slate-700/55 dark:bg-slate-950/62 dark:text-slate-200"
-                    }`}
-                    onPress={() => setActiveEvent(event.name)}
-                  >
-                    <div className="flex flex-col items-start gap-1">
-                      <EventBrandName event={event} size="sm" />
-                      <span className="text-xs text-slate-600 dark:text-slate-400">{event.venue}, {event.city}</span>
+              <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
+                <div className="space-y-4">
+                  {isVenusEvent ? (
+                    <div className="max-w-2xl rounded-[1.75rem] border border-fuchsia-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(249,245,255,0.98))] px-5 py-5 shadow-[0_22px_52px_rgba(168,85,247,0.12)] backdrop-blur-xl dark:border-fuchsia-400/20 dark:bg-[linear-gradient(135deg,rgba(30,27,75,0.7),rgba(12,10,30,0.82))] dark:shadow-[0_24px_60px_rgba(99,102,241,0.18)] sm:px-6 sm:py-6">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-fuchsia-700 dark:text-fuchsia-200/90">
+                        nightlife experience by zyra
+                      </p>
+                      <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-[clamp(1.5rem,3vw,2.55rem)] font-bold leading-[0.98] tracking-tight text-slate-950 dark:text-white">
+                        <span className="block">with free pass access</span>
+                        <span className="mt-1 block bg-[linear-gradient(90deg,#7c3aed_0%,#ec4899_48%,#06b6d4_100%)] bg-clip-text text-transparent dark:bg-[linear-gradient(90deg,#c084fc_0%,#f9a8d4_48%,#67e8f9_100%)]">
+                          before standard entry starts
+                        </span>
+                      </p>
                     </div>
-                  </Button>
-                ))}
+                  ) : (
+                    <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+                      {heroSummary}
+                    </p>
+                  )}
+                  <div className="space-y-3 border-t border-white/35 pt-4 dark:border-slate-700/45">
+                    <Button
+                      as={Link}
+                      href={primaryAction.href}
+                      target={primaryAction.external ? "_blank" : undefined}
+                      rel={primaryAction.external ? "noopener noreferrer" : undefined}
+                      className={`h-12 w-full border text-base font-semibold text-white shadow-[0_18px_40px_rgba(14,165,233,0.22)] transition-transform hover:-translate-y-0.5 sm:w-fit sm:px-8 ${
+                        activeControl.passesEnabled && egoticketsPassUrl
+                          ? "border-emerald-300/80 bg-gradient-to-r from-emerald-500 to-cyan-500"
+                          : "border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500"
+                      }`}
+                      onPress={() => {
+                        trackFeature("ticket_click", activeMeta.name)
+                      }}
+                    >
+                      {primaryAction.label}
+                    </Button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        as={Link}
+                        href="#lineup-reel"
+                        className="border border-slate-300/90 bg-white text-slate-950 shadow-[0_12px_28px_rgba(15,23,42,0.10)] transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-50/90 hover:text-cyan-900 dark:border-slate-600/70 dark:bg-slate-900/72 dark:text-slate-100 dark:hover:border-cyan-500/45 dark:hover:bg-slate-900"
+                      >
+                        see featured
+                      </Button>
+                      <Button
+                        as={Link}
+                        href="#event-actions"
+                        className="border border-slate-300/90 bg-white text-slate-950 shadow-[0_12px_28px_rgba(15,23,42,0.10)] transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-50/90 hover:text-cyan-900 dark:border-slate-600/70 dark:bg-slate-900/72 dark:text-slate-100 dark:hover:border-cyan-500/45 dark:hover:bg-slate-900"
+                      >
+                        plan night
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">date</p>
+                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.dateLabel}</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">venue</p>
+                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.venue}</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">time</p>
+                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.timeLabel}</p>
+                  </div>
+                </div>
               </div>
             </CardBody>
           </Card>
+        </section>
 
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
-              <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
-              </div>
+        <EventLineupSection members={activeLineup} sectionClassName="mb-8" />
 
-              <div className={`relative z-10 rounded-2xl bg-gradient-to-r ${activeMeta.bannerTone} p-4 text-white`}>
-                <p className="text-xs uppercase tracking-[0.14em] text-white/85">featured now</p>
-                <div className="mt-1">
-                  <EventBrandName event={activeMeta} size="lg" />
-                </div>
-                <p className="text-sm text-white/85">{activeMeta.venue}, {activeMeta.city}</p>
-                {!isVenusEvent ? (
-                  <div className="mt-3 rounded-xl border border-white/30 bg-white/10 p-3 backdrop-blur-sm">
-                    <div className="relative h-12 overflow-hidden rounded-lg bg-gradient-to-b from-sky-300/80 via-cyan-200/70 to-amber-200/70">
-                      <div className="absolute right-3 top-2 h-4 w-4 rounded-full bg-amber-200/90 shadow-[0_0_20px_rgba(253,224,71,0.65)]" />
-                      <div className="absolute inset-x-0 bottom-5 h-2 bg-cyan-200/80" />
-                      <div className="absolute inset-x-0 bottom-0 h-5 bg-gradient-to-r from-amber-200/85 via-orange-200/80 to-yellow-200/85" />
-                    </div>
-                    <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                      <Chip className="border border-white/30 bg-white/15 text-white">beach stage</Chip>
-                      <Chip className="border border-white/30 bg-white/15 text-white">oceanfront vibe</Chip>
-                      <Chip className="border border-white/30 bg-white/15 text-white">sunset energy</Chip>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="relative z-10 rounded-2xl border border-white/45 bg-white/58 p-4 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                {isVenusEvent ? (
-                  <>
-                    <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">venus free pass tracker</p>
-                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">{passesLeft} left</p>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">out of {VENUS_FREE_PASS_LIMIT} total passes</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">entry model</p>
-                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">fully paid</p>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">early bird GHS 50, regular GHS 100</p>
-                  </>
-                )}
-              </div>
-
-              <div className="relative z-10 rounded-2xl border border-white/45 bg-white/58 p-4 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">starting price</p>
-                <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {primaryDisplayPrice}
+        <section id="event-actions" className="mb-8">
+          <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
+            <CardBody className="gap-4">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                  actions
                 </p>
-                <p className="text-sm text-slate-600 dark:text-slate-400">secure your slot early before rates move up</p>
+                <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+                  plan the night
+                </h2>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <Link
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">route there</p>
+                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                    directions
+                  </p>
+                </Link>
+
+                <Link
+                  href={calendarUrl || detailPageUrl}
+                  target={calendarUrl ? "_blank" : undefined}
+                  rel={calendarUrl ? "noopener noreferrer" : undefined}
+                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">save the date</p>
+                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                    {calendarUrl ? "calendar" : "event page"}
+                  </p>
+                </Link>
+
+                <Link
+                  href={tableReservationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">crew move</p>
+                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                    reserve table
+                  </p>
+                </Link>
               </div>
             </CardBody>
           </Card>
         </section>
 
         <section className="mb-10">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">upcoming event</h2>
-            <Chip className="bg-slate-900 text-white dark:bg-slate-700">1 active</Chip>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-                <Card key={activeMeta.name} className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58 md:col-span-2">
-                  <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
-                    <div className="pointer-events-none absolute inset-0">
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
-                    </div>
-
-                    <div className="relative z-10 flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-14 w-14 flex-col items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">
-                          <span className="text-[10px] uppercase tracking-[0.14em]">{activeMeta.month}</span>
-                          <span className="text-lg font-bold leading-none">{activeMeta.day}</span>
-                        </div>
-                        <div>
-                          <p className="text-slate-900 dark:text-slate-100">
-                            <EventBrandName event={activeMeta} />
-                          </p>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">{activeMeta.venue}, {activeMeta.city}</p>
-                        </div>
-                      </div>
-                      <Chip className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">active vibe</Chip>
-                    </div>
-
-                    <div className="relative z-10 rounded-xl border border-white/45 bg-white/58 px-3 py-2 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                      <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">from</p>
-                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{primaryDisplayPrice}</p>
-                    </div>
-
-                    <div className="relative z-10 flex flex-wrap items-center gap-2">
-                      <Button
-                        as={Link}
-                        href={`/events/${activeMeta.slug}`}
-                        className="border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                      >
-                        view details
-                      </Button>
-                      <Button
-                        variant="flat"
-                        className="border border-white/45 bg-white/58 text-slate-800 dark:border-slate-700/55 dark:bg-slate-950/66 dark:text-slate-100"
-                        onPress={() => {
-                          setActiveEvent(activeMeta.name);
-                        }}
-                      >
-                        reserve table
-                      </Button>
-                    </div>
-                  </CardBody>
-                </Card>
-          </div>
-        </section>
-
-        <section className="mb-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
-              <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
-              </div>
-
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">tickets for</h2>
-                  <p className="mt-1 text-slate-900 dark:text-slate-100">
-                    <EventBrandName event={activeMeta} />
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-3">
-                {displayTickets.map((ticket) => (
-                  <Card key={ticket.id} className="border border-white/45 bg-white/58 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                    <CardBody className="flex flex-row items-center justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-slate-900 dark:text-slate-100">{ticket.name}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">{ticket.price || primaryDisplayPrice}</p>
-                      </div>
-                      {ticket.link ? (
-                        <Button
-                          as={Link}
-                          href={ticket.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                        >
-                          buy now
-                        </Button>
-                      ) : (
-                        <Button className="bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" isDisabled>
-                          link coming soon
-                        </Button>
-                      )}
-                    </CardBody>
-                  </Card>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-
-          <Card className="border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
+          <Card className="border border-slate-200/80 bg-white/78 shadow-[0_18px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
             <CardBody className="gap-4">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                latest drops for {activeMeta.name.toLowerCase()}
-              </h2>
-              {mediaFeed.length === 0 ? (
-                <p className="text-sm text-slate-600 dark:text-slate-400">media updates will show here when added from admin.</p>
-              ) : (
-                <div className="grid gap-2">
-                  {mediaFeed.map((item) => (
-                    <Card key={item.id} className="border border-white/45 bg-white/55 backdrop-blur-md dark:border-slate-700/55 dark:bg-slate-950/72">
-                      <CardBody className="gap-1">
-                        <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{item.type}</p>
-                        <p className="font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
-                        <p className="truncate text-sm text-slate-600 dark:text-slate-400">{item.url}</p>
-                      </CardBody>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </CardBody>
-          </Card>
-        </section>
-
-        <section className="grid gap-6 lg:grid-cols-2">
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
-              <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                  more from zyra
+                </p>
+                <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+                  other events
+                </h2>
               </div>
 
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                {isVenusEvent ? "reserve a free pass" : "paid entry only"}
-              </h2>
-              {isVenusEvent ? (
-                <>
-                  <Chip className="w-fit bg-slate-900 text-white dark:bg-slate-700">{passesLeft} passes left</Chip>
-                  <div className="grid gap-3">
-                    <Input label="your name" value={name} onValueChange={setName} />
-                    <Input label="email" value={email} onValueChange={setEmail} type="email" />
-                    <Input label="phone" value={phone} onValueChange={setPhone} />
-                    <Chip className="w-fit bg-slate-900 text-white dark:bg-slate-700">
-                      event: {activeMeta.name.toLowerCase()}
-                    </Chip>
+              <div className="grid gap-3 lg:grid-cols-2">
+                {EVENTS.map((event) => {
+                  const selected = event.name === activeEvent
+
+                  return (
                     <Button
-                      className="w-fit border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                      isDisabled={passesLeft === 0}
+                      key={event.slug}
+                      className={`h-auto justify-between border px-4 py-4 ${
+                        selected
+                          ? "border-cyan-300/90 bg-[linear-gradient(135deg,rgba(236,254,255,0.98),rgba(224,242,254,0.98))] text-slate-950 shadow-[0_16px_34px_rgba(8,145,178,0.14)] dark:border-cyan-400/60 dark:bg-[linear-gradient(135deg,rgba(8,47,73,0.98),rgba(49,46,129,0.96))] dark:text-white dark:shadow-[0_18px_42px_rgba(8,145,178,0.26)]"
+                          : "border-slate-300/85 bg-white/92 text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.07)] hover:border-cyan-300/70 hover:bg-white dark:border-slate-700/55 dark:bg-slate-950/66 dark:text-slate-200"
+                      }`}
                       onPress={() => {
-                        if (!name || !email || !phone || passesLeft === 0) {
-                          return;
+                        if (event.name !== activeEvent) {
+                          trackFeature("event_switch", event.name)
                         }
-
-                        const next = {
-                          id: makeId(),
-                          name,
-                          email,
-                          phone,
-                          event: activeMeta.name,
-                        };
-
-                        setState((prev) => ({ ...prev, passes: [next, ...prev.passes] }));
-                        setName("");
-                        setEmail("");
-                        setPhone("");
+                        setActiveEvent(event.name)
                       }}
                     >
-                      reserve pass
+                      <div className="flex flex-col items-start gap-1 text-left">
+                        <EventBrandName event={event} selected={selected} />
+                        <p className={`text-xs ${selected ? "text-slate-600 dark:text-slate-200/88" : "text-slate-600 dark:text-slate-400"}`}>
+                          {event.dateLabel} · {event.timeLabel}
+                        </p>
+                      </div>
+                      <span className={`text-xs uppercase tracking-[0.14em] ${selected ? "text-cyan-700 dark:text-cyan-200" : "text-slate-500 dark:text-slate-400"}`}>
+                        {selected ? "live now" : "switch"}
+                      </span>
                     </Button>
-                  </div>
-                </>
-              ) : (
-                <div className="grid gap-3">
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    We Outside is fully paid. Grab early bird or regular tickets.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Chip className="border border-cyan-300/70 bg-cyan-100 text-cyan-900 dark:bg-cyan-900/35 dark:text-cyan-100">
-                      early bird: GHS 50
-                    </Chip>
-                    <Chip className="border border-emerald-300/70 bg-emerald-100 text-emerald-900 dark:bg-emerald-900/35 dark:text-emerald-100">
-                      regular: GHS 100
-                    </Chip>
-                  </div>
-                </div>
-              )}
-            </CardBody>
-          </Card>
-
-          <Card className="relative overflow-hidden border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="relative gap-4 [&>*]:relative [&>*]:z-10">
-              <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/34 to-white/12 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/22" />
-              </div>
-
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">table reservation</h2>
-              <div className="grid gap-3">
-                <Input label="your name" value={reserveName} onValueChange={setReserveName} />
-                <Input label="phone" value={reservePhone} onValueChange={setReservePhone} />
-                <Chip className="w-fit bg-slate-900 text-white dark:bg-slate-700">
-                  event: {activeMeta.name.toLowerCase()}
-                </Chip>
-                <Textarea label="notes" value={reserveNotes} onValueChange={setReserveNotes} />
-                <Button
-                  className="w-fit bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-                  onPress={() => {
-                    if (!reserveName || !reservePhone) {
-                      return;
-                    }
-
-                    const next = {
-                      id: makeId(),
-                      name: reserveName,
-                      phone: reservePhone,
-                      event: activeMeta.name,
-                      notes: reserveNotes,
-                    };
-
-                    setState((prev) => ({ ...prev, reservations: [next, ...prev.reservations] }));
-                    setReserveName("");
-                    setReservePhone("");
-                    setReserveNotes("");
-                  }}
-                >
-                  send reservation
-                </Button>
+                  )
+                })}
               </div>
             </CardBody>
           </Card>
@@ -613,5 +1114,27 @@ export default function EventsPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
