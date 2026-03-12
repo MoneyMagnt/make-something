@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -34,22 +34,10 @@ export const viewport: Viewport = {
 const themeBootScript = `
 (() => {
   try {
-    const key = "make_something_theme_mode";
-    const stored = window.localStorage.getItem(key);
-    const cookieMatch = document.cookie.match(/(?:^|; )make_something_theme_mode=(light|dark)(?:;|$)/);
-    const cookieTheme = cookieMatch ? cookieMatch[1] : null;
-    const theme =
-      stored === "light" || stored === "dark"
-        ? stored
-        : cookieTheme === "light" || cookieTheme === "dark"
-          ? cookieTheme
-          : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
     const root = document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(theme);
+    const theme = root.classList.contains("dark") ? "dark" : "light";
     root.style.colorScheme = theme;
+    root.dataset.themeReady = "true";
   } catch {}
 })();
 `;
@@ -71,7 +59,7 @@ export default async function RootLayout({
   const initialTheme = await getInitialThemeClass();
 
   return (
-    <html lang="en" className={`${initialTheme} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${initialTheme} ${manrope.variable}`} data-theme-ready="false" suppressHydrationWarning>
       <head>
         <script
           id="theme-boot"

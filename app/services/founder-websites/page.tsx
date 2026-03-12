@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Card,
@@ -89,7 +89,7 @@ const founderWebsiteJsonLd = JSON.stringify([
 
 export default function FounderWebsitesServicePage() {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: founderWebsiteJsonLd }} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(245,158,11,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(249,115,22,0.16),transparent)] dark:bg-[radial-gradient(1140px_700px_at_8%_-12%,rgba(251,191,36,0.25),transparent_60%),radial-gradient(980px_560px_at_92%_8%,rgba(249,115,22,0.28),transparent_62%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(38,20,2,0.9)_45%,rgba(52,30,9,0.95)_100%)]" />
 
@@ -172,3 +172,4 @@ export default function FounderWebsitesServicePage() {
     </div>
   );
 }
+

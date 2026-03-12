@@ -1,10 +1,11 @@
-"use client";
+﻿"use client";
 
 import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
 import MuxPlayer from "@mux/mux-player-react";
 import { upload } from "@vercel/blob/client";
 import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
+import { EventLineupSection } from "@/components/EventLineupSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { DEFAULT_EVENT_TICKETS, EVENTS } from "@/lib/eventsData";
@@ -22,6 +23,7 @@ const FAN_CAM_REFRESH_MS = 60000;
 const MUX_POLL_MS = 3000;
 const MUX_MAX_POLL_ATTEMPTS = 80;
 const ACTIVE_EVENT_STORAGE_KEY = "zyra_events_active_event_v1";
+const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const isDocumentVisible = () =>
   typeof document === "undefined" || document.visibilityState === "visible";
 
@@ -60,11 +62,11 @@ type MuxUploadStatusResponse = {
   errorMessage?: string | null;
 };
 
-function EventBrandName({ event }: { event: EventMeta }) {
+function EventBrandName({ event, selected = false }: { event: EventMeta; selected?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2.5">
-      <Image removeWrapper alt={`${event.name} logo`} src={event.logo} className="h-8 w-auto" />
-      <span className="font-[family-name:var(--font-space-grotesk)] text-base font-bold sm:text-lg">
+      <Image removeWrapper alt={`${event.name} logo`} src={event.logo} className={`h-8 w-auto ${selected ? "drop-shadow-[0_8px_18px_rgba(255,255,255,0.16)]" : ""}`} />
+      <span className={`font-[family-name:var(--font-space-grotesk)] text-base font-bold sm:text-lg ${selected ? "text-slate-950 dark:text-white" : "text-slate-900 dark:text-slate-100"}`}>
         {event.name}
       </span>
     </span>
@@ -203,6 +205,36 @@ const toPathSegment = (value: string) =>
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
+const buildMapsUrl = (event: EventMeta) => {
+  const query = `${event.venue}, ${event.city}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+};
+
+const buildCalendarUrl = (event: EventMeta) => {
+  if (!event.startDateIso) {
+    return "";
+  }
+
+  const start = new Date(event.startDateIso);
+  if (Number.isNaN(start.getTime())) {
+    return "";
+  }
+
+  const end = new Date(start.getTime() + 6 * 60 * 60 * 1000);
+  const toCalendarStamp = (value: Date) =>
+    value.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+
+  const title = `${event.name} by zyra`;
+  const details = `${event.description}\n\nVenue: ${event.venue}, ${event.city}`;
+  const location = `${event.venue}, ${event.city}`;
+
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${toCalendarStamp(start)}/${toCalendarStamp(end)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+};
+
+const buildTableReservationUrl = (event: EventMeta) => {
+  const text = `hi zyra, i want to reserve table for ${event.name} on ${event.dateLabel} at ${event.venue}.`;
+  return `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(text)}`;
+};
 const EMPTY_PASS_USAGE: Record<EventName, number> = {
   VENUS: 0,
   "We Outside": 0,
@@ -327,9 +359,22 @@ export default function EventsPage() {
     ? Math.max(0, activeControl.passLimit - activePassesUsed)
     : 0;
   const upcomingEntryPrice =
-    activeControl.passesEnabled && passesLeft > 0
+    activeControl.passesEnabled
       ? "free pass live"
       : activeTickets[0]?.price ?? activeMeta.fallbackPrice;
+  const primaryTicketLink = useMemo(
+    () => activeTickets.find((ticket) => ticket.link)?.link ?? "",
+    [activeTickets]
+  );
+  const activeLineup = activeMeta.lineup ?? [];
+  const mapsUrl = useMemo(() => buildMapsUrl(activeMeta), [activeMeta]);
+  const calendarUrl = useMemo(() => buildCalendarUrl(activeMeta), [activeMeta]);
+  const tableReservationUrl = useMemo(() => buildTableReservationUrl(activeMeta), [activeMeta]);
+  const detailPageUrl = `/events/${activeMeta.slug}`;
+  const heroSummary =
+    activeMeta.name === "VENUS"
+      ? "Nightlife experience by zyra with free pass access before standard entry starts"
+      : activeMeta.description;
   const egoticketsPassUrl = useMemo(() => {
     if (!activeMeta.egoticketsEventUrl) {
       return "";
@@ -345,6 +390,27 @@ export default function EventsPage() {
       return activeMeta.egoticketsEventUrl;
     }
   }, [activeMeta.egoticketsEventUrl, activeMeta.slug]);
+  const primaryAction =
+    activeControl.passesEnabled && egoticketsPassUrl
+      ? {
+          href: egoticketsPassUrl,
+          label: "claim free pass",
+          detail: "free access is live now",
+          external: true,
+        }
+      : primaryTicketLink
+        ? {
+            href: primaryTicketLink,
+            label: "secure your spot",
+            detail: "entry is live now",
+            external: true,
+          }
+        : {
+            href: tableReservationUrl,
+            label: "reserve table",
+            detail: "jump to whatsapp and lock in your crew",
+            external: true,
+          };
 
   useEffect(() => {
     if (activeMoments.length <= 1) {
@@ -451,21 +517,12 @@ export default function EventsPage() {
         return;
       }
 
-      const [fanCamResult, controlsResult] = await Promise.allSettled([
-        loadFanCamMoments(),
-        loadPublicEventSnapshot(),
-      ]);
-
-      if (!isMounted) {
-        return;
-      }
-
-      if (fanCamResult.status === "rejected") {
-        setFanCamError("could not load fan cam uploads right now.");
-      }
-
-      if (controlsResult.status === "rejected") {
-        setFanCamError("event controls are syncing. refresh in a sec.");
+      try {
+        await loadPublicEventSnapshot();
+      } catch {
+        if (isMounted) {
+          setFanCamError("event controls are syncing. refresh in a sec.");
+        }
       }
     };
 
@@ -478,7 +535,7 @@ export default function EventsPage() {
       isMounted = false;
       window.clearInterval(intervalId);
     };
-  }, [loadFanCamMoments, loadPublicEventSnapshot]);
+  }, [loadPublicEventSnapshot]);
 
   const createFanCamItem = async (body: {
     id: string;
@@ -838,7 +895,7 @@ export default function EventsPage() {
 
   return (
     <div
-      className="relative min-h-screen overflow-x-clip text-slate-900 transition-colors duration-300 dark:text-slate-100"
+      className="relative min-h-screen overflow-x-clip text-slate-900 dark:text-slate-100"
       style={pageStyle}
     >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: eventsJsonLd }} />
@@ -861,247 +918,195 @@ export default function EventsPage() {
       />
 
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
-        <section className="mb-8 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-          <Card className="border border-white/45 bg-white/50 backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="gap-5">
-              <Chip className="w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-                legendary moments
-              </Chip>
-              <div className="relative min-h-[340px] overflow-hidden rounded-3xl border border-white/45 bg-white/48 p-4 backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58 sm:min-h-[380px] sm:p-5">
-                <div className={`absolute inset-0 bg-gradient-to-br ${activeMeta.bannerTone} opacity-20`} />
-                <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-white/30 blur-3xl dark:bg-white/10" />
-                <div className="absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-white/25 blur-2xl dark:bg-white/10" />
-                <div className="relative mx-auto w-full max-w-[320px]">
-                  <div className="pointer-events-none absolute -inset-2 rounded-[1.9rem] bg-gradient-to-br from-fuchsia-400/35 via-cyan-300/30 to-blue-500/35 blur-xl" />
-                  <div className="relative overflow-hidden rounded-[1.7rem] border border-white/55 bg-white/65 shadow-[0_18px_50px_-28px_rgba(15,23,42,0.7)] dark:border-slate-600/70 dark:bg-slate-900/70">
-                    <div
-                      className={`relative ${
-                        activeMoment?.kind === "video" ? "aspect-[9/16]" : "aspect-[3/4]"
-                      } w-full bg-gradient-to-br from-white/45 via-white/20 to-slate-200/25 dark:from-slate-900/60 dark:via-slate-900/35 dark:to-slate-950/70`}
+        <section className="mb-8">
+          <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
+            <CardBody className="gap-6">
+              <div className="relative flex min-h-[9.5rem] flex-col items-center justify-center pt-1 text-center sm:min-h-[11rem] lg:min-h-[13rem]">
+                <Chip className="absolute left-0 top-0 w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+                  tickets live
+                </Chip>
+                <h1 className="sr-only">{activeMeta.name}</h1>
+                <Image
+                  removeWrapper
+                  alt={`${activeMeta.name} logo`}
+                  src={activeMeta.logo}
+                  className="mx-auto h-28 w-full max-w-[430px] object-contain sm:h-36 sm:max-w-[540px] lg:h-44 lg:max-w-[660px] xl:h-48 xl:max-w-[720px]"
+                />
+              </div>
+
+              <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
+                <div className="space-y-4">
+                  {isVenusEvent ? (
+                    <div className="max-w-2xl rounded-[1.75rem] border border-fuchsia-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(249,245,255,0.98))] px-5 py-5 shadow-[0_22px_52px_rgba(168,85,247,0.12)] backdrop-blur-xl dark:border-fuchsia-400/20 dark:bg-[linear-gradient(135deg,rgba(30,27,75,0.7),rgba(12,10,30,0.82))] dark:shadow-[0_24px_60px_rgba(99,102,241,0.18)] sm:px-6 sm:py-6">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-fuchsia-700 dark:text-fuchsia-200/90">
+                        nightlife experience by zyra
+                      </p>
+                      <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-[clamp(1.5rem,3vw,2.55rem)] font-bold leading-[0.98] tracking-tight text-slate-950 dark:text-white">
+                        <span className="block">with free pass access</span>
+                        <span className="mt-1 block bg-[linear-gradient(90deg,#7c3aed_0%,#ec4899_48%,#06b6d4_100%)] bg-clip-text text-transparent dark:bg-[linear-gradient(90deg,#c084fc_0%,#f9a8d4_48%,#67e8f9_100%)]">
+                          before standard entry starts
+                        </span>
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+                      {heroSummary}
+                    </p>
+                  )}
+                  <div className="space-y-3 border-t border-white/35 pt-4 dark:border-slate-700/45">
+                    <Button
+                      as={Link}
+                      href={primaryAction.href}
+                      target={primaryAction.external ? "_blank" : undefined}
+                      rel={primaryAction.external ? "noopener noreferrer" : undefined}
+                      className={`h-12 w-full border text-base font-semibold text-white shadow-[0_18px_40px_rgba(14,165,233,0.22)] transition-transform hover:-translate-y-0.5 sm:w-fit sm:px-8 ${
+                        activeControl.passesEnabled && egoticketsPassUrl
+                          ? "border-emerald-300/80 bg-gradient-to-r from-emerald-500 to-cyan-500"
+                          : "border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500"
+                      }`}
+                      onPress={() => {
+                        trackFeature("ticket_click", activeMeta.name)
+                      }}
                     >
-                      {activeMoment ? (
-                        activeMoment.kind === "video" ? (
-                          activeMoment.playbackId ? (
-                            <MuxPlayer
-                              playbackId={activeMoment.playbackId}
-                              streamType="on-demand"
-                              autoPlay
-                              muted
-                              loop
-                              playsInline
-                              metadataVideoTitle={activeMoment.name}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : activeMoment.src ? (
-                            <video
-                              src={activeMoment.src}
-                              className="h-full w-full object-cover"
-                              autoPlay
-                              muted
-                              loop
-                              playsInline
-                              preload="metadata"
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-end bg-gradient-to-b from-white/50 to-white/20 p-4 dark:from-slate-900/55 dark:to-slate-900/30">
-                              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-700 dark:text-slate-200">
-                                fan cam
-                              </span>
-                            </div>
-                          )
-                        ) : activeMoment.src ? (
-                          <img
-                            src={activeMoment.src}
-                            alt={`fan cam upload ${activeMoment.name}`}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-end bg-gradient-to-b from-white/50 to-white/20 p-4 dark:from-slate-900/55 dark:to-slate-900/30">
-                            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-700 dark:text-slate-200">
-                              fan cam
-                            </span>
-                          </div>
-                        )
-                      ) : (
-                        <div className="flex h-full w-full items-end bg-gradient-to-b from-white/50 to-white/20 p-4 dark:from-slate-900/55 dark:to-slate-900/30">
-                          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-700 dark:text-slate-200">
-                            fan cam
-                          </span>
-                        </div>
-                      )}
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/85 via-slate-950/45 to-transparent p-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white">fan cam</p>
-                      </div>
+                      {primaryAction.label}
+                    </Button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        as={Link}
+                        href="#lineup-reel"
+                        className="border border-slate-300/90 bg-white text-slate-950 shadow-[0_12px_28px_rgba(15,23,42,0.10)] transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-50/90 hover:text-cyan-900 dark:border-slate-600/70 dark:bg-slate-900/72 dark:text-slate-100 dark:hover:border-cyan-500/45 dark:hover:bg-slate-900"
+                      >
+                        see featured
+                      </Button>
+                      <Button
+                        as={Link}
+                        href="#event-actions"
+                        className="border border-slate-300/90 bg-white text-slate-950 shadow-[0_12px_28px_rgba(15,23,42,0.10)] transition-all hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-50/90 hover:text-cyan-900 dark:border-slate-600/70 dark:bg-slate-900/72 dark:text-slate-100 dark:hover:border-cyan-500/45 dark:hover:bg-slate-900"
+                      >
+                        plan night
+                      </Button>
                     </div>
                   </div>
                 </div>
-                <div className="relative mt-4 flex flex-wrap items-center gap-2">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*,video/*"
-                    className="hidden"
-                    onChange={onFanCamUpload}
-                  />
-                  <Button
-                    className="border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                    onPress={openFanCamPicker}
-                    isDisabled={isUploadingFanCam}
-                  >
-                    {isUploadingFanCam ? "uploading..." : "share your moment with us"}
-                  </Button>
-                  <Chip className="border border-white/55 bg-white/70 text-slate-700 dark:border-slate-600/75 dark:bg-slate-900/70 dark:text-slate-200">
-                    photos + videos
-                  </Chip>
+
+                <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">date</p>
+                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.dateLabel}</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">venue</p>
+                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.venue}</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">time</p>
+                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.timeLabel}</p>
+                  </div>
                 </div>
               </div>
-              <Chip className="w-fit border border-slate-300/80 bg-white/72 text-slate-700 dark:border-slate-600/70 dark:bg-slate-900/66 dark:text-slate-200">
-                events by +233events under zyra gh
-              </Chip>
             </CardBody>
           </Card>
+        </section>
 
-          <Card className="border border-white/45 bg-white/50 backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="gap-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-                events
-              </p>
-              {EVENTS.map((event) => {
-                const selected = event.name === activeEvent;
-                return (
-                  <Button
-                    key={event.slug}
-                    variant="flat"
-                    className={`h-auto justify-between border px-4 py-3 ${
-                      selected
-                        ? "border-cyan-300/85 bg-cyan-50 text-slate-900 dark:border-cyan-400/50 dark:bg-cyan-900/30 dark:text-slate-100"
-                        : "border-white/45 bg-white/58 text-slate-800 dark:border-slate-700/55 dark:bg-slate-950/66 dark:text-slate-200"
-                    }`}
-                    onPress={() => {
-                      if (event.name !== activeEvent) {
-                        trackFeature("event_switch", event.name);
-                      }
-                      setActiveEvent(event.name);
-                    }}
-                  >
-                    <div className="flex flex-col items-start gap-1">
-                      <EventBrandName event={event} />
-                      <p className="text-xs text-slate-600 dark:text-slate-400">
-                        {event.dateLabel} · {event.timeLabel}
-                      </p>
-                    </div>
-                    <span className="text-xs uppercase tracking-[0.14em]">{selected ? "live" : "open"}</span>
-                  </Button>
-                );
-              })}
+        <EventLineupSection members={activeLineup} sectionClassName="mb-8" />
+
+        <section id="event-actions" className="mb-8">
+          <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
+            <CardBody className="gap-4">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                  actions
+                </p>
+                <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+                  plan the night
+                </h2>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <Link
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">route there</p>
+                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                    directions
+                  </p>
+                </Link>
+
+                <Link
+                  href={calendarUrl || detailPageUrl}
+                  target={calendarUrl ? "_blank" : undefined}
+                  rel={calendarUrl ? "noopener noreferrer" : undefined}
+                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">save the date</p>
+                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                    {calendarUrl ? "calendar" : "event page"}
+                  </p>
+                </Link>
+
+                <Link
+                  href={tableReservationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">crew move</p>
+                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                    reserve table
+                  </p>
+                </Link>
+              </div>
             </CardBody>
           </Card>
         </section>
 
         <section className="mb-10">
-          <div className="mb-4 flex items-center gap-3">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
-              upcoming event
-            </h2>
-          </div>
-
-          <Card className="relative overflow-hidden border border-white/45 bg-white/50 backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="relative gap-5 [&>*]:relative [&>*]:z-10">
-              <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/58 via-white/35 to-white/15 dark:from-slate-900/62 dark:via-slate-900/40 dark:to-slate-900/24" />
+          <Card className="border border-slate-200/80 bg-white/78 shadow-[0_18px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
+            <CardBody className="gap-4">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                  more from zyra
+                </p>
+                <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+                  other events
+                </h2>
               </div>
 
-              <div className={`rounded-2xl bg-gradient-to-r ${activeMeta.bannerTone} p-4 text-white`}>
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <EventBrandName event={activeMeta} />
-                  <div className="flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-3 py-1 text-xs uppercase tracking-[0.14em]">
-                    <span>{activeMeta.month}</span>
-                    <span>{activeMeta.day}</span>
-                  </div>
-                </div>
-                <p className="mt-2 text-sm text-white/90">{activeMeta.description}</p>
+              <div className="grid gap-3 lg:grid-cols-2">
+                {EVENTS.map((event) => {
+                  const selected = event.name === activeEvent
+
+                  return (
+                    <Button
+                      key={event.slug}
+                      className={`h-auto justify-between border px-4 py-4 ${
+                        selected
+                          ? "border-cyan-300/90 bg-[linear-gradient(135deg,rgba(236,254,255,0.98),rgba(224,242,254,0.98))] text-slate-950 shadow-[0_16px_34px_rgba(8,145,178,0.14)] dark:border-cyan-400/60 dark:bg-[linear-gradient(135deg,rgba(8,47,73,0.98),rgba(49,46,129,0.96))] dark:text-white dark:shadow-[0_18px_42px_rgba(8,145,178,0.26)]"
+                          : "border-slate-300/85 bg-white/92 text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.07)] hover:border-cyan-300/70 hover:bg-white dark:border-slate-700/55 dark:bg-slate-950/66 dark:text-slate-200"
+                      }`}
+                      onPress={() => {
+                        if (event.name !== activeEvent) {
+                          trackFeature("event_switch", event.name)
+                        }
+                        setActiveEvent(event.name)
+                      }}
+                    >
+                      <div className="flex flex-col items-start gap-1 text-left">
+                        <EventBrandName event={event} selected={selected} />
+                        <p className={`text-xs ${selected ? "text-slate-600 dark:text-slate-200/88" : "text-slate-600 dark:text-slate-400"}`}>
+                          {event.dateLabel} · {event.timeLabel}
+                        </p>
+                      </div>
+                      <span className={`text-xs uppercase tracking-[0.14em] ${selected ? "text-cyan-700 dark:text-cyan-200" : "text-slate-500 dark:text-slate-400"}`}>
+                        {selected ? "live now" : "switch"}
+                      </span>
+                    </Button>
+                  )
+                })}
               </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-2xl border border-white/45 bg-white/62 p-3 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">date</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.dateLabel}</p>
-                </div>
-                <div className="rounded-2xl border border-white/45 bg-white/62 p-3 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">venue</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.venue}</p>
-                </div>
-                <div className="rounded-2xl border border-white/45 bg-white/62 p-3 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">time</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.timeLabel}</p>
-                </div>
-                <div className="rounded-2xl border border-white/45 bg-white/62 p-3 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">entry</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{upcomingEntryPrice}</p>
-                </div>
-              </div>
-
-              {activeControl.passesEnabled ? (
-                <div className="rounded-2xl border border-white/45 bg-white/62 p-3 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">free pass tracker</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {passesLeft} left out of {activeControl.passLimit}
-                  </p>
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-white/45 bg-white/62 p-3 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/72">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">paid entry</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {activeControl.liveTicketCount} tickets currently live
-                  </p>
-                </div>
-              )}
-
-              {activeControl.passesEnabled && passesLeft > 0 && egoticketsPassUrl ? (
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button
-                    as={Link}
-                    href={egoticketsPassUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="border border-emerald-300/80 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white"
-                    onPress={() => {
-                      trackFeature("ticket_click", activeMeta.name);
-                    }}
-                  >
-                    get free pass now
-                  </Button>
-                  <Button
-                    as={Link}
-                    href={`/events/${activeMeta.slug}#pass-flow`}
-                    className="border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                    onPress={() => {
-                      trackFeature("event_detail_open", activeMeta.name);
-                    }}
-                  >
-                    see pass steps
-                  </Button>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    use the free-pass button first, then go to tickets if the pass window closes.
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button
-                    as={Link}
-                    href={`/events/${activeMeta.slug}`}
-                    className="border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                    onPress={() => {
-                      trackFeature("event_detail_open", activeMeta.name);
-                    }}
-                  >
-                    join the experience
-                  </Button>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    full tickets, passes, and table reservation are on the detail page.
-                  </p>
-                </div>
-              )}
             </CardBody>
           </Card>
         </section>
@@ -1109,3 +1114,27 @@ export default function EventsPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -166,7 +166,7 @@ export default function AdminPage() {
   }, [state.passes, state.attendees]);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden text-slate-900 transition-colors dark:text-slate-100" style={themeStyle}>
+    <div className="relative min-h-screen overflow-x-hidden text-slate-900 dark:text-slate-100" style={themeStyle}>
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div
           className="absolute inset-0 opacity-35 dark:opacity-25"
@@ -685,4 +685,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
 

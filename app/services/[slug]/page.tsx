@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
@@ -127,7 +127,7 @@ export default async function ServiceLocationPage({
   ];
 
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchemas) }}
@@ -278,3 +278,4 @@ export default async function ServiceLocationPage({
     </div>
   );
 }
+

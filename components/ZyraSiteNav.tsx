@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Button,
@@ -47,10 +47,13 @@ export function ZyraSiteNav({
 }: ZyraSiteNavProps) {
   const router = useRouter();
   const { theme, setTheme } = useThemeMode();
+  const [isThemeReady, setIsThemeReady] = useState(false);
   const [isAdminSession, setIsAdminSession] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    setIsThemeReady(true);
+
     if (typeof window === "undefined") {
       return;
     }
@@ -148,12 +151,16 @@ export function ZyraSiteNav({
         <NavbarContent justify="end" className="shrink-0 sm:hidden">
           <div className="flex items-center gap-1.5 min-[430px]:gap-2">
             <div className="flex h-10 items-center rounded-full border border-slate-300/70 bg-white/78 px-2 py-1.5 backdrop-blur-xl min-[430px]:h-10 min-[430px]:px-2.5 dark:border-white/20 dark:bg-white/12">
-              <Switch
-                size="sm"
-                isSelected={theme === "dark"}
-                onValueChange={(selected) => setTheme(selected ? "dark" : "light")}
-                aria-label={theme === "dark" ? "switch to light mode" : "switch to dark mode"}
-              />
+              {isThemeReady ? (
+                <Switch
+                  size="sm"
+                  isSelected={theme === "dark"}
+                  onValueChange={(selected) => setTheme(selected ? "dark" : "light")}
+                  aria-label={theme === "dark" ? "switch to light mode" : "switch to dark mode"}
+                />
+              ) : (
+                <div aria-hidden className="h-6 w-11 rounded-full bg-slate-300/70 dark:bg-slate-700/70" />
+              )}
             </div>
             <Button
               type="button"

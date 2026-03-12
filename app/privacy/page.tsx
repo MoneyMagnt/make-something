@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Card, CardBody } from "@heroui/react";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
@@ -26,7 +26,7 @@ const SECTIONS = [
 
 export default function PrivacyPage() {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <ZyraSiteNav active="services" brand={<ZyraBrandMark />} />
 
       <main className="relative mx-auto max-w-4xl px-5 pb-16 pt-10 sm:px-6">
@@ -62,3 +62,4 @@ export default function PrivacyPage() {
     </div>
   );
 }
+

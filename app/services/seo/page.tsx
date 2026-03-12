@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Card,
@@ -81,7 +81,7 @@ const seoServiceJsonLd = JSON.stringify([
 
 export default function SeoServicePage() {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: seoServiceJsonLd }} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(14,165,233,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(59,130,246,0.15),transparent)] dark:bg-[radial-gradient(1140px_700px_at_8%_-12%,rgba(6,182,212,0.25),transparent_60%),radial-gradient(980px_560px_at_92%_8%,rgba(37,99,235,0.28),transparent_62%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(4,18,39,0.9)_45%,rgba(9,24,52,0.95)_100%)]" />
 
@@ -164,5 +164,6 @@ export default function SeoServicePage() {
     </div>
   );
 }
+
 
 

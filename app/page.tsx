@@ -1,17 +1,12 @@
 ﻿"use client";
 
-import {
-  Button,
-  Card,
-  CardBody,
-  Chip,
-  Link,
-} from "@heroui/react";
-import { motion } from "framer-motion";
-import { ZyraSiteNav } from "@/components/ZyraSiteNav";
+import ZyraHomeDesktop from "@/components/ZyraHomeDesktop";
+import ZyraHomeMobile from "@/components/ZyraHomeMobile";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
+import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { useScreenProfile } from "@/lib/useScreenProfile";
 
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
@@ -78,6 +73,13 @@ const ABOVE_FOLD_PROOF = [
   { label: "reporting rhythm", value: "weekly" },
 ];
 
+const WHY_ZYRA = [
+  "clear revenue goals every sprint.",
+  "one team for strategy, execution, and reporting.",
+  "ai-assisted content with human quality control.",
+  "founder website sprints plus sms and analytics for scale.",
+];
+
 const SYSTEM_STEPS = [
   {
     title: "acquire",
@@ -111,6 +113,24 @@ const RESULT_SNAPSHOTS = [
     challenge: "reach was high but direct response stayed low.",
     action: "we reworked hooks, offers, and audience segmentation for each creator cluster.",
     outcome: "response rate improved and winning formats became repeatable.",
+  },
+];
+
+const OPERATING_NOTES = [
+  {
+    step: "01",
+    title: "diagnose",
+    body: "we audit channels, identify leaks, and set one clear scorecard.",
+  },
+  {
+    step: "02",
+    title: "build",
+    body: "we ship the strategy, content, and conversion assets quickly.",
+  },
+  {
+    step: "03",
+    title: "scale",
+    body: "we keep what works, cut what does not, and compound weekly.",
   },
 ];
 
@@ -166,265 +186,49 @@ const homeJsonLd = JSON.stringify([
   },
 ]);
 
-const reveal = {
-  initial: { opacity: 0, y: 14 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
-  transition: { duration: 0.45, ease: "easeOut" as const },
-};
-
 export default function Home() {
+  const screenProfile = useScreenProfile();
+
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: homeJsonLd }} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.23),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(59,130,246,0.17),transparent)] dark:bg-[radial-gradient(1240px_740px_at_8%_-14%,rgba(6,182,212,0.27),transparent_58%),radial-gradient(1120px_680px_at_92%_10%,rgba(59,130,246,0.3),transparent_60%),radial-gradient(940px_560px_at_50%_115%,rgba(14,116,144,0.26),transparent_64%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(3,15,34,0.9)_45%,rgba(8,20,45,0.95)_100%)]" />
 
-      <ZyraSiteNav
-        active="home"
-        brand={<ZyraBrandMark />}
-      />
+      <ZyraSiteNav active="home" brand={<ZyraBrandMark />} />
 
-      <main className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
-        <motion.section {...reveal} className="grid items-start gap-8 lg:grid-cols-[1.12fr_0.88fr]">
-          <div className="space-y-6">
-            <Chip className="border border-cyan-200 bg-cyan-100/80 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-              growth systems for ambitious brands
-            </Chip>
+      <main data-screen={screenProfile ?? "detecting"} className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
+        <div className="lg:hidden">
+          <ZyraHomeMobile
+            growthAuditUrl={GROWTH_AUDIT_URL}
+            screenProfile={screenProfile}
+            stats={STATS}
+            aboveFoldProof={ABOVE_FOLD_PROOF}
+            whyZyra={WHY_ZYRA}
+            systemSteps={SYSTEM_STEPS}
+            resultSnapshots={RESULT_SNAPSHOTS}
+            operatingNotes={OPERATING_NOTES}
+            services={SERVICES}
+            faqs={FAQS}
+          />
+        </div>
 
-            <h1 className="font-[family-name:var(--font-bricolage)] text-4xl font-extrabold leading-[0.95] tracking-tight text-slate-950 sm:text-6xl dark:text-slate-100">
-              we turn attention into pipeline and sales.
-            </h1>
-
-            <p className="max-w-2xl text-base text-slate-700 sm:text-lg dark:text-slate-300">
-              zyra combines seo, ai-assisted content creation, influencer campaigns, founder website sprints, sms activation, and weekly analytics so growth is faster, cleaner, and measurable.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Button
-                as={Link}
-                href={GROWTH_AUDIT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-slate-900 px-6 font-semibold text-white dark:bg-slate-100 dark:text-slate-900"
-              >
-                book growth audit
-              </Button>
-              <Button
-                as={Link}
-                href="#proof"
-                variant="bordered"
-                className="border-slate-300 bg-white/70 px-6 font-semibold text-slate-900 dark:border-slate-600 dark:bg-slate-900/60 dark:text-slate-100"
-              >
-                see proof
-              </Button>
-            </div>
-            <div className="grid max-w-2xl gap-2 sm:grid-cols-3">
-              {ABOVE_FOLD_PROOF.map((item) => (
-                <div key={item.label} className="rounded-xl border border-slate-200/70 bg-white/80 px-3 py-2 dark:border-slate-700/70 dark:bg-slate-950/70">
-                  <p className="font-[family-name:var(--font-space-grotesk)] text-base font-bold text-slate-900 dark:text-slate-100">{item.value}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">{item.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
-            <CardBody className="gap-5">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
-                  why teams pick zyra
-                </h2>
-                <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">proof-first</Chip>
-              </div>
-
-              <div className="grid gap-3 text-sm text-slate-700 dark:text-slate-300">
-                <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-slate-700/70 dark:bg-slate-950/70">
-                  clear revenue goals every sprint.
-                </div>
-                <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-slate-700/70 dark:bg-slate-950/70">
-                  one team for strategy, execution, and reporting.
-                </div>
-                <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-slate-700/70 dark:bg-slate-950/70">
-                  ai-assisted content with human quality control.
-                </div>
-                <div className="rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-slate-700/70 dark:bg-slate-950/70">
-                  founder website sprints plus sms and analytics for scale.
-                </div>
-              </div>
-            </CardBody>
-          </Card>
-        </motion.section>
-
-        <motion.section id="proof" {...reveal} transition={{ ...reveal.transition, delay: 0.08 }} className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {STATS.map((item) => (
-            <Card key={item.label} className="border border-slate-200/70 bg-white/80 dark:border-slate-700/80 dark:bg-slate-900/70">
-              <CardBody className="gap-1">
-                <p className="font-[family-name:var(--font-space-grotesk)] text-2xl font-extrabold text-slate-900 dark:text-slate-100">{item.value}</p>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{item.label}</p>
-              </CardBody>
-            </Card>
-          ))}
-        </motion.section>
-
-        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.12 }} className="mt-10">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
-              how we create revenue
-            </h2>
-            <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">acquire → activate → optimize</Chip>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {SYSTEM_STEPS.map((item) => (
-              <Card key={item.title} className="border border-slate-200/70 bg-white/80 dark:border-slate-700/80 dark:bg-slate-900/70">
-                <CardBody className="gap-2">
-                  <p className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                    {item.title}
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.15 }} className="mt-14">
-          <div id="results" className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
-              results snapshots
-            </h2>
-            <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">problem → action → outcome</Chip>
-          </div>
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {RESULT_SNAPSHOTS.map((item) => (
-              <Card key={item.title} className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
-                <CardBody className="gap-2">
-                  <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">challenge:</span> {item.challenge}
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">action:</span> {item.action}
-                  </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">outcome:</span> {item.outcome}
-                  </p>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.18 }} className="mt-14">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
-              what we execute
-            </h2>
-            <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">4 focused lanes</Chip>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {SERVICES.map((item) => (
-              <Card key={item.title} className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
-                <CardBody className="gap-4">
-                  <div className={`h-1.5 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
-                  <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">{item.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
-                  <div className="grid gap-2 text-sm text-slate-700 dark:text-slate-300">
-                    {item.points.map((point) => (
-                      <div key={point} className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-slate-300" />
-                        <span>{point}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <Link
-                    href={item.href}
-                    className="text-sm font-semibold uppercase tracking-[0.12em] text-cyan-700 hover:text-cyan-600 dark:text-cyan-300 dark:hover:text-cyan-200"
-                  >
-                    view service
-                  </Link>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section id="how-we-work" {...reveal} transition={{ ...reveal.transition, delay: 0.24 }} className="mt-14 grid gap-6 lg:grid-cols-[1.06fr_0.94fr]">
-          <Card className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
-            <CardBody className="gap-4">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                how we run growth
-              </h2>
-
-              <div className="grid gap-3">
-                {[
-                  {
-                    step: "01",
-                    title: "diagnose",
-                    body: "we audit channels, identify leaks, and set one clear scorecard.",
-                  },
-                  {
-                    step: "02",
-                    title: "build",
-                    body: "we ship the strategy, content, and conversion assets quickly.",
-                  },
-                  {
-                    step: "03",
-                    title: "scale",
-                    body: "we keep what works, cut what doesn’t, and compound weekly.",
-                  },
-                ].map((item) => (
-                  <div key={item.step} className="flex gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-3.5 dark:border-slate-700/70 dark:bg-slate-950/70">
-                    <span className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-cyan-600 dark:text-cyan-300">
-                      {item.step}
-                    </span>
-                    <div>
-                      <p className="font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-
-          <Card id="faq" className="border border-slate-200/70 bg-white/85 backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/75">
-            <CardBody className="gap-4">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                quick faq
-              </h2>
-              <div className="grid gap-3">
-                {FAQS.map((item) => (
-                  <div key={item.q} className="rounded-2xl border border-slate-200/70 bg-white/80 p-3.5 dark:border-slate-700/70 dark:bg-slate-950/70">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.q}</p>
-                    <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">{item.a}</p>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-        </motion.section>
-
-        <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.32 }} className="mt-14">
-          <Card className="border border-cyan-200/80 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 text-white shadow-[0_18px_48px_rgba(14,165,233,0.33)] dark:border-cyan-200/25 dark:bg-[linear-gradient(118deg,rgba(8,47,73,0.98)_0%,rgba(30,64,175,0.96)_56%,rgba(12,74,110,0.98)_100%)] dark:shadow-[0_22px_62px_rgba(8,145,178,0.34)]">
-            <CardBody className="gap-2">
-              <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-cyan-100 dark:text-cyan-50">next step</p>
-                <p className="mt-1 font-[family-name:var(--font-space-grotesk)] text-2xl font-bold">
-                  book your growth audit and get a 90-day execution map.
-                </p>
-              </div>
-              <p className="text-sm text-cyan-50/95 sm:hidden">tap the whatsapp icon to chat</p>
-              <p className="hidden text-sm text-cyan-50/95 sm:block">click chat on whatsapp to book your growth audit</p>
-            </CardBody>
-          </Card>
-        </motion.section>
+        <div className="hidden lg:block">
+          <ZyraHomeDesktop
+            growthAuditUrl={GROWTH_AUDIT_URL}
+            stats={STATS}
+            aboveFoldProof={ABOVE_FOLD_PROOF}
+            whyZyra={WHY_ZYRA}
+            systemSteps={SYSTEM_STEPS}
+            resultSnapshots={RESULT_SNAPSHOTS}
+            operatingNotes={OPERATING_NOTES}
+            services={SERVICES}
+            faqs={FAQS}
+          />
+        </div>
       </main>
+
       <ZyraSiteFooter />
     </div>
   );
 }
-
-
 

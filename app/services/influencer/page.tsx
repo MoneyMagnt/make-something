@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Card,
@@ -90,7 +90,7 @@ const influencerServiceJsonLd = JSON.stringify([
 
 export default function InfluencerServicePage() {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: influencerServiceJsonLd }} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_620px_at_10%_-12%,rgba(99,102,241,0.2),transparent),radial-gradient(900px_520px_at_92%_10%,rgba(139,92,246,0.16),transparent)] dark:bg-[radial-gradient(1140px_700px_at_8%_-12%,rgba(99,102,241,0.25),transparent_60%),radial-gradient(980px_560px_at_92%_8%,rgba(139,92,246,0.28),transparent_62%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(24,20,60,0.9)_45%,rgba(30,27,75,0.95)_100%)]" />
 
@@ -173,5 +173,6 @@ export default function InfluencerServicePage() {
     </div>
   );
 }
+
 
 

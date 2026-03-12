@@ -1,5 +1,12 @@
-export type EventName = "We Outside" | "VENUS";
+﻿export type EventName = "We Outside" | "VENUS";
 export type EventSlug = "we-outside" | "venus";
+
+export type EventLineupMember = {
+  role: string;
+  name: string;
+  image?: string;
+  socialUrl?: string;
+};
 
 export type EventMeta = {
   name: EventName;
@@ -18,6 +25,7 @@ export type EventMeta = {
   fallbackPrice: string;
   description: string;
   egoticketsEventUrl?: string;
+  lineup: EventLineupMember[];
 };
 
 export type TicketItem = {
@@ -44,6 +52,7 @@ export const EVENTS: EventMeta[] = [
     fallbackPrice: "GHS 50",
     description:
       "Beachfront party energy by zyra with oceanfront staging and sunset atmosphere.",
+    lineup: [],
   },
   {
     name: "VENUS",
@@ -61,7 +70,48 @@ export const EVENTS: EventMeta[] = [
     auraB: "rgba(217,70,239,0.28)",
     fallbackPrice: "GHS 50",
     description:
-      "Signature venus nightlife experience by zyra with free pass access before paid entry starts.",
+      "Signature venus nightlife experience by zyra with free pass access before standard entry starts.",
+    egoticketsEventUrl: "https://egotickets.com/events/venus-the-beginning/register",
+    lineup: [
+      {
+        role: "host",
+        name: "Xeno The Rev",
+        image: "/lineup/xeno-the-rev.jpg",
+        socialUrl: "https://snapchat.com/t/yocjSfV6",
+      },
+      {
+        role: "mc",
+        name: "Tim Jeezy",
+        image: "/lineup/tim-jeezy.jpg",
+        socialUrl: "https://snapchat.com/t/Wgi9sqZs",
+      },
+      {
+        role: "mc",
+        name: "Mr Hollywoode",
+        image: "/lineup/mr-hollywoode.jpg",
+        socialUrl:
+          "https://www.tiktok.com/@mc_mrhollywoode/video/7614935145937816853?is_from_webapp=1&sender_device=pc&web_id=7601476827635271186",
+      },
+      {
+        role: "dj",
+        name: "King Switch",
+        image: "/lineup/king-switch.jpg",
+        socialUrl: "https://www.tiktok.com/@kingswitchofficial?_r=1&_t=ZS-94bpnMYHG9F",
+      },
+      {
+        role: "dj",
+        name: "Tormhe",
+        image: "/lineup/tormhe.jpg",
+        socialUrl: "https://www.tiktok.com/@iamdjtormhe",
+      },
+      {
+        role: "dj",
+        name: "Hero",
+        image: "/lineup/hero.jpg",
+        socialUrl:
+          "https://www.tiktok.com/@dj_hero_gh/video/7616004376083090710?is_from_webapp=1&sender_device=pc&web_id=7601476827635271186",
+      },
+    ],
   },
 ];
 
@@ -70,7 +120,14 @@ export const DEFAULT_EVENT_TICKETS: Record<EventName, TicketItem[]> = {
     { id: "wo-early", name: "early bird", price: "GHS 50", link: "" },
     { id: "wo-standard", name: "standard ticket", price: "GHS 100", link: "" },
   ],
-  VENUS: [{ id: "venus-standard", name: "entry ticket", price: "GHS 50", link: "" }],
+  VENUS: [
+    {
+      id: "venus-standard",
+      name: "entry ticket",
+      price: "GHS 50",
+      link: "https://egotickets.com/events/venus-the-beginning/register",
+    },
+  ],
 };
 
 export const VENUS_FREE_PASS_LIMIT = 200;
@@ -79,3 +136,4 @@ export const VENUS_POST_PASS_PRICE = "GHS 50";
 export function getEventBySlug(slug: string): EventMeta | undefined {
   return EVENTS.find((event) => event.slug === slug);
 }
+
