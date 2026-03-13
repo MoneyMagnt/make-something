@@ -12,54 +12,60 @@ export type ServiceVisual = {
   gradient: string;
   glowClass: string;
   chipClass: string;
+  surfaceBackground: string;
 };
 
 const DEFAULT_VISUAL: ServiceVisual = {
   eyebrow: "signal build",
-  caption: "visual systems, clean messaging, and momentum you can feel in one scroll.",
-  proof: "built to turn attention into action",
+  caption: "visual systems, cleaner messaging, and a stronger next move in one pass.",
+  proof: "designed to turn attention into action",
   accentLabel: "brand signal",
-  gradient: "from-cyan-400 via-sky-400 to-blue-700",
+  gradient: "from-cyan-300 via-sky-400 to-blue-700",
   glowClass: "bg-cyan-400/28",
-  chipClass: "border-cyan-200/70 bg-cyan-100/80 text-cyan-900",
+  chipClass: "border-cyan-200/70 bg-cyan-100/85 text-cyan-900",
+  surfaceBackground: `linear-gradient(145deg,rgba(9,19,44,0.18),rgba(2,6,23,0.76)), url(${BRAND_ART.gradientHub})`,
 };
 
 export const SERVICE_VISUALS: Record<string, ServiceVisual> = {
   "seo growth system": {
     eyebrow: "discoverable demand",
-    caption: "sharp information architecture, cleaner offer pages, and search journeys that feel premium instead of crowded.",
-    proof: "intent mapped, pages tuned, demand captured",
+    caption: "intent-led pages and search surfaces that look premium before the first call.",
+    proof: "search journeys shaped for revenue, not traffic alone",
     accentLabel: "search signal",
-    gradient: "from-cyan-400 via-sky-300 to-blue-700",
+    gradient: "from-cyan-300 via-sky-400 to-blue-700",
     glowClass: "bg-cyan-400/30",
-    chipClass: "border-cyan-200/70 bg-cyan-100/80 text-cyan-900",
+    chipClass: "border-cyan-200/70 bg-cyan-100/85 text-cyan-900",
+    surfaceBackground: `linear-gradient(145deg,rgba(9,25,52,0.14),rgba(2,6,23,0.8)), url(${BRAND_ART.gradientMesh})`,
   },
   "content studio": {
     eyebrow: "editorial engine",
-    caption: "campaign concepts, visual rhythm, and content packaging that keeps the brand feeling alive across touchpoints.",
-    proof: "hooks, assets, and repeatable publishing flow",
+    caption: "campaign rhythm, content packaging, and visual sequencing that keep the brand feeling alive.",
+    proof: "story-first assets with sharper creative direction",
     accentLabel: "content signal",
-    gradient: "from-emerald-400 via-teal-300 to-cyan-700",
+    gradient: "from-emerald-300 via-teal-300 to-cyan-700",
     glowClass: "bg-emerald-400/30",
-    chipClass: "border-emerald-200/70 bg-emerald-100/80 text-emerald-900",
+    chipClass: "border-emerald-200/70 bg-emerald-100/85 text-emerald-900",
+    surfaceBackground: `linear-gradient(145deg,rgba(6,36,38,0.16),rgba(2,6,23,0.78)), url(${BRAND_ART.gradientHub})`,
   },
   "influencer strategy": {
-    eyebrow: "culture-led distribution",
-    caption: "creator plans that feel curated, on-brand, and ready to move real people instead of chasing empty reach.",
-    proof: "creator fit, rollout timing, offer lift",
+    eyebrow: "culture-led reach",
+    caption: "creator programs that feel curated, visible, and tied to action instead of noise.",
+    proof: "creator fit, rollout timing, and clearer offer lift",
     accentLabel: "creator signal",
-    gradient: "from-indigo-400 via-violet-300 to-fuchsia-700",
+    gradient: "from-indigo-300 via-violet-300 to-fuchsia-700",
     glowClass: "bg-violet-400/28",
-    chipClass: "border-violet-200/70 bg-violet-100/80 text-violet-900",
+    chipClass: "border-violet-200/70 bg-violet-100/85 text-violet-900",
+    surfaceBackground: `linear-gradient(145deg,rgba(33,20,68,0.16),rgba(2,6,23,0.8)), url(${BRAND_ART.abstractBlue})`,
   },
   "founder website sprint": {
     eyebrow: "conversion surface",
-    caption: "structured landing pages and founder positioning that make the offer feel higher value before the call even starts.",
-    proof: "positioning, page flow, and tracking handoff",
+    caption: "founder pages that frame the offer fast and make the brand feel more expensive.",
+    proof: "positioning, page flow, and conversion clarity in one sprint",
     accentLabel: "site signal",
     gradient: "from-amber-300 via-orange-300 to-rose-500",
     glowClass: "bg-amber-300/28",
-    chipClass: "border-amber-200/70 bg-amber-100/80 text-amber-900",
+    chipClass: "border-amber-200/70 bg-amber-100/85 text-amber-900",
+    surfaceBackground: `linear-gradient(145deg,rgba(64,34,7,0.16),rgba(2,6,23,0.8)), url(${BRAND_ART.gradientMesh})`,
   },
 };
 
@@ -69,15 +75,15 @@ export function getServiceVisual(title: string) {
 
 export const BRAND_SIGNAL_STRIPS = [
   {
-    title: "editorial layouts",
-    body: "big visuals, short copy blocks, and proof that lands fast.",
+    title: "visual-first entry",
+    body: "the first screen lands with motion, contrast, and direction before the reading starts.",
   },
   {
-    title: "interactive service lanes",
-    body: "hover on desktop, tap on mobile, same brand story both ways.",
+    title: "interactive guidance",
+    body: "hover on desktop, tap on mobile, same signal system both ways.",
   },
   {
-    title: "blue-electric atmosphere",
-    body: "abstract signal art instead of generic agency stock photos.",
+    title: "marketing atmosphere",
+    body: "editorial gradients, layered proof, and sharper conversion surfaces across the page.",
   },
 ] as const;
