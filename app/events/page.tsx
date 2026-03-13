@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
+import { Button, Card, CardBody, Image, Link } from "@heroui/react";
 import dynamic from "next/dynamic";
 import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
@@ -926,14 +926,14 @@ export default function EventsPage() {
         <section className="mb-8">
           <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-6">
-              <div className="relative flex min-h-[9.5rem] flex-col items-center justify-center pt-1 text-center sm:min-h-[11rem] lg:min-h-[13rem]">
-                <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3">
-                  <Chip className="w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+              <div className="relative flex min-h-[9.5rem] flex-col items-center justify-center pt-5 text-center sm:min-h-[11rem] sm:pt-6 lg:min-h-[13rem] lg:pt-7">
+                <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 sm:gap-3">
+                  <div className="inline-flex h-9 items-center rounded-full border border-cyan-200 bg-cyan-100 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
                     tickets live
-                  </Chip>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-100 px-3 py-1.5 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em]">presented by</span>
-                    <EventsBrandMark size="compact" />
+                  </div>
+                  <div className="inline-flex h-9 max-w-[calc(100%-7.25rem)] items-center gap-2 overflow-hidden rounded-full border border-cyan-200 bg-cyan-100 px-3 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em]">presented by</span>
+                    <EventsBrandMark size="compact" className="min-w-0" />
                   </div>
                 </div>
                 <h1 className="sr-only">{activeMeta.name}</h1>
@@ -941,7 +941,7 @@ export default function EventsPage() {
                   removeWrapper
                   alt={`${activeMeta.name} logo`}
                   src={activeMeta.logo}
-                  className="mx-auto h-28 w-full max-w-[430px] object-contain sm:h-36 sm:max-w-[540px] lg:h-44 lg:max-w-[660px] xl:h-48 xl:max-w-[720px]"
+                  className="mx-auto mt-3 h-28 w-full max-w-[430px] object-contain sm:mt-4 sm:h-36 sm:max-w-[540px] lg:mt-5 lg:h-44 lg:max-w-[660px] xl:h-48 xl:max-w-[720px]"
                 />
               </div>
 
@@ -1077,13 +1077,18 @@ export default function EventsPage() {
         <section className="mb-10">
           <Card className="border border-slate-200/80 bg-white/78 shadow-[0_18px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
             <CardBody className="gap-4">
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-                  more from zyra
-                </p>
-                <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  other events
-                </h2>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                    more from zyra
+                  </p>
+                  <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+                    other events
+                  </h2>
+                </div>
+                <div className="rounded-full border border-slate-200/90 bg-white/90 px-3 py-1.5 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-slate-700/55 dark:bg-slate-900/70">
+                  <EventsBrandMark size="compact" />
+                </div>
               </div>
 
               <div className="grid gap-3 lg:grid-cols-2">
@@ -1125,6 +1130,12 @@ export default function EventsPage() {
     </div>
   );
 }
+
+
+
+
+
+
 
 
 
