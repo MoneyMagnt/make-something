@@ -927,12 +927,14 @@ export default function EventsPage() {
           <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-6">
               <div className="relative flex min-h-[9.5rem] flex-col items-center justify-center pt-1 text-center sm:min-h-[11rem] lg:min-h-[13rem]">
-                <Chip className="absolute left-0 top-0 w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-                  tickets live
-                </Chip>
-                <div className="mb-4 inline-flex items-center gap-3 rounded-full border border-slate-200/80 bg-white/90 px-3 py-2 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-slate-700/70 dark:bg-slate-900/72">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">presented by</span>
-                  <EventsBrandMark />
+                <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3">
+                  <Chip className="w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+                    tickets live
+                  </Chip>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-100 px-3 py-1.5 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em]">presented by</span>
+                    <EventsBrandMark size="compact" />
+                  </div>
                 </div>
                 <h1 className="sr-only">{activeMeta.name}</h1>
                 <Image
@@ -1123,6 +1125,8 @@ export default function EventsPage() {
     </div>
   );
 }
+
+
 
 
 
