@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
-import { ZyraBrandMark } from "@/components/ZyraBrandMark";
+import { EventsBrandMark } from "@/components/EventsBrandMark";
 import {
   EVENT_CONTROL_DEFAULTS,
   EVENT_TRACK_SESSION_KEY,
@@ -257,7 +257,7 @@ export function EventDetailClient({
             ? "from-indigo-900/82 via-violet-800/70 to-slate-950/85 border-violet-300/25"
             : "from-emerald-900/82 via-cyan-900/70 to-slate-950/85 border-cyan-300/25"
         }`}
-        brand={<ZyraBrandMark />}
+        brand={<EventsBrandMark />}
       />
 
       <main className="relative z-10 mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6">
@@ -301,9 +301,12 @@ export function EventDetailClient({
           </div>
 
           <div className="rounded-2xl border border-violet-200/75 bg-violet-100/75 px-4 py-3 backdrop-blur-lg dark:border-violet-700/60 dark:bg-violet-900/35">
-            <p className="text-sm font-semibold text-violet-900 dark:text-violet-100">
-              this event is produced by +233events under zyra gh
-            </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <EventsBrandMark />
+              <p className="text-sm font-semibold text-violet-900 dark:text-violet-100">
+                this event is produced by +233events under zyra gh
+              </p>
+            </div>
           </div>
 
           {eventControl.passesEnabled && !showVenusPassGuide ? (
@@ -435,5 +438,7 @@ export function EventDetailClient({
     </div>
   );
 }
+
+
 
 

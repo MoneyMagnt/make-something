@@ -6,7 +6,7 @@ import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } f
 import { useThemeMode } from "@/components/ThemeModeProvider";
 import { EventLineupSection } from "@/components/EventLineupSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
-import { ZyraBrandMark } from "@/components/ZyraBrandMark";
+import { EventsBrandMark } from "@/components/EventsBrandMark";
 import { DEFAULT_EVENT_TICKETS, EVENTS } from "@/lib/eventsData";
 import type { EventMeta, EventName } from "@/lib/eventsData";
 import {
@@ -919,7 +919,7 @@ export default function EventsPage() {
       <ZyraSiteNav
         active="events"
         navbarClassName={`border-b bg-gradient-to-r backdrop-blur-lg ${navToneClass}`}
-        brand={<ZyraBrandMark />}
+        brand={<EventsBrandMark />}
       />
 
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
@@ -930,6 +930,10 @@ export default function EventsPage() {
                 <Chip className="absolute left-0 top-0 w-fit border border-cyan-200 bg-cyan-100 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
                   tickets live
                 </Chip>
+                <div className="mb-4 inline-flex items-center gap-3 rounded-full border border-slate-200/80 bg-white/90 px-3 py-2 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-slate-700/70 dark:bg-slate-900/72">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">presented by</span>
+                  <EventsBrandMark />
+                </div>
                 <h1 className="sr-only">{activeMeta.name}</h1>
                 <Image
                   removeWrapper
@@ -1119,6 +1123,8 @@ export default function EventsPage() {
     </div>
   );
 }
+
+
 
 
 
