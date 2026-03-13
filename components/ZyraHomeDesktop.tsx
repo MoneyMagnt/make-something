@@ -62,7 +62,7 @@ const reveal = {
 
 function MetricPanel({ item }: { item: StatItem }) {
   return (
-    <div className="rounded-[1.45rem] border border-white/55 bg-white/84 px-4 py-4 shadow-[0_18px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/72">
+    <div className="rounded-[1.35rem] border border-white/55 bg-white/84 px-4 py-4 shadow-[0_16px_34px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/72">
       <p className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-950 dark:text-slate-100">
         {item.value}
       </p>
@@ -90,7 +90,7 @@ export default function ZyraHomeDesktop({
     services.find((service) => service.title === deferredServiceTitle) ?? services[0];
   const activeVisual = getServiceVisual(activeService.title);
   const leadSnapshot = resultSnapshots[0];
-  const supportSnapshots = resultSnapshots.slice(1);
+  const supportSnapshots = resultSnapshots.slice(1, 3);
 
   const activateService = (title: string) => {
     startTransition(() => {
@@ -102,7 +102,7 @@ export default function ZyraHomeDesktop({
     <>
       <motion.section
         {...reveal}
-        className="grid items-start gap-8 xl:grid-cols-[0.88fr_1.12fr]"
+        className="grid items-start gap-8 xl:grid-cols-[0.86fr_1.14fr]"
       >
         <div className="space-y-7 pt-4">
           <Chip className="border border-cyan-200 bg-cyan-100/85 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
@@ -113,11 +113,11 @@ export default function ZyraHomeDesktop({
             <p className="text-[11px] uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
               zyra growth studio
             </p>
-            <h1 className="max-w-xl font-[family-name:var(--font-bricolage)] text-[clamp(3.9rem,7vw,6.2rem)] font-extrabold leading-[0.88] tracking-tight text-slate-950 dark:text-slate-100">
+            <h1 className="max-w-xl font-[family-name:var(--font-bricolage)] text-[clamp(3.8rem,6.6vw,5.9rem)] font-extrabold leading-[0.88] tracking-tight text-slate-950 dark:text-slate-100">
               marketing people can feel before they read.
             </h1>
             <p className="max-w-xl text-lg leading-8 text-slate-700 dark:text-slate-300">
-              we turn the first scroll into atmosphere, proof, and a clearer next move so the brand feels high-value immediately.
+              the homepage should lead with atmosphere, proof, and one clear next step instead of asking people to work through a wall of copy.
             </p>
           </div>
 
@@ -147,228 +147,197 @@ export default function ZyraHomeDesktop({
             ))}
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            {BRAND_SIGNAL_STRIPS.map((item, index) => (
+          <div className="grid gap-3">
+            {whyZyra.slice(0, 3).map((item, index) => (
               <div
-                key={item.title}
-                className="rounded-[1.5rem] border border-white/50 bg-white/80 px-4 py-4 shadow-[0_14px_28px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/68"
+                key={item}
+                className="flex items-start gap-4 rounded-[1.45rem] border border-white/50 bg-white/82 px-4 py-4 shadow-[0_14px_28px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/68"
               >
-                <div className={`mb-4 h-10 w-10 rounded-2xl ${index === 0 ? "bg-cyan-500/14 text-cyan-700 dark:text-cyan-300" : index === 1 ? "bg-emerald-500/14 text-emerald-700 dark:text-emerald-300" : "bg-violet-500/14 text-violet-700 dark:text-violet-300"} flex items-center justify-center font-[family-name:var(--font-space-grotesk)] text-sm font-bold`}>
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${index === 0 ? "bg-cyan-500/14 text-cyan-700 dark:text-cyan-300" : index === 1 ? "bg-emerald-500/14 text-emerald-700 dark:text-emerald-300" : "bg-violet-500/14 text-violet-700 dark:text-violet-300"} font-[family-name:var(--font-space-grotesk)] text-sm font-bold`}>
                   0{index + 1}
                 </div>
-                <p className="font-semibold text-slate-950 dark:text-slate-100">{item.title}</p>
-                <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-400">{item.body}</p>
+                <p className="pt-1 text-sm leading-7 text-slate-700 dark:text-slate-300">{item}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="relative min-h-[740px] overflow-hidden rounded-[2.4rem] border border-white/45 bg-[linear-gradient(145deg,rgba(255,255,255,0.78),rgba(255,255,255,0.24))] p-6 shadow-[0_34px_92px_rgba(15,23,42,0.16)] backdrop-blur-2xl dark:border-slate-700/70 dark:bg-[linear-gradient(145deg,rgba(8,14,31,0.92),rgba(8,18,42,0.64))]">
-          <div className="absolute inset-0 opacity-95">
-            <div
-              className="absolute inset-0 bg-cover bg-center opacity-80"
-              style={{ backgroundImage: `url(${BRAND_ART.gradientHub})` }}
-            />
-            <div
-              className="absolute inset-0 bg-cover bg-center opacity-55 mix-blend-screen"
-              style={{ backgroundImage: `url(${BRAND_ART.gradientMesh})` }}
-            />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.34),transparent_24%),radial-gradient(circle_at_82%_12%,rgba(34,211,238,0.2),transparent_22%),linear-gradient(180deg,rgba(9,19,44,0.12),rgba(2,6,23,0.66))]" />
-          </div>
+        <Card className="relative overflow-hidden rounded-[2.35rem] border border-white/45 bg-[linear-gradient(145deg,rgba(255,255,255,0.76),rgba(255,255,255,0.18))] shadow-[0_34px_90px_rgba(15,23,42,0.16)] backdrop-blur-2xl dark:border-slate-700/70 dark:bg-[linear-gradient(145deg,rgba(8,14,31,0.92),rgba(8,18,42,0.7))]">
+          <CardBody className="relative min-h-[710px] gap-6 overflow-hidden p-6">
+            <div className="absolute inset-0 opacity-95">
+              <div
+                className="absolute inset-0 bg-cover bg-center opacity-80"
+                style={{ backgroundImage: `url(${BRAND_ART.gradientHub})` }}
+              />
+              <div
+                className="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-screen"
+                style={{ backgroundImage: `url(${BRAND_ART.gradientMesh})` }}
+              />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.34),transparent_24%),radial-gradient(circle_at_82%_12%,rgba(34,211,238,0.2),transparent_22%),linear-gradient(180deg,rgba(9,19,44,0.12),rgba(2,6,23,0.66))]" />
+            </div>
 
-          <motion.div
-            animate={{ x: [0, 22, 0], y: [0, -14, 0] }}
-            transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-            className="absolute -right-8 top-16 h-48 w-48 rounded-full bg-cyan-300/20 blur-3xl"
-          />
-          <motion.div
-            animate={{ scale: [1, 1.06, 1] }}
-            transition={{ duration: 8.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-            className="absolute -left-14 bottom-20 h-56 w-56 rounded-full bg-indigo-300/16 blur-3xl"
-          />
+            <motion.div
+              animate={{ x: [0, 22, 0], y: [0, -14, 0] }}
+              transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+              className="absolute -right-8 top-16 h-48 w-48 rounded-full bg-cyan-300/20 blur-3xl"
+            />
+            <motion.div
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{ duration: 8.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+              className="absolute -left-12 bottom-14 h-52 w-52 rounded-full bg-indigo-300/16 blur-3xl"
+            />
 
-          <div className="relative z-10 grid h-full gap-5 xl:grid-rows-[auto_1fr_auto]">
-            <div className="flex items-center justify-between gap-4">
-              <div className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-white backdrop-blur-md">
+            <div className="relative z-10 flex items-center justify-between gap-4 text-white">
+              <div className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[11px] uppercase tracking-[0.18em] backdrop-blur-md">
                 signal room
               </div>
-              <div className="rounded-full border border-white/20 bg-slate-950/50 px-4 py-2 text-[11px] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md">
+              <div className="rounded-full border border-white/20 bg-slate-950/40 px-4 py-2 text-[11px] uppercase tracking-[0.16em] text-white/78 backdrop-blur-md">
                 live lane preview
               </div>
             </div>
 
-            <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
-              <Card className="overflow-hidden border border-white/20 bg-white/10 shadow-[0_20px_48px_rgba(2,6,23,0.18)] backdrop-blur-xl">
-                <CardBody className="relative min-h-[420px] justify-between overflow-hidden p-6 text-white">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: activeVisual.surfaceBackground }}
-                  />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_14%,rgba(255,255,255,0.16),transparent_20%),linear-gradient(180deg,rgba(8,15,38,0.1),rgba(2,6,23,0.74))]" />
-
-                  <div className="relative z-10 flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-[11px] uppercase tracking-[0.18em] text-white/68">active lane</p>
-                      <h2 className="mt-2 max-w-sm font-[family-name:var(--font-instrument-serif)] text-5xl leading-[0.94]">
-                        {activeService.title}
-                      </h2>
-                    </div>
-                    <Chip className="border border-white/18 bg-white/10 text-white">
-                      {activeVisual.accentLabel}
-                    </Chip>
+            <div className="relative z-10 grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+              <div className="space-y-4 rounded-[2rem] border border-white/18 bg-white/10 p-6 text-white shadow-[0_18px_42px_rgba(2,6,23,0.14)] backdrop-blur-xl">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-white/66">active lane</p>
+                    <h2 className="mt-2 max-w-sm font-[family-name:var(--font-instrument-serif)] text-5xl leading-[0.94]">
+                      {activeService.title}
+                    </h2>
                   </div>
+                  <Chip className="border border-white/18 bg-white/10 text-white">
+                    {activeVisual.accentLabel}
+                  </Chip>
+                </div>
 
-                  <div className="relative z-10 max-w-md space-y-4">
-                    <p className="text-sm leading-7 text-white/82">{activeVisual.caption}</p>
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      {activeService.points.slice(0, 3).map((point, index) => (
-                        <div
-                          key={point}
-                          className="rounded-[1.3rem] border border-white/18 bg-white/10 px-3 py-3 backdrop-blur-md"
-                        >
-                          <p className="text-[11px] uppercase tracking-[0.14em] text-white/64">0{index + 1}</p>
-                          <p className="mt-2 text-sm text-white/88">{point}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                <div
+                  className="min-h-[260px] rounded-[1.75rem] bg-cover bg-center"
+                  style={{ backgroundImage: activeVisual.surfaceBackground }}
+                />
 
-                  <div className="relative z-10 grid gap-3 sm:grid-cols-[1.05fr_0.95fr]">
-                    <div className="rounded-[1.45rem] border border-white/18 bg-slate-950/40 px-4 py-4 backdrop-blur-md">
-                      <p className="text-[11px] uppercase tracking-[0.16em] text-white/64">featured proof</p>
-                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-2xl font-bold">
-                        {leadSnapshot?.title ?? "event demand sprint"}
-                      </p>
-                      <p className="mt-2 text-sm leading-7 text-white/78">
-                        {leadSnapshot?.outcome ?? "cleaner positioning and stronger conversion flow."}
-                      </p>
+                <p className="max-w-md text-sm leading-7 text-white/82">{activeVisual.caption}</p>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {activeService.points.slice(0, 3).map((point, index) => (
+                    <div
+                      key={point}
+                      className="rounded-[1.3rem] border border-white/18 bg-white/10 px-3 py-3 backdrop-blur-md"
+                    >
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-white/62">0{index + 1}</p>
+                      <p className="mt-2 text-sm text-white/86">{point}</p>
                     </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {stats.slice(0, 4).map((item) => (
-                        <div
-                          key={item.label}
-                          className="rounded-[1.3rem] border border-white/18 bg-white/10 px-4 py-3 backdrop-blur-md"
-                        >
-                          <p className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-white">
-                            {item.value}
-                          </p>
-                          <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/66">
-                            {item.label}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CardBody>
-              </Card>
+                  ))}
+                </div>
+              </div>
 
               <div className="grid gap-4">
-                <Card className="border border-white/20 bg-white/10 shadow-[0_18px_44px_rgba(2,6,23,0.14)] backdrop-blur-xl">
-                  <CardBody className="gap-4 p-5 text-white">
-                    <div className="flex items-center justify-between gap-4">
-                      <p className="text-[11px] uppercase tracking-[0.18em] text-white/66">what changes first</p>
-                      <div className={`h-2.5 w-24 rounded-full bg-gradient-to-r ${activeVisual.gradient}`} />
+                <div className="rounded-[1.8rem] border border-white/18 bg-slate-950/34 p-5 text-white shadow-[0_18px_40px_rgba(2,6,23,0.14)] backdrop-blur-xl">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-white/62">featured proof</p>
+                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-2xl font-bold">
+                    {leadSnapshot?.title ?? "event demand sprint"}
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-white/80">
+                    {leadSnapshot?.outcome ?? "cleaner positioning and stronger conversion flow."}
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-2">
+                  {stats.slice(0, 4).map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-[1.35rem] border border-white/18 bg-white/10 px-4 py-4 text-white backdrop-blur-md"
+                    >
+                      <p className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold">{item.value}</p>
+                      <p className="mt-1 text-[11px] uppercase tracking-[0.14em] text-white/66">{item.label}</p>
                     </div>
-                    <div className="grid gap-3">
-                      {whyZyra.slice(0, 3).map((item) => (
-                        <div key={item} className="rounded-[1.35rem] border border-white/14 bg-white/8 px-4 py-4 text-sm leading-7 text-white/82">
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  </CardBody>
-                </Card>
+                  ))}
+                </div>
 
                 {supportSnapshots.map((item, index) => (
-                  <Card
+                  <div
                     key={item.title}
-                    className="overflow-hidden border border-white/18 bg-white/10 shadow-[0_18px_40px_rgba(2,6,23,0.12)] backdrop-blur-xl"
+                    className="rounded-[1.55rem] border border-white/16 bg-white/8 p-4 text-white backdrop-blur-md"
                   >
-                    <CardBody className="relative min-h-[160px] justify-end overflow-hidden p-5 text-white">
-                      <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                          backgroundImage:
-                            index === 0
-                              ? `linear-gradient(180deg,rgba(9,19,44,0.08),rgba(2,6,23,0.78)), url(${BRAND_ART.abstractBlue})`
-                              : `linear-gradient(180deg,rgba(9,19,44,0.08),rgba(2,6,23,0.78)), url(${BRAND_ART.gradientMesh})`,
-                        }}
-                      />
-                      <div className="relative z-10">
-                        <p className="text-[11px] uppercase tracking-[0.16em] text-white/64">snapshot 0{index + 2}</p>
-                        <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-2xl font-bold">{item.title}</p>
-                        <p className="mt-2 text-sm leading-7 text-white/78">{item.outcome}</p>
-                      </div>
-                    </CardBody>
-                  </Card>
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-white/62">snapshot 0{index + 2}</p>
+                    <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-xl font-bold">{item.title}</p>
+                    <p className="mt-2 text-sm leading-7 text-white/78">{item.outcome}</p>
+                  </div>
                 ))}
               </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="relative z-10 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {services.map((service) => {
                 const visual = getServiceVisual(service.title);
                 const isActive = service.title === activeService.title;
 
                 return (
-                  <Card
+                  <button
                     key={service.title}
-                    isPressable
-                    onPress={() => activateService(service.title)}
+                    type="button"
                     onMouseEnter={() => activateService(service.title)}
-                    className={`border transition-transform duration-300 hover:-translate-y-0.5 ${
+                    onClick={() => activateService(service.title)}
+                    className={`rounded-[1.45rem] border px-4 py-4 text-left transition-transform duration-300 hover:-translate-y-0.5 ${
                       isActive
-                        ? "border-cyan-300/70 bg-white/16 text-white shadow-[0_18px_44px_rgba(14,165,233,0.18)]"
+                        ? "border-cyan-300/70 bg-white/16 text-white shadow-[0_18px_42px_rgba(14,165,233,0.16)]"
                         : "border-white/16 bg-white/8 text-white/84"
                     }`}
                   >
-                    <CardBody className="gap-3 p-4 text-left">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="text-[11px] uppercase tracking-[0.16em] text-white/64">{visual.eyebrow}</p>
-                        <div className={`h-2.5 w-14 rounded-full bg-gradient-to-r ${service.tone}`} />
-                      </div>
-                      <p className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-white">{service.title}</p>
-                    </CardBody>
-                  </Card>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-white/64">{visual.eyebrow}</p>
+                      <div className={`h-2.5 w-14 rounded-full bg-gradient-to-r ${service.tone}`} />
+                    </div>
+                    <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-lg font-bold">{service.title}</p>
+                  </button>
                 );
               })}
             </div>
-          </div>
-        </div>
+          </CardBody>
+        </Card>
       </motion.section>
 
       <motion.section
         id="service-preview"
         {...reveal}
         transition={{ ...reveal.transition, delay: 0.08 }}
-        className="mt-16 grid gap-6 xl:grid-cols-[0.88fr_1.12fr]"
+        className="mt-16 grid gap-6 xl:grid-cols-[0.78fr_1.22fr]"
       >
-        <Card className="overflow-hidden border border-white/45 bg-white/84 shadow-[0_24px_60px_rgba(15,23,42,0.1)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/72">
-          <CardBody className="relative gap-6 overflow-hidden p-6">
-            <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_18%_18%,rgba(34,211,238,0.16),transparent_45%),radial-gradient(circle_at_82%_20%,rgba(99,102,241,0.16),transparent_40%)]" />
-            <div className="relative z-10 space-y-4">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">guided system</p>
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-4xl font-bold text-slate-950 dark:text-slate-100">
-                one page. one path. four strong lanes.
+        <Card className="border border-white/45 bg-white/84 shadow-[0_24px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/72">
+          <CardBody className="gap-5 p-6">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">guided build</p>
+              <h2 className="mt-2 font-[family-name:var(--font-space-grotesk)] text-4xl font-bold text-slate-950 dark:text-slate-100">
+                a cleaner path through the page.
               </h2>
-              <p className="max-w-md text-sm leading-7 text-slate-600 dark:text-slate-300">
-                the page should feel like a guided room: show the offer, surface proof, and move the right person to the next action fast.
+              <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                the homepage should present one strong room, four clear service lanes, and enough proof to move the right person forward.
               </p>
             </div>
 
-            <div className="relative z-10 grid gap-4">
-              {operatingNotes.map((item, index) => (
+            <div className="grid gap-3">
+              {BRAND_SIGNAL_STRIPS.map((item, index) => (
                 <div
-                  key={item.step}
-                  className="grid items-start gap-4 rounded-[1.6rem] border border-white/55 bg-white/82 p-4 dark:border-slate-700/70 dark:bg-slate-900/72 xl:grid-cols-[86px_1fr]"
+                  key={item.title}
+                  className="rounded-[1.45rem] border border-white/55 bg-white/84 px-4 py-4 dark:border-slate-700/70 dark:bg-slate-900/72"
                 >
-                  <div className={`rounded-[1.35rem] bg-gradient-to-br ${services[index]?.tone ?? "from-cyan-500 to-blue-500"} px-4 py-5 text-center text-white`}>
-                    <span className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold">0{index + 1}</span>
+                  <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">0{index + 1}</p>
+                  <p className="mt-2 font-semibold text-slate-950 dark:text-slate-100">{item.title}</p>
+                  <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{item.body}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-3">
+              {systemSteps.map((item, index) => (
+                <div
+                  key={item.title}
+                  className="flex items-start gap-4 rounded-[1.45rem] border border-white/55 bg-white/84 px-4 py-4 dark:border-slate-700/70 dark:bg-slate-900/72"
+                >
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${services[index]?.tone ?? "from-cyan-500 to-blue-500"} font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-white`}>
+                    0{index + 1}
                   </div>
                   <div>
-                    <p className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-950 dark:text-slate-100">
-                      {item.title}
-                    </p>
+                    <p className="font-semibold text-slate-950 dark:text-slate-100">{item.title}</p>
                     <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{item.body}</p>
                   </div>
                 </div>
@@ -391,12 +360,12 @@ export default function ZyraHomeDesktop({
                 className={`overflow-hidden border transition-transform duration-300 hover:-translate-y-1 ${
                   isActive
                     ? "border-cyan-300/70 bg-slate-950 text-white shadow-[0_24px_56px_rgba(14,165,233,0.16)]"
-                    : "border-white/45 bg-white/82 shadow-[0_20px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/72"
+                    : "border-white/45 bg-white/84 shadow-[0_20px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/72"
                 }`}
               >
                 <CardBody className="gap-0 p-0 text-left">
                   <div
-                    className="min-h-[210px] bg-cover bg-center"
+                    className="min-h-[220px] bg-cover bg-center"
                     style={{ backgroundImage: visual.surfaceBackground }}
                   />
                   <div className="space-y-4 p-5">
@@ -456,7 +425,7 @@ export default function ZyraHomeDesktop({
               key={item.title}
               className="overflow-hidden border border-white/45 bg-white/84 shadow-[0_20px_48px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/72"
             >
-              <CardBody className={`grid gap-4 p-0 ${index === 0 ? "xl:grid-cols-[1.04fr_0.96fr]" : "xl:grid-cols-[0.96fr_1.04fr]"}`}>
+              <CardBody className={`grid gap-4 p-0 ${index === 0 ? "xl:grid-cols-[1.02fr_0.98fr]" : "xl:grid-cols-[0.98fr_1.02fr]"}`}>
                 <div
                   className="min-h-[220px] bg-cover bg-center"
                   style={{
@@ -477,10 +446,10 @@ export default function ZyraHomeDesktop({
                     <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{item.outcome}</p>
                   </div>
                   <div className="grid gap-2">
-                    <div className="rounded-[1.35rem] bg-slate-100 px-4 py-3 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+                    <div className="rounded-[1.3rem] bg-slate-100 px-4 py-3 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
                       {item.challenge}
                     </div>
-                    <div className="rounded-[1.35rem] bg-slate-100 px-4 py-3 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+                    <div className="rounded-[1.3rem] bg-slate-100 px-4 py-3 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
                       {item.action}
                     </div>
                   </div>
@@ -499,19 +468,22 @@ export default function ZyraHomeDesktop({
                 </h2>
                 <Chip className="bg-slate-950 text-white dark:bg-slate-700">quality signal</Chip>
               </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {stats.slice(0, 4).map((item) => (
+                  <MetricPanel key={item.label} item={item} />
+                ))}
+              </div>
+
               <div className="grid gap-3">
-                {systemSteps.map((item, index) => (
+                {operatingNotes.slice(0, 2).map((item) => (
                   <div
-                    key={item.title}
-                    className="rounded-[1.5rem] border border-white/55 bg-white/82 px-4 py-4 dark:border-slate-700/70 dark:bg-slate-900/72"
+                    key={item.step}
+                    className="rounded-[1.4rem] border border-white/55 bg-white/84 px-4 py-4 dark:border-slate-700/70 dark:bg-slate-900/72"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br ${services[index]?.tone ?? "from-cyan-500 to-blue-500"} font-[family-name:var(--font-space-grotesk)] text-sm font-bold text-white`}>
-                        0{index + 1}
-                      </div>
-                      <p className="font-semibold text-slate-950 dark:text-slate-100">{item.title}</p>
-                    </div>
-                    <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{item.body}</p>
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">step {item.step}</p>
+                    <p className="mt-2 font-semibold text-slate-950 dark:text-slate-100">{item.title}</p>
+                    <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{item.body}</p>
                   </div>
                 ))}
               </div>
@@ -524,13 +496,13 @@ export default function ZyraHomeDesktop({
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold text-slate-950 dark:text-slate-100">
                   quick answers
                 </h2>
-                <Chip className="bg-slate-950 text-white dark:bg-slate-700">no friction</Chip>
+                <Chip className="bg-slate-950 text-white dark:bg-slate-700">low friction</Chip>
               </div>
               <div className="grid gap-3">
-                {faqs.map((item) => (
+                {faqs.slice(0, 2).map((item) => (
                   <div
                     key={item.q}
-                    className="rounded-[1.45rem] border border-white/55 bg-white/82 px-4 py-4 dark:border-slate-700/70 dark:bg-slate-900/72"
+                    className="rounded-[1.4rem] border border-white/55 bg-white/84 px-4 py-4 dark:border-slate-700/70 dark:bg-slate-900/72"
                   >
                     <p className="font-semibold text-slate-950 dark:text-slate-100">{item.q}</p>
                     <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{item.a}</p>
