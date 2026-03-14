@@ -1,16 +1,16 @@
 ﻿"use client";
 
 import { Switch, Tooltip } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useThemeMode();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const nextTheme = theme === "dark" ? "light" : "dark";
   const isDark = theme === "dark";

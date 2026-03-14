@@ -1,11 +1,13 @@
-﻿"use client";
+"use client";
 
 import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
+import Image from "next/image";
 import { useRef } from "react";
-import type { EventLineupMember } from "@/lib/eventsData";
+import type { EventLineupMember, EventVibeCard } from "@/lib/eventsData";
 
 type EventLineupSectionProps = {
   members: EventLineupMember[];
+  vibeCard?: EventVibeCard;
   sectionClassName?: string;
 };
 
@@ -94,13 +96,62 @@ function RailArrow({
   );
 }
 
+function InstagramGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-none">
+      <rect x="3.25" y="3.25" width="17.5" height="17.5" rx="5" className="stroke-current" strokeWidth="2" />
+      <circle cx="12" cy="12" r="4" className="stroke-current" strokeWidth="2" />
+      <circle cx="17.2" cy="6.8" r="1.2" className="fill-current stroke-none" />
+    </svg>
+  );
+}
+
+function WhatsAppGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">
+      <path d="M20.52 3.48A11.86 11.86 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.17 1.6 5.99L0 24l6.28-1.73a11.8 11.8 0 0 0 5.74 1.47h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.17-1.24-6.14-3.4-8.36Zm-8.49 18.2h-.01a9.85 9.85 0 0 1-5.03-1.38l-.36-.21-3.73 1.03 1-3.84-.23-.39a9.85 9.85 0 0 1-1.53-5.26c0-5.45 4.43-9.89 9.9-9.89 2.64 0 5.12 1.03 6.98 2.9a9.8 9.8 0 0 1 2.89 6.99c0 5.45-4.44 9.9-9.88 9.9Zm5.43-7.43c-.3-.15-1.8-.89-2.08-.99-.28-.1-.49-.15-.7.15-.2.3-.8.99-.98 1.2-.18.2-.36.23-.67.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.8-1.68-2.1-.18-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.7-1.7-.96-2.33-.26-.63-.52-.54-.7-.55h-.6c-.2 0-.53.08-.8.38-.28.3-1.06 1.03-1.06 2.52 0 1.49 1.08 2.93 1.24 3.13.15.2 2.13 3.25 5.15 4.56.72.3 1.28.48 1.72.62.72.23 1.37.2 1.88.12.57-.08 1.8-.74 2.05-1.46.25-.72.25-1.34.17-1.47-.08-.13-.28-.2-.58-.35Z" />
+    </svg>
+  );
+}
+
+function SocialActionButton({
+  platform,
+  href,
+  label,
+}: {
+  platform: "instagram" | "whatsapp";
+  href: string;
+  label: string;
+}) {
+  const platformClassName =
+    platform === "instagram"
+      ? "border-white/24 bg-white/16 text-white hover:border-fuchsia-300/80 hover:bg-fuchsia-500/28"
+      : "border-white/24 bg-white/16 text-white hover:border-emerald-300/80 hover:bg-emerald-500/28";
+
+  return (
+    <Button
+      isIconOnly
+      as={Link}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      radius="full"
+      aria-label={label}
+      className={`h-9 w-9 min-w-9 border backdrop-blur-md transition-transform duration-300 hover:-translate-y-0.5 ${platformClassName}`}
+    >
+      {platform === "instagram" ? <InstagramGlyph /> : <WhatsAppGlyph />}
+    </Button>
+  );
+}
+
 export function EventLineupSection({
   members,
+  vibeCard,
   sectionClassName = "mt-8",
 }: EventLineupSectionProps) {
   const railRef = useRef<HTMLDivElement | null>(null);
 
-  if (members.length === 0) {
+  if (members.length === 0 && !vibeCard) {
     return null;
   }
 
@@ -153,10 +204,12 @@ export function EventLineupSection({
                   <Card className="min-h-full overflow-hidden border border-slate-200/85 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:border-cyan-300 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-slate-700/55 dark:bg-slate-950/70 dark:group-hover:border-cyan-500/45">
                     <div className="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-slate-900">
                       {member.image ? (
-                        <img
+                        <Image
                           src={member.image}
                           alt={member.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          fill
+                          sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         />
                       ) : (
                         <div
@@ -209,15 +262,49 @@ export function EventLineupSection({
                   </Link>
                 );
               })}
+
+              {vibeCard ? (
+                <div key={`vibe-${vibeCard.title}`} className="group min-w-[82%] snap-start sm:min-w-[19rem] lg:min-w-[21rem]">
+                  <Card className="min-h-full overflow-hidden border border-cyan-300/70 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:border-cyan-400 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-cyan-500/35 dark:bg-slate-950/72 dark:group-hover:border-cyan-400/55">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-slate-950">
+                      <Image
+                        src={vibeCard.poster}
+                        alt={vibeCard.title}
+                        fill
+                        sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-slate-950/94 via-slate-950/68 to-transparent p-3">
+                        <Chip className="border border-cyan-200/80 bg-cyan-300/92 text-slate-950 backdrop-blur-md">
+                          {vibeCard.badgeLabel}
+                        </Chip>
+                        <div className="flex items-center gap-2">
+                          {vibeCard.actions.map((action) => (
+                            <SocialActionButton
+                              key={`${vibeCard.title}-${action.platform}`}
+                              platform={action.platform}
+                              href={action.url}
+                              label={action.label}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <CardBody className="space-y-2 p-4">
+                      <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        {vibeCard.title}
+                      </h3>
+                      <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        {vibeCard.summary}
+                      </p>
+                    </CardBody>
+                  </Card>
+                </div>
+              ) : null}
             </div>
           </div>
-
-
         </CardBody>
       </Card>
     </section>
   );
 }
-
-
-

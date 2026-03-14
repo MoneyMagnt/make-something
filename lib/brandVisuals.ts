@@ -4,6 +4,39 @@ export const BRAND_ART = {
   gradientMesh: "/zyra-gradient-mesh.png",
 } as const;
 
+export const HOME_PHOTOS = {
+  workspaceBlueWall: "/home/workspace-blue-wall.jpg",
+  studioTeam: "/home/studio-team.jpg",
+  minimalDesk: "/home/minimal-desk.jpg",
+  blueGlassyShapes: "/home/blue-glassy-shapes.jpg",
+  laptopWorkflow: "/home/laptop-workflow.jpg",
+  teamCollabStudio: "/home/team-collab-studio.jpg",
+  analyticsLaptop: "/home/analytics-laptop.jpg",
+  creativeMeetingOffice: "/home/creative-meeting-office.jpg",
+  strategyMeeting: "/home/strategy-meeting.jpg",
+  lagosTeamMeeting: "/home/lagos-team-meeting.jpg",
+  lagosCollabStanding: "/home/lagos-collab-standing.jpg",
+  lagosBusinesswomen: "/home/lagos-businesswomen.jpg",
+} as const;
+
+export const HERO_PREVIEW_PANELS = [
+  {
+    label: "campaign planning",
+    title: "offer strategy",
+    image: HOME_PHOTOS.lagosTeamMeeting,
+  },
+  {
+    label: "content direction",
+    title: "editorial output",
+    image: HOME_PHOTOS.lagosCollabStanding,
+  },
+  {
+    label: "search systems",
+    title: "demand clarity",
+    image: HOME_PHOTOS.lagosBusinesswomen,
+  },
+] as const;
+
 export type ServiceVisual = {
   eyebrow: string;
   caption: string;
@@ -23,7 +56,7 @@ const DEFAULT_VISUAL: ServiceVisual = {
   gradient: "from-cyan-300 via-sky-400 to-blue-700",
   glowClass: "bg-cyan-400/28",
   chipClass: "border-cyan-200/70 bg-cyan-100/85 text-cyan-900",
-  surfaceBackground: `linear-gradient(145deg,rgba(9,19,44,0.18),rgba(2,6,23,0.76)), url(${BRAND_ART.gradientHub})`,
+  surfaceBackground: `linear-gradient(155deg,rgba(4,12,27,0.14),rgba(2,6,23,0.78)), url(${HOME_PHOTOS.laptopWorkflow})`,
 };
 
 export const SERVICE_VISUALS: Record<string, ServiceVisual> = {
@@ -35,7 +68,7 @@ export const SERVICE_VISUALS: Record<string, ServiceVisual> = {
     gradient: "from-cyan-300 via-sky-400 to-blue-700",
     glowClass: "bg-cyan-400/30",
     chipClass: "border-cyan-200/70 bg-cyan-100/85 text-cyan-900",
-    surfaceBackground: `linear-gradient(145deg,rgba(9,25,52,0.14),rgba(2,6,23,0.8)), url(${BRAND_ART.gradientMesh})`,
+    surfaceBackground: `linear-gradient(155deg,rgba(6,18,40,0.18),rgba(2,6,23,0.76)), url(${HOME_PHOTOS.lagosBusinesswomen})`,
   },
   "content studio": {
     eyebrow: "editorial engine",
@@ -45,7 +78,7 @@ export const SERVICE_VISUALS: Record<string, ServiceVisual> = {
     gradient: "from-emerald-300 via-teal-300 to-cyan-700",
     glowClass: "bg-emerald-400/30",
     chipClass: "border-emerald-200/70 bg-emerald-100/85 text-emerald-900",
-    surfaceBackground: `linear-gradient(145deg,rgba(6,36,38,0.16),rgba(2,6,23,0.78)), url(${BRAND_ART.gradientHub})`,
+    surfaceBackground: `linear-gradient(155deg,rgba(7,22,30,0.18),rgba(2,6,23,0.72)), url(${HOME_PHOTOS.lagosCollabStanding})`,
   },
   "influencer strategy": {
     eyebrow: "culture-led reach",
@@ -55,7 +88,7 @@ export const SERVICE_VISUALS: Record<string, ServiceVisual> = {
     gradient: "from-indigo-300 via-violet-300 to-fuchsia-700",
     glowClass: "bg-violet-400/28",
     chipClass: "border-violet-200/70 bg-violet-100/85 text-violet-900",
-    surfaceBackground: `linear-gradient(145deg,rgba(33,20,68,0.16),rgba(2,6,23,0.8)), url(${BRAND_ART.abstractBlue})`,
+    surfaceBackground: `linear-gradient(155deg,rgba(18,22,44,0.16),rgba(2,6,23,0.74)), url(${HOME_PHOTOS.lagosTeamMeeting})`,
   },
   "founder website sprint": {
     eyebrow: "conversion surface",
@@ -65,7 +98,7 @@ export const SERVICE_VISUALS: Record<string, ServiceVisual> = {
     gradient: "from-amber-300 via-orange-300 to-rose-500",
     glowClass: "bg-amber-300/28",
     chipClass: "border-amber-200/70 bg-amber-100/85 text-amber-900",
-    surfaceBackground: `linear-gradient(145deg,rgba(64,34,7,0.16),rgba(2,6,23,0.8)), url(${BRAND_ART.gradientMesh})`,
+    surfaceBackground: `linear-gradient(155deg,rgba(32,20,7,0.16),rgba(2,6,23,0.74)), url(${HOME_PHOTOS.workspaceBlueWall})`,
   },
 };
 
@@ -87,3 +120,4 @@ export const BRAND_SIGNAL_STRIPS = [
     body: "editorial gradients, layered proof, and sharper conversion surfaces across the page.",
   },
 ] as const;
+

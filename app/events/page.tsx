@@ -1019,7 +1019,7 @@ export default function EventsPage() {
           </Card>
         </section>
 
-        <EventLineupSection members={activeLineup} sectionClassName="mb-8" />
+        <EventLineupSection members={activeLineup} vibeCard={activeMeta.vibeCard} sectionClassName="mb-8" />
 
         <section id="event-actions" className="mb-8">
           <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">

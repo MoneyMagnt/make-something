@@ -1,4 +1,4 @@
-﻿import ZyraHomeDesktop from "@/components/ZyraHomeDesktop";
+import ZyraHomeDesktop from "@/components/ZyraHomeDesktop";
 import ZyraHomeMobile from "@/components/ZyraHomeMobile";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
@@ -186,13 +186,13 @@ const homeJsonLd = JSON.stringify([
 export default function Home() {
 
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative min-h-screen overflow-x-clip bg-[#f6f8fb] text-slate-900 dark:bg-[#050913] dark:text-slate-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: homeJsonLd }} />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_650px_at_12%_-12%,rgba(14,165,233,0.23),transparent),radial-gradient(980px_560px_at_92%_8%,rgba(59,130,246,0.17),transparent)] dark:bg-[radial-gradient(1240px_740px_at_8%_-14%,rgba(6,182,212,0.27),transparent_58%),radial-gradient(1120px_680px_at_92%_10%,rgba(59,130,246,0.3),transparent_60%),radial-gradient(940px_560px_at_50%_115%,rgba(14,116,144,0.26),transparent_64%),linear-gradient(180deg,rgba(2,6,23,0.96)_0%,rgba(3,15,34,0.9)_45%,rgba(8,20,45,0.95)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(980px_560px_at_10%_-12%,rgba(125,211,252,0.28),transparent_58%),radial-gradient(860px_520px_at_100%_6%,rgba(59,130,246,0.12),transparent_60%),linear-gradient(180deg,rgba(255,255,255,0.55),rgba(246,248,251,0.96))] dark:bg-[radial-gradient(1120px_700px_at_10%_-14%,rgba(6,182,212,0.18),transparent_60%),radial-gradient(980px_620px_at_92%_10%,rgba(59,130,246,0.18),transparent_62%),linear-gradient(180deg,rgba(2,6,23,0.98)_0%,rgba(4,12,24,0.96)_48%,rgba(7,16,31,1)_100%)]" />
 
       <ZyraSiteNav active="home" brand={<ZyraBrandMark />} />
 
-      <main className="relative mx-auto max-w-6xl px-5 pb-24 pt-10 sm:px-6">
+      <main className="relative mx-auto max-w-[1360px] px-5 pb-28 pt-12 sm:px-6 lg:px-8">
         <div className="lg:hidden">
           <ZyraHomeMobile
             growthAuditUrl={GROWTH_AUDIT_URL}

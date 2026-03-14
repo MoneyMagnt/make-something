@@ -9,7 +9,7 @@ import {
 } from "@heroui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { ADMIN_ACCESS_KEY, ADMIN_PRIVATE_PATH } from "@/lib/adminAccess";
 import { useThemeMode } from "@/components/ThemeModeProvider";
@@ -47,19 +47,31 @@ export function ZyraSiteNav({
 }: ZyraSiteNavProps) {
   const router = useRouter();
   const { theme, setTheme } = useThemeMode();
-  const [isThemeReady, setIsThemeReady] = useState(false);
-  const [isAdminSession, setIsAdminSession] = useState(false);
+  const isThemeReady = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+  const isAdminSession = useSyncExternalStore(
+    (onStoreChange) => {
+      if (typeof window === "undefined") {
+        return () => {};
+      }
+
+      const handler = () => onStoreChange();
+      window.addEventListener("storage", handler);
+      return () => window.removeEventListener("storage", handler);
+    },
+    () => {
+      if (typeof window === "undefined") {
+        return false;
+      }
+
+      return localStorage.getItem(ADMIN_ACCESS_KEY) === "1";
+    },
+    () => false
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setIsThemeReady(true);
-
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    setIsAdminSession(localStorage.getItem(ADMIN_ACCESS_KEY) === "1");
-  }, []);
 
   const navItems = useMemo(() => {
     if (isAdminSession || active === "admin") {
@@ -85,9 +97,6 @@ export function ZyraSiteNav({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isMobileMenuOpen]);
 
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [active]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) {

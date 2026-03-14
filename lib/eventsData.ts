@@ -8,6 +8,27 @@ export type EventLineupMember = {
   socialUrl?: string;
 };
 
+export type EventVibeClip = {
+  src: string;
+  poster?: string;
+  label: string;
+};
+
+export type EventVibeAction = {
+  platform: "instagram" | "whatsapp";
+  url: string;
+  label: string;
+};
+
+export type EventVibeCard = {
+  title: string;
+  badgeLabel: string;
+  summary: string;
+  poster: string;
+  actions: EventVibeAction[];
+  clips?: EventVibeClip[];
+};
+
 export type EventMeta = {
   name: EventName;
   slug: EventSlug;
@@ -26,6 +47,7 @@ export type EventMeta = {
   description: string;
   egoticketsEventUrl?: string;
   lineup: EventLineupMember[];
+  vibeCard?: EventVibeCard;
 };
 
 export type TicketItem = {
@@ -72,6 +94,25 @@ export const EVENTS: EventMeta[] = [
     description:
       "Signature venus nightlife experience by zyra with free pass access before standard entry starts.",
     egoticketsEventUrl: "https://egotickets.com/events/venus-the-beginning/register",
+    vibeCard: {
+      title: "follow venus updates",
+      badgeLabel: "stay connected",
+      summary: "recaps, crowd energy, and updates in one place.",
+      poster: "/lineup/venus%20flyer.jpeg",
+      actions: [
+        {
+          platform: "instagram",
+          url: "https://www.instagram.com/venuss.233?igsh=MW5oYTRoM294dHh6ZQ%3D%3D&utm_source=qr",
+          label: "open instagram",
+        },
+        {
+          platform: "whatsapp",
+          url: "https://chat.whatsapp.com/C4lD0dZquAaKiHlQpWPb7G?mode=hqctcli",
+          label: "open whatsapp community",
+        },
+      ],
+      clips: [],
+    },
     lineup: [
       {
         role: "host",
