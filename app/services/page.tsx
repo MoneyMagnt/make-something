@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { startTransition, useDeferredValue, useState } from "react";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
@@ -125,7 +125,7 @@ const servicesJsonLd = JSON.stringify([
   },
 ]);
 
-const reveal = {
+const defaultReveal = {
   initial: { opacity: 0, y: 14 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-80px" },
@@ -133,6 +133,17 @@ const reveal = {
 };
 
 export default function ServicesPage() {
+  const shouldReduceMotion = useReducedMotion();
+  const reveal = shouldReduceMotion
+    ? {
+        initial: { opacity: 1, y: 0 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "0px" },
+        transition: { duration: 0 },
+      }
+    : defaultReveal;
+  const withDelay = (delay: number) =>
+    shouldReduceMotion ? { duration: 0 } : { ...defaultReveal.transition, delay };
   const [activeServiceTitle, setActiveServiceTitle] = useState<string>(SERVICES[0]?.title ?? "");
   const deferredServiceTitle = useDeferredValue(activeServiceTitle);
   const activeService =
@@ -152,7 +163,7 @@ export default function ServicesPage() {
 
       <ZyraSiteNav active="services" brand={<ZyraBrandMark />} />
 
-      <main className="relative mx-auto max-w-[1360px] px-5 pb-24 pt-10 sm:px-6 lg:px-8">
+      <main id="main-content" className="relative mx-auto max-w-[1360px] px-5 pb-24 pt-10 sm:px-6 lg:px-8">
         <motion.section
           {...reveal}
           className="grid gap-8 xl:min-h-[calc(100vh-7rem)] xl:grid-cols-[0.78fr_1.22fr] xl:items-end"
@@ -277,7 +288,7 @@ export default function ServicesPage() {
         <motion.section
           id="service-lanes"
           {...reveal}
-          transition={{ ...reveal.transition, delay: 0.08 }}
+          transition={withDelay(0.08)}
           className="mt-16 grid gap-8 xl:grid-cols-[0.34fr_0.66fr]"
         >
           <div className="space-y-5 xl:sticky xl:top-28 xl:self-start">
@@ -368,7 +379,7 @@ export default function ServicesPage() {
 
         <motion.section
           {...reveal}
-          transition={{ ...reveal.transition, delay: 0.14 }}
+          transition={withDelay(0.14)}
           className="mt-16 grid gap-6 xl:grid-cols-[0.96fr_1.04fr]"
         >
           <Card className="overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/84 shadow-[0_28px_72px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/72">
@@ -419,7 +430,7 @@ export default function ServicesPage() {
 
         <motion.section
           {...reveal}
-          transition={{ ...reveal.transition, delay: 0.2 }}
+          transition={withDelay(0.2)}
           className="mt-16"
         >
           <div className="mb-4 flex items-center justify-between gap-3">
@@ -446,7 +457,7 @@ export default function ServicesPage() {
 
         <motion.section
           {...reveal}
-          transition={{ ...reveal.transition, delay: 0.26 }}
+          transition={withDelay(0.26)}
           className="mt-16"
         >
           <div className="relative overflow-hidden rounded-[2.1rem] border border-slate-200/70 bg-slate-900 shadow-[0_34px_90px_rgba(15,23,42,0.12)]">

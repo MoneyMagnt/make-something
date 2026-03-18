@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
@@ -13,18 +13,35 @@ const manrope = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "zyra",
-  description: "we build demand systems that turn attention into revenue.",
+  title: {
+    default: "zyra gh | growth systems for brands in ghana",
+    template: "%s | zyra gh",
+  },
+  description:
+    "zyra is a ghana growth studio building seo, content, influencer, and founder website systems that turn attention into revenue.",
   metadataBase: new URL(SITE_URL),
   openGraph: {
-    title: "zyra",
-    description: "we build demand systems that turn attention into revenue.",
-    siteName: "zyra",
+    type: "website",
+    url: SITE_URL,
+    title: "zyra gh | growth systems for brands in ghana",
+    description:
+      "zyra is a ghana growth studio building seo, content, influencer, and founder website systems that turn attention into revenue.",
+    siteName: "zyra gh",
+    images: [
+      {
+        url: `${SITE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "zyra gh growth systems",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "zyra",
-    description: "we build demand systems that turn attention into revenue.",
+    title: "zyra gh | growth systems for brands in ghana",
+    description:
+      "zyra is a ghana growth studio building seo, content, influencer, and founder website systems that turn attention into revenue.",
+    images: [`${SITE_URL}/opengraph-image`],
   },
 };
 
@@ -70,6 +87,9 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen overflow-x-clip bg-background text-foreground font-sans antialiased">
+        <a href="#main-content" className="skip-link">
+          skip to main content
+        </a>
         <Providers initialTheme={initialTheme}>{children}</Providers>
         <Analytics />
       </body>

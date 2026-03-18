@@ -1,8 +1,8 @@
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
-const title = `seo growth system | ${SITE_NAME}`;
+const title = "seo growth system in ghana | zyra gh";
 const description =
-  "technical seo, intent mapping, and conversion-focused pages to turn search traffic into qualified pipeline.";
+  "technical seo, intent mapping, and conversion-focused pages in ghana to turn search traffic into qualified pipeline.";
 const url = `${SITE_URL}/services/seo`;
 
 export default function Head() {
@@ -12,7 +12,7 @@ export default function Head() {
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:site_name" content="zyra gh" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EventDetailClient } from "./EventDetailClient";
 import {
@@ -28,9 +28,15 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     };
   }
 
-  const title = `${event.name} | ${SITE_NAME} events`;
-  const description = `${event.description} venue: ${event.venue}, ${event.city}.`;
+  const isVenus = event.slug === "venus";
+  const title = isVenus
+    ? "venus | 450+ tickets gone, late-entry live"
+    : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
+  const description = isVenus
+    ? "450+ tickets are already gone. late-entry tickets are still live for 27 March 2026 at Glass Lounge, Accra. tap for lineup and entry."
+    : `${event.description} venue: ${event.venue}, ${event.city}.`;
   const url = `${SITE_URL}/events/${event.slug}`;
+  const imagePath = event.vibeCard?.poster ?? event.logo;
 
   return {
     title,
@@ -44,13 +50,13 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
       title,
       description,
       siteName: SITE_NAME,
-      images: [{ url: `${SITE_URL}${event.logo}` }],
+      images: [{ url: `${SITE_URL}${imagePath}` }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [`${SITE_URL}${event.logo}`],
+      images: [`${SITE_URL}${imagePath}`],
     },
   };
 }
@@ -82,7 +88,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
               addressCountry: "GH",
             },
           },
-          image: [`${SITE_URL}${event.logo}`],
+          image: [`${SITE_URL}${event.vibeCard?.poster ?? event.logo}`],
           organizer: {
             "@type": "Organization",
             name: SITE_NAME,
@@ -115,5 +121,3 @@ export default async function EventDetailPage({ params }: EventPageProps) {
     </>
   );
 }
-
-

@@ -1,15 +1,13 @@
-﻿"use client";
+"use client";
 
 import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
 import {
   EVENT_CONTROL_DEFAULTS,
   EVENT_TRACK_SESSION_KEY,
-  type EventControl,
   type EventFeatureKey,
-  type EventPublicSnapshot,
 } from "@/lib/eventOps";
 import type { EventMeta, TicketItem } from "@/lib/eventsData";
 
@@ -19,88 +17,7 @@ type EventDetailClientProps = {
   venusFreePassLimit: number;
 };
 
-type FanCamMoment = {
-  id: string;
-  event: EventMeta["name"];
-  kind: "image" | "video";
-  name: string;
-  createdAt: number;
-  src?: string;
-  playbackId?: string;
-};
-
-const FAN_CAM_REFRESH_MS = 60000;
-const isDocumentVisible = () =>
-  typeof document === "undefined" || document.visibilityState === "visible";
-
-const normalizeFanCamMoment = (entry: unknown): FanCamMoment | null => {
-  if (!entry || typeof entry !== "object") {
-    return null;
-  }
-
-  const item = entry as {
-    id?: unknown;
-    event?: unknown;
-    kind?: unknown;
-    name?: unknown;
-    createdAt?: unknown;
-    src?: unknown;
-    playbackId?: unknown;
-  };
-
-  const id = typeof item.id === "string" ? item.id : "";
-  const event = item.event === "VENUS" || item.event === "We Outside" ? item.event : null;
-  const kind = item.kind === "image" || item.kind === "video" ? item.kind : null;
-  const name = typeof item.name === "string" ? item.name : "";
-  const createdAt = typeof item.createdAt === "number" ? item.createdAt : 0;
-  const src = typeof item.src === "string" ? item.src : undefined;
-  const playbackId = typeof item.playbackId === "string" ? item.playbackId : undefined;
-
-  if (!id || !event || !kind || !name || !createdAt) {
-    return null;
-  }
-
-  if (kind === "image" && !src) {
-    return null;
-  }
-
-  if (kind === "video" && !src && !playbackId) {
-    return null;
-  }
-
-  return {
-    id,
-    event,
-    kind,
-    name,
-    createdAt,
-    src,
-    playbackId,
-  };
-};
-
-const toSafeControl = (entry: unknown, fallback: EventControl): EventControl => {
-  if (!entry || typeof entry !== "object") {
-    return fallback;
-  }
-
-  const item = entry as Partial<EventControl>;
-  const passLimit =
-    typeof item.passLimit === "number" && Number.isFinite(item.passLimit)
-      ? Math.max(0, Math.floor(item.passLimit))
-      : fallback.passLimit;
-  const liveTicketCount =
-    typeof item.liveTicketCount === "number" && Number.isFinite(item.liveTicketCount)
-      ? Math.max(0, Math.floor(item.liveTicketCount))
-      : fallback.liveTicketCount;
-
-  return {
-    passesEnabled:
-      typeof item.passesEnabled === "boolean" ? item.passesEnabled : fallback.passesEnabled,
-    passLimit,
-    liveTicketCount,
-  };
-};
+const TRACK_DEBUG_STORAGE_KEY = "zyra_event_track_debug_v1";
 
 const getOrCreateTrackingSessionId = () => {
   if (typeof window === "undefined") {
@@ -140,63 +57,45 @@ export function EventDetailClient({
     return EVENT_CONTROL_DEFAULTS[event.name];
   }, [event.name, venusFreePassLimit]);
 
-  const [eventControl, setEventControl] = useState<EventControl>(fallbackControl);
-  const [passesUsed, setPassesUsed] = useState(0);
+  const eventControl = fallbackControl;
 
   const trackFeature = useCallback(
     (feature: EventFeatureKey) => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
       const sessionId = getOrCreateTrackingSessionId();
       if (!sessionId) {
         return;
       }
 
-      void fetch("/api/events/track", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        keepalive: true,
-        body: JSON.stringify({
+      try {
+        const existing = JSON.parse(
+          localStorage.getItem(TRACK_DEBUG_STORAGE_KEY) ?? "[]"
+        ) as Array<{
+          sessionId: string;
+          event: EventMeta["name"];
+          feature: EventFeatureKey;
+          at: string;
+        }>;
+        const nextEntry = {
           sessionId,
           event: event.name,
           feature,
-        }),
-      });
+          at: new Date().toISOString(),
+        };
+
+        localStorage.setItem(
+          TRACK_DEBUG_STORAGE_KEY,
+          JSON.stringify([...(Array.isArray(existing) ? existing : []), nextEntry].slice(-40))
+        );
+      } catch {
+        // local-only tracking should never interrupt the page
+      }
     },
     [event.name]
   );
-
-  const loadEventSnapshot = useCallback(async () => {
-    const response = await fetch("/api/events/public", {
-      method: "GET",
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      throw new Error("failed to load event controls");
-    }
-
-    const payload = (await response.json()) as Partial<EventPublicSnapshot>;
-    const controls = payload.controls ?? {};
-    const nextControl = toSafeControl(
-      (controls as Record<string, unknown>)[event.name],
-      fallbackControl
-    );
-    const passesByEvent = payload.passesUsedByEvent ?? {};
-    const nextPassesUsedRaw = (passesByEvent as Record<string, unknown>)[event.name];
-    const nextPassesUsed =
-      typeof nextPassesUsedRaw === "number" && Number.isFinite(nextPassesUsedRaw)
-        ? Math.max(0, Math.floor(nextPassesUsedRaw))
-        : 0;
-
-    setEventControl(nextControl);
-    setPassesUsed(nextPassesUsed);
-  }, [event.name, fallbackControl]);
-
-
-  const passesLeft = eventControl.passesEnabled
-    ? Math.max(0, eventControl.passLimit - passesUsed)
-    : 0;
   const primaryTicketLink = useMemo(() => tickets.find((ticket) => ticket.link)?.link ?? '', [tickets]);
   const egoticketsPassUrl = useMemo(() => {
     if (!event.egoticketsEventUrl) {
@@ -216,6 +115,10 @@ export function EventDetailClient({
   const hasLivePassWindow = eventControl.passesEnabled;
   const hasEgoticketsPassLink = Boolean(egoticketsPassUrl);
   const showVenusPassGuide = event.name === "VENUS" && eventControl.passesEnabled;
+  const isVenusSoldOutMoment = event.name === "VENUS" && !eventControl.passesEnabled;
+  const communityAction =
+    event.vibeCard?.actions.find((action) => action.platform === "whatsapp") ??
+    event.vibeCard?.actions[0];
   const primaryAction = hasLivePassWindow && hasEgoticketsPassLink
     ? {
         href: egoticketsPassUrl,
@@ -223,19 +126,26 @@ export function EventDetailClient({
         detail: "free access is live now",
         external: true,
       }
-    : primaryTicketLink
+    : isVenusSoldOutMoment && primaryTicketLink
       ? {
           href: primaryTicketLink,
-          label: "secure your spot",
-          detail: "entry is live now",
+          label: "get late-entry ticket",
+          detail: `${event.fallbackPrice} late-entry ticket is live now`,
           external: true,
         }
-      : {
-          href: "/events#table-reservation",
-          label: "reserve a table",
-          detail: "ticket link is still cooking, but reservations are open",
-          external: false,
-        };
+      : primaryTicketLink
+        ? {
+            href: primaryTicketLink,
+            label: "secure your spot",
+            detail: "entry is live now",
+            external: true,
+          }
+        : {
+            href: "/events#table-reservation",
+            label: "reserve a table",
+            detail: "ticket link is still cooking, but reservations are open",
+            external: false,
+          };
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -260,7 +170,7 @@ export function EventDetailClient({
         brand={<EventsBrandMark />}
       />
 
-      <main className="relative z-10 mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6">
+      <main id="main-content" className="relative z-10 mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6">
         <div className="mb-4 flex justify-start">
           <Button
             as={Link}
@@ -273,7 +183,7 @@ export function EventDetailClient({
         <section className="space-y-4">
           <div className={`rounded-3xl bg-gradient-to-br ${event.bannerTone} p-5 text-white shadow-[0_22px_48px_rgba(15,23,42,0.2)] sm:p-6`}>
             <div className="flex items-center gap-2">
-              <p className="text-[11px] uppercase tracking-[0.16em] text-white/85">featured now</p>
+              <p className="text-[11px] uppercase tracking-[0.16em] text-white/85">event page</p>
             </div>
             <div className="mt-4 flex items-center gap-3">
               <div className="rounded-2xl bg-white/15 p-2.5 backdrop-blur-md">
@@ -304,16 +214,54 @@ export function EventDetailClient({
             <div className="flex flex-wrap items-center gap-3">
               <EventsBrandMark />
               <p className="text-sm font-semibold text-violet-900 dark:text-violet-100">
-                this event is produced by +233events under zyra gh
+                presented by zyra gh and +233events
               </p>
             </div>
           </div>
 
           {eventControl.passesEnabled && !showVenusPassGuide ? (
             <div className="rounded-2xl bg-white/62 p-4 backdrop-blur-lg dark:bg-slate-900/60">
-              <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">free pass window</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">free passes are active</p>
-              <p className="text-sm text-slate-600 dark:text-slate-400">claim yours while this round stays open.</p>
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">passes</p>
+              <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">free access open</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">claim yours while this round is open.</p>
+            </div>
+          ) : null}
+
+          {isVenusSoldOutMoment ? (
+            <div className="rounded-2xl border border-cyan-200/80 bg-cyan-100/75 p-4 backdrop-blur-lg dark:border-cyan-700/55 dark:bg-cyan-950/35">
+              <div className="flex flex-wrap items-center gap-2">
+                <Chip className="bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">450+ gone</Chip>
+                <Chip className="bg-cyan-500 text-white">late-entry live</Chip>
+              </div>
+              <p className="mt-3 text-2xl font-bold text-slate-900 dark:text-slate-100">late-entry tickets live</p>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                450+ tickets are already gone. join the community for event-day updates.
+              </p>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <Button
+                  as={Link}
+                  href={primaryAction.href}
+                  target={primaryAction.external ? "_blank" : undefined}
+                  rel={primaryAction.external ? "noopener noreferrer" : undefined}
+                  className="border border-cyan-300/80 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
+                  onPress={() => {
+                    trackFeature("ticket_click");
+                  }}
+                >
+                  {primaryAction.label}
+                </Button>
+                {communityAction ? (
+                  <Button
+                    as={Link}
+                    href={communityAction.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border border-emerald-300/90 bg-[linear-gradient(135deg,rgba(220,252,231,0.96),rgba(187,247,208,0.96))] text-emerald-950 shadow-[0_12px_28px_rgba(34,197,94,0.14)] transition-all hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-[linear-gradient(135deg,rgba(209,250,229,1),rgba(167,243,208,1))] hover:text-emerald-950 dark:border-emerald-500/45 dark:bg-[linear-gradient(135deg,rgba(6,78,59,0.9),rgba(5,46,22,0.88))] dark:text-emerald-100 dark:hover:border-emerald-400/60 dark:hover:bg-[linear-gradient(135deg,rgba(6,95,70,0.92),rgba(6,78,59,0.9))]"
+                  >
+                    join whatsapp community
+                  </Button>
+                ) : null}
+              </div>
             </div>
           ) : null}
 
@@ -325,7 +273,7 @@ export function EventDetailClient({
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
                   <Chip className="bg-emerald-700 text-white dark:bg-emerald-600">3 quick steps</Chip>
-                  <Chip className="bg-slate-900 text-white dark:bg-slate-700">free pass active</Chip>
+                  <Chip className="bg-slate-900 text-white dark:bg-slate-700">passes open</Chip>
                 </div>
               </div>
               <div className="mt-3 grid gap-2 text-sm text-emerald-900 dark:text-emerald-100">
@@ -369,12 +317,12 @@ export function EventDetailClient({
         <section className="mt-8">
           <Card className="border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">shareable spotlight</p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">main page</p>
               <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                this page stays light on purpose
+                need lineup and directions?
               </h2>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                use the main events hub for the full lineup, directions, calendar add, and table flow. this detail page is now the clean share link.
+                open the main page for lineup, route, calendar, and entry.
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button
@@ -382,41 +330,7 @@ export function EventDetailClient({
                   href="/events#event-actions"
                   className="border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
                 >
-                  open full event hub
-                </Button>
-                <Button
-                  as={Link}
-                  href={primaryAction.href}
-                  target={primaryAction.external ? "_blank" : undefined}
-                  rel={primaryAction.external ? "noopener noreferrer" : undefined}
-                  className="border border-white/60 bg-white/70 text-slate-900 dark:border-slate-600/70 dark:bg-slate-900/72 dark:text-slate-100"
-                  onPress={() => {
-                    trackFeature("ticket_click");
-                  }}
-                >
-                  {primaryAction.label}
-                </Button>
-              </div>
-            </CardBody>
-          </Card>
-        </section>
-        <section className="mt-8">
-          <Card className="border border-white/45 bg-white/45 backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/58">
-            <CardBody className="gap-4">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">next move</p>
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-slate-900 dark:text-slate-100">
-                need the full event stack?
-              </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                jump into the main events hub for the full conversion flow, then come back here when you want the direct event link.
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <Button
-                  as={Link}
-                  href="/events#event-actions"
-                  className="border border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500 text-white"
-                >
-                  go to the event hub
+                  open main page
                 </Button>
                 <Button
                   as={Link}
@@ -438,6 +352,9 @@ export function EventDetailClient({
     </div>
   );
 }
+
+
+
 
 
 

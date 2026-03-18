@@ -1,8 +1,8 @@
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
-const title = `content studio | ${SITE_NAME}`;
+const title = "content studio in ghana | zyra gh";
 const description =
-  "story-led and ai-assisted content systems, campaign concepts, and publishing loops built to increase trust and demand.";
+  "story-led and ai-assisted content systems in ghana built to increase trust, visibility, and demand.";
 const url = `${SITE_URL}/services/content`;
 
 export default function Head() {
@@ -12,7 +12,7 @@ export default function Head() {
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:site_name" content="zyra gh" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />

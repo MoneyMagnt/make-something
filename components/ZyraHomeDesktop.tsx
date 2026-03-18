@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { startTransition, useDeferredValue, useState } from "react";
 import { HERO_PREVIEW_PANELS, HOME_PHOTOS, getServiceVisual } from "@/lib/brandVisuals";
 
@@ -53,7 +53,7 @@ type ZyraHomeDesktopProps = {
   faqs: FaqItem[];
 };
 
-const reveal = {
+const defaultReveal = {
   initial: { opacity: 0, y: 18 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-90px" },
@@ -80,10 +80,21 @@ export default function ZyraHomeDesktop({
   whyZyra,
   systemSteps,
   resultSnapshots,
-  operatingNotes,
   services,
   faqs,
 }: ZyraHomeDesktopProps) {
+  const shouldReduceMotion = useReducedMotion();
+  const reveal = shouldReduceMotion
+    ? {
+        initial: { opacity: 1, y: 0 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "0px" },
+        transition: { duration: 0 },
+      }
+    : defaultReveal;
+  const withDelay = (delay: number) =>
+    shouldReduceMotion ? { duration: 0 } : { ...defaultReveal.transition, delay };
+
   const [activeServiceTitle, setActiveServiceTitle] = useState(services[0]?.title ?? "");
   const deferredServiceTitle = useDeferredValue(activeServiceTitle);
   const activeService =
@@ -216,7 +227,7 @@ export default function ZyraHomeDesktop({
 
       <motion.section
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.08 }}
+        transition={withDelay(0.08)}
         className="mt-16 grid gap-5 xl:grid-cols-[0.64fr_0.36fr]"
       >
         <div className="relative overflow-hidden rounded-[2rem] border border-slate-200/70 bg-slate-900 shadow-[0_28px_72px_rgba(15,23,42,0.1)]">
@@ -275,7 +286,7 @@ export default function ZyraHomeDesktop({
       <motion.section
         id="service-preview"
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.12 }}
+        transition={withDelay(0.12)}
         className="mt-24 grid gap-8 xl:grid-cols-[0.36fr_0.64fr]"
       >
         <div className="space-y-5 xl:sticky xl:top-28 xl:self-start">
@@ -367,7 +378,7 @@ export default function ZyraHomeDesktop({
       <motion.section
         id="proof"
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.18 }}
+        transition={withDelay(0.18)}
         className="mt-24 grid gap-6 xl:grid-cols-[1.04fr_0.96fr]"
       >
         <Card className="overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/84 shadow-[0_28px_72px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/72">
@@ -434,7 +445,7 @@ export default function ZyraHomeDesktop({
 
       <motion.section
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.24 }}
+        transition={withDelay(0.24)}
         className="mt-24 grid gap-8 xl:grid-cols-[0.38fr_0.62fr]"
       >
         <div className="space-y-5">
@@ -472,7 +483,7 @@ export default function ZyraHomeDesktop({
 
       <motion.section
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.3 }}
+        transition={withDelay(0.3)}
         className="mt-24"
       >
         <div className="relative overflow-hidden rounded-[2.1rem] border border-slate-200/70 bg-slate-900 shadow-[0_34px_90px_rgba(15,23,42,0.12)]">

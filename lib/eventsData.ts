@@ -92,7 +92,7 @@ export const EVENTS: EventMeta[] = [
     auraB: "rgba(217,70,239,0.28)",
     fallbackPrice: "GHS 50",
     description:
-      "Signature venus nightlife experience by zyra with free pass access before standard entry starts.",
+      "Signature venus nightlife experience by zyra at Glass Lounge, Accra, on 27 March 2026.",
     egoticketsEventUrl: "https://egotickets.com/events/venus-the-beginning/register",
     vibeCard: {
       title: "follow venus updates",
@@ -164,7 +164,7 @@ export const DEFAULT_EVENT_TICKETS: Record<EventName, TicketItem[]> = {
   VENUS: [
     {
       id: "venus-standard",
-      name: "entry ticket",
+      name: "late-entry ticket",
       price: "GHS 50",
       link: "https://egotickets.com/events/venus-the-beginning/register",
     },
@@ -177,5 +177,8 @@ export const VENUS_POST_PASS_PRICE = "GHS 50";
 export function getEventBySlug(slug: string): EventMeta | undefined {
   return EVENTS.find((event) => event.slug === slug);
 }
+
+
+
 
 

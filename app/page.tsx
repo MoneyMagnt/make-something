@@ -1,9 +1,34 @@
+import type { Metadata } from "next";
 import ZyraHomeDesktop from "@/components/ZyraHomeDesktop";
 import ZyraHomeMobile from "@/components/ZyraHomeMobile";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "seo, content, influencer, and founder websites in ghana",
+  description:
+    "zyra builds seo, content, influencer, and founder website systems in ghana for brands that need visible momentum.",
+  alternates: {
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    title: "seo, content, influencer, and founder websites in ghana",
+    description:
+      "zyra builds seo, content, influencer, and founder website systems in ghana for brands that need visible momentum.",
+    images: [`${SITE_URL}/opengraph-image`],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "seo, content, influencer, and founder websites in ghana",
+    description:
+      "zyra builds seo, content, influencer, and founder website systems in ghana for brands that need visible momentum.",
+    images: [`${SITE_URL}/opengraph-image`],
+  },
+};
 
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
@@ -192,7 +217,7 @@ export default function Home() {
 
       <ZyraSiteNav active="home" brand={<ZyraBrandMark />} />
 
-      <main className="relative mx-auto max-w-[1360px] px-5 pb-28 pt-12 sm:px-6 lg:px-8">
+      <main id="main-content" className="relative mx-auto max-w-[1360px] px-5 pb-28 pt-12 sm:px-6 lg:px-8">
         <div className="lg:hidden">
           <ZyraHomeMobile
             growthAuditUrl={GROWTH_AUDIT_URL}

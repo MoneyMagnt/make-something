@@ -4,65 +4,65 @@ import { LOCATION_SERVICE_PAGES } from "@/lib/locationServicePages";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const siteUpdatedAt = new Date("2026-03-17T00:00:00.000Z");
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${SITE_URL}/services`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/services/seo`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/services/content`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/services/influencer`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/services/founder-websites`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/privacy`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "monthly",
       priority: 0.4,
     },
     {
       url: `${SITE_URL}/terms`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "monthly",
       priority: 0.4,
     },
     {
       url: `${SITE_URL}/data-policy`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "monthly",
       priority: 0.4,
     },
     {
       url: `${SITE_URL}/events`,
-      lastModified: now,
+      lastModified: siteUpdatedAt,
       changeFrequency: "daily",
       priority: 0.9,
     },
@@ -70,14 +70,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const eventRoutes: MetadataRoute.Sitemap = EVENTS.map((event) => ({
     url: `${SITE_URL}/events/${event.slug}`,
-    lastModified: now,
+    lastModified: siteUpdatedAt,
     changeFrequency: "daily",
     priority: 0.85,
   }));
 
   const locationServiceRoutes: MetadataRoute.Sitemap = LOCATION_SERVICE_PAGES.map((page) => ({
     url: `${SITE_URL}/services/${page.slug}`,
-    lastModified: now,
+    lastModified: siteUpdatedAt,
     changeFrequency: "weekly",
     priority: 0.75,
   }));

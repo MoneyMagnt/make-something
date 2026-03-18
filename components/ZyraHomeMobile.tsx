@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Card, CardBody, Link } from "@heroui/react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { startTransition, useDeferredValue, useState } from "react";
 import { HERO_PREVIEW_PANELS, HOME_PHOTOS, getServiceVisual } from "@/lib/brandVisuals";
 
@@ -53,7 +53,7 @@ type ZyraHomeMobileProps = {
   faqs: FaqItem[];
 };
 
-const reveal = {
+const defaultReveal = {
   initial: { opacity: 0, y: 14 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-80px" },
@@ -69,8 +69,19 @@ export default function ZyraHomeMobile({
   resultSnapshots,
   operatingNotes,
   services,
-  faqs,
 }: ZyraHomeMobileProps) {
+  const shouldReduceMotion = useReducedMotion();
+  const reveal = shouldReduceMotion
+    ? {
+        initial: { opacity: 1, y: 0 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "0px" },
+        transition: { duration: 0 },
+      }
+    : defaultReveal;
+  const withDelay = (delay: number) =>
+    shouldReduceMotion ? { duration: 0 } : { ...defaultReveal.transition, delay };
+
   const [activeServiceTitle, setActiveServiceTitle] = useState(services[0]?.title ?? "");
   const deferredServiceTitle = useDeferredValue(activeServiceTitle);
   const activeService =
@@ -203,7 +214,7 @@ export default function ZyraHomeMobile({
 
       <motion.section
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.08 }}
+        transition={withDelay(0.08)}
         className="mt-12 grid gap-4"
       >
         <div className="relative overflow-hidden rounded-[1.8rem] border border-slate-200/70 bg-slate-900 shadow-[0_24px_56px_rgba(15,23,42,0.1)]">
@@ -249,7 +260,7 @@ export default function ZyraHomeMobile({
       <motion.section
         id="mobile-services"
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.12 }}
+        transition={withDelay(0.12)}
         className="mt-14 space-y-4"
       >
         <div className="space-y-2">
@@ -323,7 +334,7 @@ export default function ZyraHomeMobile({
       <motion.section
         id="proof"
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.18 }}
+        transition={withDelay(0.18)}
         className="mt-14 space-y-4"
       >
         <div className="space-y-2">
@@ -384,7 +395,7 @@ export default function ZyraHomeMobile({
 
       <motion.section
         {...reveal}
-        transition={{ ...reveal.transition, delay: 0.24 }}
+        transition={withDelay(0.24)}
         className="mt-14 space-y-4"
       >
         <div className="space-y-2">
@@ -422,7 +433,7 @@ export default function ZyraHomeMobile({
         </div>
       </motion.section>
 
-      <motion.section {...reveal} transition={{ ...reveal.transition, delay: 0.3 }} className="mt-14">
+      <motion.section {...reveal} transition={withDelay(0.3)} className="mt-14">
         <div className="relative overflow-hidden rounded-[1.9rem] border border-slate-200/70 bg-slate-900 shadow-[0_28px_70px_rgba(15,23,42,0.12)]">
           <div
             className="absolute inset-0 bg-cover bg-center"
