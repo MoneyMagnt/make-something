@@ -365,12 +365,9 @@ export default function EventsPage() {
                       </p>
                       <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-[clamp(1.5rem,3vw,2.55rem)] font-bold leading-[1.05] tracking-tight text-slate-950 dark:text-white">
                         {isVenusSoldOutMoment ? (
-                          <>
-                            <span className="block">venus</span>
-                            <span className="mt-1 block pb-[0.08em] bg-[linear-gradient(90deg,#7c3aed_0%,#ec4899_48%,#06b6d4_100%)] bg-clip-text text-transparent dark:bg-[linear-gradient(90deg,#c084fc_0%,#f9a8d4_48%,#67e8f9_100%)]">
-                              450+ tickets already gone
-                            </span>
-                          </>
+                          <span className="block pb-[0.08em] bg-[linear-gradient(90deg,#7c3aed_0%,#ec4899_48%,#06b6d4_100%)] bg-clip-text text-transparent dark:bg-[linear-gradient(90deg,#c084fc_0%,#f9a8d4_48%,#67e8f9_100%)]">
+                            450+ tickets already gone
+                          </span>
                         ) : (
                           <>
                             <span className="block">with free pass access</span>
@@ -383,7 +380,7 @@ export default function EventsPage() {
                       {isVenusSoldOutMoment ? (
                         <div className="mt-4 flex flex-wrap items-center gap-2">
                           <span className="rounded-full border border-cyan-200/80 bg-cyan-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-900 dark:border-cyan-400/30 dark:bg-cyan-500/12 dark:text-cyan-100">
-late entry - {activeMeta.fallbackPrice}
+                            {`late entry - ${activeMeta.fallbackPrice}`}
                           </span>
                         </div>
                       ) : null}
