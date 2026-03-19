@@ -30,13 +30,15 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
 
   const isVenus = event.slug === "venus";
   const title = isVenus
-    ? "venus | 450+ tickets gone, late-entry live"
+    ? "venus | countdown on, late-entry live"
     : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
   const description = isVenus
-    ? "450+ tickets are already gone. late-entry tickets are still live for 27 March 2026 at Glass Lounge, Accra. tap for lineup and entry."
+    ? "450+ tickets are already gone. the countdown to 27 march is on, and late-entry tickets are still live at glass lounge, accra. tap for lineup and entry."
     : `${event.description} venue: ${event.venue}, ${event.city}.`;
   const url = `${SITE_URL}/events/${event.slug}`;
-  const imagePath = event.vibeCard?.poster ?? event.logo;
+  const imagePath = isVenus
+    ? "/lineup/venus%20flyer.jpeg?v=20260319b"
+    : (event.vibeCard?.poster ?? event.logo);
 
   return {
     title,

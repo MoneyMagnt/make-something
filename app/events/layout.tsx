@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
-const title = "venus | 450+ tickets gone, late-entry live";
+const title = "venus | countdown on, late-entry live";
 const description =
-  "450+ tickets are already gone. late-entry tickets are still live for 27 March 2026 at Glass Lounge, Accra. tap for lineup and entry.";
+  "450+ tickets are already gone. the countdown to 27 march is on, and late-entry tickets are still live at glass lounge, accra. tap for lineup and entry.";
 const url = `${SITE_URL}/events`;
-const image = `${SITE_URL}/lineup/venus%20flyer.jpeg?v=20260318a`;
+const image = `${SITE_URL}/lineup/venus%20flyer.jpeg?v=20260319b`;
 
 export const metadata: Metadata = {
   title,
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: image,
-        alt: "venus flyer | 450+ tickets gone, late-entry live",
+        alt: "venus flyer | countdown on, late-entry live",
       },
     ],
   },
