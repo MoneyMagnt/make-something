@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { Image } from "@heroui/react";
+import Image from "next/image";
 
 type EventsBrandMarkProps = {
   className?: string;
@@ -12,6 +12,8 @@ export function EventsBrandMark({
   size = "default",
 }: EventsBrandMarkProps) {
   const isCompact = size === "compact";
+  const logoWidth = isCompact ? 72 : 80;
+  const logoHeight = isCompact ? 18 : 20;
 
   return (
     <span
@@ -50,9 +52,13 @@ export function EventsBrandMark({
         }`}
       >
         <Image
-          removeWrapper
           alt="+233events logo"
           src="/233-events-logo.png"
+          width={logoWidth}
+          height={logoHeight}
+          priority
+          loading="eager"
+          decoding="async"
           className={`${
             isCompact ? "h-4 min-[430px]:h-[18px]" : "h-[17px] min-[430px]:h-[19px] sm:h-5"
           } w-auto object-contain brightness-[1.08] contrast-[1.24] saturate-[1.24] drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]`}

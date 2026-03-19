@@ -6,6 +6,7 @@ import { useThemeMode } from "@/components/ThemeModeProvider";
 import { EventLineupSection } from "@/components/EventLineupSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
+import { EventCountdownChip } from "@/components/EventCountdownChip";
 import { DEFAULT_EVENT_TICKETS, EVENTS } from "@/lib/eventsData";
 import type { EventMeta, EventName } from "@/lib/eventsData";
 import {
@@ -82,6 +83,7 @@ const buildTableReservationUrl = (event: EventMeta) => {
   const text = `hi zyra, i want to reserve table for ${event.name} on ${event.dateLabel} at ${event.venue}.`;
   return `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(text)}`;
 };
+
 export default function EventsPage() {
   const { theme } = useThemeMode();
   const [activeEvent, setActiveEvent] = useState<EventName>("VENUS");
@@ -339,11 +341,10 @@ export default function EventsPage() {
             <CardBody className="gap-6">
               <div className="relative flex min-h-[9.5rem] flex-col items-center justify-center pt-5 text-center sm:min-h-[11rem] sm:pt-6 lg:min-h-[13rem] lg:pt-7">
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 sm:gap-3">
-                  <div className="inline-flex h-9 items-center rounded-full border border-cyan-200 bg-cyan-100 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-                    {"tickets live"}
+                  <div suppressHydrationWarning className="inline-flex h-9 max-w-[calc(100%-8.5rem)] items-center rounded-full border border-cyan-200 bg-cyan-100 px-3 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+                    <EventCountdownChip targetIso={activeMeta.startDateIso} />
                   </div>
-                  <div className="inline-flex h-9 max-w-[calc(100%-7.25rem)] items-center gap-2 overflow-hidden rounded-full border border-cyan-200/80 bg-cyan-100/88 px-3 text-cyan-900 shadow-[0_10px_22px_rgba(15,23,42,0.06)] dark:border-cyan-700/45 dark:bg-cyan-900/22 dark:text-cyan-200/90">
-                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em]">presented by</span>
+                  <div className="inline-flex h-9 items-center rounded-full border border-cyan-200/80 bg-cyan-100/88 px-3 text-cyan-900 shadow-[0_10px_22px_rgba(15,23,42,0.06)] dark:border-cyan-700/45 dark:bg-cyan-900/22 dark:text-cyan-200/90">
                     <EventsBrandMark size="compact" className="min-w-0" />
                   </div>
                 </div>
@@ -561,51 +562,4 @@ export default function EventsPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
