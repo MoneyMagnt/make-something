@@ -64,7 +64,7 @@ export const EVENTS: EventMeta[] = [
     day: "SOON",
     month: "COMING",
     dateLabel: "Coming soon",
-    timeLabel: "timing drops soon",
+    timeLabel: "Next drop. Details when it's time.",
     venue: "Laboma Beach Front",
     city: "Labadi Beach, Accra",
     logo: "/Weoutside.logo.org2.png",

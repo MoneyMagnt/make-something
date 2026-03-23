@@ -545,7 +545,9 @@ export function EventsPageClient() {
                       <div className="flex flex-col items-start gap-1 text-left">
                         <EventBrandName event={event} selected={selected} />
                         <p className={`text-xs ${selected ? "text-slate-600 dark:text-slate-200/88" : "text-slate-600 dark:text-slate-400"}`}>
-                          {event.dateLabel} - {event.timeLabel}
+                          {event.name === "We Outside"
+                            ? "Next drop. Details when it's time."
+                            : `${event.dateLabel} - ${event.timeLabel}`}
                         </p>
                       </div>
                       <span className={`text-xs uppercase tracking-[0.14em] ${selected ? "text-cyan-700 dark:text-cyan-200" : "text-slate-500 dark:text-slate-400"}`}>

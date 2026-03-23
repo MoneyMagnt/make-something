@@ -189,23 +189,30 @@ export function ServicesPageClient() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button
-                as={Link}
-                href={GROWTH_AUDIT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-12 rounded-full bg-slate-950 px-6 font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] dark:bg-slate-100 dark:text-slate-950"
-              >
-                {servicesContent.primaryCtaLabel}
-              </Button>
-              <Button
-                as={Link}
-                href="#service-lanes"
-                variant="bordered"
-                className="h-12 rounded-full border-slate-300/90 bg-white/80 px-6 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
-              >
-                {servicesContent.secondaryCtaLabel}
-              </Button>
+              <div className="w-full sm:w-auto">
+                <p className="mb-2 text-center text-[0.85rem] text-slate-500 dark:text-slate-400">
+                  Built for brands investing seriously in growth. Not sure what fits? The audit maps the first move.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    as={Link}
+                    href={GROWTH_AUDIT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-12 rounded-full bg-slate-950 px-6 font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] dark:bg-slate-100 dark:text-slate-950"
+                  >
+                    {servicesContent.primaryCtaLabel}
+                  </Button>
+                  <Button
+                    as={Link}
+                    href="#service-lanes"
+                    variant="bordered"
+                    className="h-12 rounded-full border-slate-300/90 bg-white/80 px-6 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
+                  >
+                    {servicesContent.secondaryCtaLabel}
+                  </Button>
+                </div>
+              </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
@@ -299,9 +306,6 @@ export function ServicesPageClient() {
             <h2 className="max-w-[9ch] font-[family-name:var(--font-instrument-serif)] text-6xl leading-[0.92] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
               compare the operating systems.
             </h2>
-            <p className="max-w-sm text-base leading-8 text-slate-600 dark:text-slate-300">
-              this page is now about the offers themselves, not the same brand-entry language from the homepage.
-            </p>
             <div className="grid gap-3">
               {PERFORMANCE_LAYER.slice(0, 2).map((item, index) => (
                 <div
@@ -370,7 +374,7 @@ export function ServicesPageClient() {
                         href={service.href}
                         className={`text-sm font-semibold uppercase tracking-[0.14em] ${isActive ? "text-cyan-300 dark:text-cyan-700" : "text-cyan-700 dark:text-cyan-300"}`}
                       >
-                        inspect system
+                        see how it works →
                       </Link>
                     </div>
                   </CardBody>
@@ -442,6 +446,9 @@ export function ServicesPageClient() {
               <h2 className="mt-2 font-[family-name:var(--font-manrope)] text-3xl font-semibold tracking-[-0.04em] text-slate-950 dark:text-slate-100">
                 city pages, kept secondary.
               </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
+                Searching for a growth partner in a specific city? These pages are built for local search — pick the one that matches where you operate.
+              </p>
             </div>
             <Chip className="bg-slate-950 text-white dark:bg-slate-700">city pages</Chip>
           </div>
