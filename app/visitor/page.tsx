@@ -1,3 +1,7 @@
-﻿"use client";
+"use client";
 
-export { default } from "../events/page";
+import { EventsPageClient } from "@/components/EventsPageClient";
+
+export default function VisitorPage() {
+  return <EventsPageClient />;
+}
