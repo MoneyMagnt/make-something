@@ -80,6 +80,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${initialTheme} ${manrope.variable}`} data-theme-ready="false" suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="rj8tdAyRHZdy83fPMeC0oM7HF71IFjrAVwvKzDIGBhU" />
         <script
           id="theme-boot"
           suppressHydrationWarning
