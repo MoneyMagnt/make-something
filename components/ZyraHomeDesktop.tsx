@@ -4,6 +4,7 @@ import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
 import { motion, useReducedMotion } from "framer-motion";
 import { startTransition, useDeferredValue, useState } from "react";
 import { HERO_PREVIEW_PANELS, HOME_PHOTOS, getServiceVisual } from "@/lib/brandVisuals";
+import { useLocalContent } from "@/lib/localContentEditor";
 
 type StatItem = {
   label: string;
@@ -83,6 +84,8 @@ export default function ZyraHomeDesktop({
   services,
   faqs,
 }: ZyraHomeDesktopProps) {
+  const editorContent = useLocalContent();
+  const homeContent = editorContent.home;
   const shouldReduceMotion = useReducedMotion();
   const reveal = shouldReduceMotion
     ? {
@@ -118,7 +121,7 @@ export default function ZyraHomeDesktop({
       >
         <div className="max-w-6xl space-y-8">
           <Chip className="w-fit border border-cyan-200/80 bg-cyan-100/80 px-3 text-cyan-900 dark:border-cyan-700/60 dark:bg-cyan-900/30 dark:text-cyan-200">
-            premium growth systems for brands that need visible momentum
+            {homeContent.heroChipLabel} {homeContent.heroChipSubLabel}
           </Chip>
 
           <div className="max-w-6xl overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/80 p-3 shadow-[0_24px_54px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/70">
@@ -150,13 +153,13 @@ export default function ZyraHomeDesktop({
 
           <div className="space-y-5">
             <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-              zyra growth studio
+              {homeContent.heroEyebrow}
             </p>
-            <h1 className="max-w-[11ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(4.8rem,7vw,6.9rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-              visibility, search, and campaigns that make momentum visible.
-            </h1>
+            <p className="max-w-[11ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(4.8rem,7vw,6.9rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
+              {homeContent.heroTitle}
+            </p>
             <p className="max-w-3xl text-[1.04rem] leading-8 text-slate-600 dark:text-slate-300">
-              built in ghana for brands that need clearer demand, sharper presentation, and a next step people can see fast.
+              {homeContent.heroBody}
             </p>
           </div>
 
@@ -168,7 +171,7 @@ export default function ZyraHomeDesktop({
               rel="noopener noreferrer"
               className="h-12 rounded-full bg-slate-950 px-6 font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] dark:bg-slate-100 dark:text-slate-950"
             >
-              book growth audit
+              {homeContent.primaryCtaLabel}
             </Button>
             <Button
               as={Link}
@@ -176,7 +179,7 @@ export default function ZyraHomeDesktop({
               variant="bordered"
               className="h-12 rounded-full border-slate-300/90 bg-white/80 px-6 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
             >
-              explore services
+              {homeContent.secondaryCtaLabel}
             </Button>
           </div>
         </div>
@@ -200,7 +203,7 @@ export default function ZyraHomeDesktop({
               </div>
               <div className="space-y-3">
                 <Link href={activeService.href} className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
-                  view service
+                  {`see ${activeService.title}`}
                 </Link>
                 <span className={`block h-2.5 w-16 rounded-full bg-gradient-to-r ${activeService.tone}`} />
                 <div className="grid gap-2">
@@ -365,7 +368,7 @@ export default function ZyraHomeDesktop({
                       href={service.href}
                       className={`text-sm font-semibold uppercase tracking-[0.14em] ${isActive ? "text-cyan-300 dark:text-cyan-700" : "text-cyan-700 dark:text-cyan-300"}`}
                     >
-                      view service
+                      {`see ${service.title}`}
                     </Link>
                   </div>
                 </CardBody>
@@ -510,7 +513,7 @@ export default function ZyraHomeDesktop({
                 rel="noopener noreferrer"
                 className="h-12 rounded-full bg-white px-6 font-semibold text-slate-950"
               >
-                book growth audit
+                {homeContent.primaryCtaLabel}
               </Button>
               <Button
                 as={Link}

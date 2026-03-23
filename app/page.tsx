@@ -218,6 +218,9 @@ export default function Home() {
       <ZyraSiteNav active="home" brand={<ZyraBrandMark />} />
 
       <main id="main-content" className="relative mx-auto max-w-[1360px] px-5 pb-28 pt-12 sm:px-6 lg:px-8">
+        <h1 className="sr-only">
+          visibility, search, and campaigns that make momentum visible.
+        </h1>
         <div className="lg:hidden">
           <ZyraHomeMobile
             growthAuditUrl={GROWTH_AUDIT_URL}

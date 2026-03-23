@@ -4,6 +4,7 @@ import { Button, Card, CardBody, Link } from "@heroui/react";
 import { motion, useReducedMotion } from "framer-motion";
 import { startTransition, useDeferredValue, useState } from "react";
 import { HERO_PREVIEW_PANELS, HOME_PHOTOS, getServiceVisual } from "@/lib/brandVisuals";
+import { useLocalContent } from "@/lib/localContentEditor";
 
 type StatItem = {
   label: string;
@@ -70,6 +71,8 @@ export default function ZyraHomeMobile({
   operatingNotes,
   services,
 }: ZyraHomeMobileProps) {
+  const editorContent = useLocalContent();
+  const homeContent = editorContent.home;
   const shouldReduceMotion = useReducedMotion();
   const reveal = shouldReduceMotion
     ? {
@@ -103,10 +106,10 @@ export default function ZyraHomeMobile({
       <motion.section {...reveal} className="space-y-6 pt-3">
         <div className="mx-auto w-full max-w-[16.5rem] rounded-[1rem] border border-cyan-200/80 bg-cyan-100/80 px-3 py-2 text-center text-cyan-900 shadow-[0_10px_24px_rgba(34,211,238,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/30 dark:text-cyan-200">
           <p className="text-[0.62rem] uppercase tracking-[0.16em] text-cyan-800/80 dark:text-cyan-200/80">
-            premium growth systems
+            {homeContent.heroChipLabel}
           </p>
           <p className="mt-1 text-[0.84rem] font-semibold leading-[1.15rem] tracking-[-0.02em]">
-            for brands that need visible momentum
+            {homeContent.heroChipSubLabel}
           </p>
         </div>
 
@@ -139,13 +142,13 @@ export default function ZyraHomeMobile({
 
         <div className="space-y-4">
           <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-            zyra growth studio
+            {homeContent.heroEyebrow}
           </p>
-          <h1 className="max-w-[10ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(3.9rem,16vw,5.6rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-            visibility, search, and campaigns that make momentum visible.
-          </h1>
+          <p className="max-w-[10ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(3.9rem,16vw,5.6rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
+            {homeContent.heroTitle}
+          </p>
           <p className="max-w-md text-base leading-8 text-slate-600 dark:text-slate-300">
-            built in ghana for brands that need clearer demand, sharper presentation, and a next step people can see fast.
+            {homeContent.heroBody}
           </p>
         </div>
 
@@ -157,7 +160,7 @@ export default function ZyraHomeMobile({
             rel="noopener noreferrer"
             className="h-12 rounded-full bg-slate-950 font-semibold text-white dark:bg-slate-100 dark:text-slate-950"
           >
-            book growth audit
+            {homeContent.primaryCtaLabel}
           </Button>
           <Button
             as={Link}
@@ -165,7 +168,7 @@ export default function ZyraHomeMobile({
             variant="bordered"
             className="h-12 rounded-full border-slate-300/90 bg-white/80 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
           >
-            explore services
+            {homeContent.secondaryCtaLabel}
           </Button>
         </div>
 
@@ -204,7 +207,7 @@ export default function ZyraHomeMobile({
                 </h2>
                 <p className="max-w-xs text-sm leading-7 text-white/80">{activeVisual.caption}</p>
                 <Link href={activeService.href} className="text-sm font-semibold uppercase tracking-[0.14em] text-cyan-300">
-                  view service
+                  {`see ${activeService.title}`}
                 </Link>
               </div>
             </div>
@@ -321,7 +324,7 @@ export default function ZyraHomeMobile({
                       href={service.href}
                       className={`text-sm font-semibold uppercase tracking-[0.14em] ${isActive ? "text-cyan-300 dark:text-cyan-700" : "text-cyan-700 dark:text-cyan-300"}`}
                     >
-                      view service
+                      {`see ${service.title}`}
                     </Link>
                   </div>
                 </CardBody>
@@ -458,7 +461,7 @@ export default function ZyraHomeMobile({
                 rel="noopener noreferrer"
                 className="h-12 rounded-full bg-white font-semibold text-slate-950"
               >
-                book growth audit
+                {homeContent.primaryCtaLabel}
               </Button>
               <Button
                 as={Link}

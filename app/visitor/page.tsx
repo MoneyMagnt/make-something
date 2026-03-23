@@ -1,7 +1,5 @@
-"use client";
-
-import { EventsPageClient } from "@/components/EventsPageClient";
+import { redirect } from "next/navigation";
 
 export default function VisitorPage() {
-  return <EventsPageClient />;
+  redirect("/events");
 }
