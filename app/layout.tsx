@@ -14,8 +14,8 @@ const manrope = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "zyra gh | growth systems for brands in ghana",
-    template: "%s | zyra gh",
+    default: "Zyra Growth Studio | growth systems for brands in ghana",
+    template: "%s",
   },
   description:
     "zyra is a ghana growth studio building seo, content, influencer, and founder website systems that turn attention into revenue.",
@@ -23,25 +23,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: "zyra gh | growth systems for brands in ghana",
+    title: "Zyra Growth Studio | growth systems for brands in ghana",
     description:
       "zyra is a ghana growth studio building seo, content, influencer, and founder website systems that turn attention into revenue.",
-    siteName: "zyra gh",
+    siteName: "Zyra Growth Studio",
     images: [
       {
-        url: `${SITE_URL}/opengraph-image`,
+        url: `${SITE_URL}/og.jpg`,
         width: 1200,
         height: 630,
-        alt: "zyra gh growth systems",
+        alt: "zyra growth studio",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "zyra gh | growth systems for brands in ghana",
+    title: "Zyra Growth Studio | growth systems for brands in ghana",
     description:
       "zyra is a ghana growth studio building seo, content, influencer, and founder website systems that turn attention into revenue.",
-    images: [`${SITE_URL}/opengraph-image`],
+    images: [`${SITE_URL}/og.jpg`],
   },
 };
 

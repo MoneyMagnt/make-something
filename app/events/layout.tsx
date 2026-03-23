@@ -5,10 +5,12 @@ const title = "venus | countdown on, late-entry live";
 const description =
   "450+ tickets are already gone. the countdown to 27 march is on, and late-entry tickets are still live at glass lounge, accra. tap for lineup and entry.";
 const url = `${SITE_URL}/events`;
-const image = `${SITE_URL}/lineup/venus%20flyer.jpeg?v=20260319b`;
+const image = `${SITE_URL}/og.jpg?v=20260323a`;
 
 export const metadata: Metadata = {
-  title,
+  title: {
+    absolute: title,
+  },
   description,
   alternates: {
     canonical: url,
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: image,
-        alt: "venus flyer | countdown on, late-entry live",
+        alt: "zyra growth studio event preview",
       },
     ],
   },

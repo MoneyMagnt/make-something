@@ -36,12 +36,12 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     ? "450+ tickets are already gone. the countdown to 27 march is on, and late-entry tickets are still live at glass lounge, accra. tap for lineup and entry."
     : `${event.description} venue: ${event.venue}, ${event.city}.`;
   const url = `${SITE_URL}/events/${event.slug}`;
-  const imagePath = isVenus
-    ? "/lineup/venus%20flyer.jpeg?v=20260319b"
-    : (event.vibeCard?.poster ?? event.logo);
+  const imagePath = "/og.jpg?v=20260323a";
 
   return {
-    title,
+    title: {
+      absolute: title,
+    },
     description,
     alternates: {
       canonical: url,

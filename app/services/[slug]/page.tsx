@@ -31,32 +31,34 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${page.pageTitle} | ${SITE_NAME}`;
+  const title = `${page.pageTitle} | Zyra Growth Studio`;
   const description = page.metaDescription;
   const url = `${SITE_URL}/services/${page.slug}`;
 
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      type: "website",
-      url,
-      title,
+    return {
+      title: {
+        absolute: title,
+      },
       description,
-      siteName: SITE_NAME,
-      images: [{ url: `${SITE_URL}/opengraph-image` }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [`${SITE_URL}/opengraph-image`],
-    },
-  };
-}
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        type: "website",
+        url,
+        title,
+        description,
+        siteName: "Zyra Growth Studio",
+        images: [{ url: `${SITE_URL}/og.jpg` }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [`${SITE_URL}/og.jpg`],
+      },
+    };
+  }
 
 export default async function ServiceLocationPage({
   params,

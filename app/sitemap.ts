@@ -4,7 +4,7 @@ import { LOCATION_SERVICE_PAGES } from "@/lib/locationServicePages";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUpdatedAt = new Date("2026-03-17T00:00:00.000Z");
+  const siteUpdatedAt = new Date("2026-03-23T00:00:00.000Z");
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
