@@ -4,6 +4,7 @@ import { Button, Card, CardBody, Image, Link } from "@heroui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 import { EventLineupSection } from "@/components/EventLineupSection";
+import { EventWildcardReveal } from "@/components/EventWildcardReveal";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
 import { EventCountdownChip } from "@/components/EventCountdownChip";
@@ -339,7 +340,7 @@ export function EventsPageClient() {
         <section className="mb-8">
           <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-6">
-              <div className="relative flex min-h-[9.5rem] flex-col items-center justify-center pt-5 text-center sm:min-h-[11rem] sm:pt-6 lg:min-h-[13rem] lg:pt-7">
+              <div className="relative flex min-h-[10.75rem] flex-col items-center justify-center pt-12 text-center sm:min-h-[11.75rem] sm:pt-12 lg:min-h-[13.25rem] lg:pt-12">
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 sm:gap-3">
                   <div suppressHydrationWarning className="inline-flex h-9 max-w-[calc(100%-8.5rem)] items-center rounded-full border border-cyan-200 bg-cyan-100 px-3 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
                     <EventCountdownChip targetIso={activeMeta.startDateIso} />
@@ -349,42 +350,37 @@ export function EventsPageClient() {
                   </div>
                 </div>
                 <h1 className="sr-only">{activeMeta.name}</h1>
-                <Image
-                  removeWrapper
-                  alt={`${activeMeta.name} logo`}
-                  src={activeMeta.logo}
-                  className="mx-auto mt-3 h-28 w-full max-w-[430px] object-contain sm:mt-4 sm:h-36 sm:max-w-[540px] lg:mt-5 lg:h-44 lg:max-w-[660px] xl:h-48 xl:max-w-[720px]"
-                />
+                {isVenusEvent ? (
+                  <div className="w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[470px]">
+                    <EventWildcardReveal
+                      logoSrc={activeMeta.logo}
+                      teaserImageSrc="/wildcard.jpg"
+                      revealImageSrc="/Mc%20Cobby%20Perry.jpg"
+                      revealVideoSrc="/Cobby%20Perry%20video.mp4"
+                      revealName="Mc Cobby Perry"
+                      compact
+                    />
+                  </div>
+                ) : (
+                  <Image
+                    removeWrapper
+                    alt={`${activeMeta.name} logo`}
+                    src={activeMeta.logo}
+                    className="mx-auto mt-3 h-28 w-full max-w-[430px] object-contain sm:mt-4 sm:h-36 sm:max-w-[540px] lg:mt-5 lg:h-44 lg:max-w-[660px] xl:h-48 xl:max-w-[720px]"
+                  />
+                )}
               </div>
 
               <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
                 <div className="space-y-4">
                   {isVenusEvent ? (
-                    <div className="max-w-2xl rounded-[1.75rem] border border-fuchsia-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(249,245,255,0.98))] px-5 py-5 shadow-[0_22px_52px_rgba(168,85,247,0.12)] backdrop-blur-xl dark:border-fuchsia-400/20 dark:bg-[linear-gradient(135deg,rgba(30,27,75,0.7),rgba(12,10,30,0.82))] dark:shadow-[0_24px_60px_rgba(99,102,241,0.18)] sm:px-6 sm:py-6">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-fuchsia-700 dark:text-fuchsia-200/90">
-                        nightlife experience by zyra
-                      </p>
-                      <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-[clamp(1.5rem,3vw,2.55rem)] font-bold leading-[1.05] tracking-tight text-slate-950 dark:text-white">
-                        {isVenusSoldOutMoment ? (
-                          <span className="block pb-[0.08em] bg-[linear-gradient(90deg,#7c3aed_0%,#ec4899_48%,#06b6d4_100%)] bg-clip-text text-transparent dark:bg-[linear-gradient(90deg,#c084fc_0%,#f9a8d4_48%,#67e8f9_100%)]">
-                            450+ tickets already gone
-                          </span>
-                        ) : (
-                          <>
-                            <span className="block">with free pass access</span>
-                            <span className="mt-1 block pb-[0.08em] bg-[linear-gradient(90deg,#7c3aed_0%,#ec4899_48%,#06b6d4_100%)] bg-clip-text text-transparent dark:bg-[linear-gradient(90deg,#c084fc_0%,#f9a8d4_48%,#67e8f9_100%)]">
-                              before standard entry starts
-                            </span>
-                          </>
-                        )}
-                      </p>
-                      {isVenusSoldOutMoment ? (
-                        <div className="mt-4 flex flex-wrap items-center gap-2">
-                          <span className="rounded-full border border-cyan-200/80 bg-cyan-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-900 dark:border-cyan-400/30 dark:bg-cyan-500/12 dark:text-cyan-100">
-                            {`late entry - ${activeMeta.fallbackPrice}`}
-                          </span>
-                        </div>
-                      ) : null}
+                    <div className="max-w-2xl">
+                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-fuchsia-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(249,245,255,0.98))] px-3 py-2 shadow-[0_16px_38px_rgba(168,85,247,0.1)] backdrop-blur-xl dark:border-fuchsia-400/20 dark:bg-[linear-gradient(135deg,rgba(30,27,75,0.7),rgba(12,10,30,0.82))] dark:shadow-[0_20px_44px_rgba(99,102,241,0.16)] sm:px-4">
+                        <span className="h-2 w-2 rounded-full bg-[linear-gradient(135deg,#c084fc,#22d3ee)] shadow-[0_0_0_4px_rgba(244,114,182,0.14)]" />
+                        <span className="truncate font-[family-name:var(--font-space-grotesk)] text-[10px] font-semibold uppercase tracking-[0.22em] text-fuchsia-700 dark:text-fuchsia-200/90 sm:text-[11px]">
+                          nightlife experience by zyra
+                        </span>
+                      </div>
                     </div>
                   ) : (
                     <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
