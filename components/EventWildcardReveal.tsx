@@ -32,6 +32,7 @@ export function EventWildcardReveal({
   compact = false,
 }: EventWildcardRevealProps) {
   const [stage, setStage] = useState<RevealStage>("sealed");
+  const [hasStartedExperience, setHasStartedExperience] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const panelLabel = useMemo(() => {
@@ -48,18 +49,25 @@ export function EventWildcardReveal({
 
     if (stage === "revealed") {
       flushSync(() => {
+        setHasStartedExperience(false);
         setStage("experience");
       });
 
       const player = videoRef.current;
       if (player) {
-        player.currentTime = 0;
         player.muted = false;
+        player.currentTime = 0;
         const playPromise = player.play();
         if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch(() => {
-            // keep controls visible so the user can start playback manually
-          });
+          playPromise
+            .then(() => {
+              setHasStartedExperience(true);
+            })
+            .catch(() => {
+              setHasStartedExperience(false);
+            });
+        } else {
+          setHasStartedExperience(true);
         }
       }
       return;
@@ -69,7 +77,25 @@ export function EventWildcardReveal({
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
     }
+    setHasStartedExperience(false);
     setStage("sealed");
+  };
+
+  const handleStartExperience = async () => {
+    const player = videoRef.current;
+    if (!player) {
+      return;
+    }
+
+    player.muted = false;
+    player.currentTime = 0;
+
+    try {
+      await player.play();
+      setHasStartedExperience(true);
+    } catch {
+      setHasStartedExperience(false);
+    }
   };
 
   const chipLabel =
@@ -103,16 +129,31 @@ export function EventWildcardReveal({
                   <span className="inline-flex h-2 w-2 rounded-full bg-rose-400" />
                 </div>
                 {revealVideoSrc ? (
-                  <video
-                    ref={videoRef}
-                    src={revealVideoSrc}
-                    className="aspect-[360/682] w-full bg-slate-950 object-cover"
-                    controls
-                    loop
-                    playsInline
-                    preload="metadata"
-                    poster={revealImageSrc}
-                  />
+                  <div className="relative">
+                    <video
+                      ref={videoRef}
+                      src={revealVideoSrc}
+                      className="aspect-[360/682] w-full bg-slate-950 object-cover"
+                      autoPlay
+                      controls
+                      loop
+                      playsInline
+                      preload="metadata"
+                      poster={revealImageSrc}
+                    />
+                    {!hasStartedExperience ? (
+                      <button
+                        type="button"
+                        onClick={handleStartExperience}
+                        className="absolute inset-0 flex items-center justify-center bg-slate-950/38"
+                      >
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-950 shadow-[0_10px_22px_rgba(15,23,42,0.18)]">
+                          <PlayGlyph />
+                          play with sound
+                        </span>
+                      </button>
+                    ) : null}
+                  </div>
                 ) : (
                   <img
                     alt={revealName}
@@ -171,15 +212,11 @@ export function EventWildcardReveal({
         {stage !== "experience" ? (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 sm:p-4">
             {stage === "sealed" ? (
-              <div className="h-6" />
+              <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-white sm:text-2xl">
+                Tap to reveal
+              </p>
             ) : (
               <>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/24 bg-white/18 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white backdrop-blur-md">
-                    <PlayGlyph />
-                    {chipLabel}
-                  </span>
-                </div>
                 <p className="mt-3 font-[family-name:var(--font-space-grotesk)] text-xl font-bold text-white sm:text-2xl">
                   {revealName}
                 </p>

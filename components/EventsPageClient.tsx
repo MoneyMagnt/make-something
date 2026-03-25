@@ -357,7 +357,7 @@ export function EventsPageClient() {
                       teaserImageSrc="/wildcard.jpg"
                       revealImageSrc="/Mc%20Cobby%20Perry.jpg"
                       revealVideoSrc="/Cobby%20Perry%20video.mp4"
-                      revealName="Cobby Perry"
+                      revealName="Mc Cobby Perry"
                       compact
                     />
                   </div>
