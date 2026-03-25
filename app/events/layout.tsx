@@ -7,7 +7,7 @@ const description =
 const url = `${SITE_URL}/events`;
 const socialTitle = "VENUS | tap to reveal the wildcard mc";
 const socialDescription =
-  "the wildcard mc is in. open the venus page to reveal mc cobby perry, catch the live experience, and lock late-entry for 27 march.";
+  "the wildcard mc is in. open the venus page to reveal the face, catch the live experience, and lock late-entry for 27 march.";
 const image = `${SITE_URL}/wildcard.jpg?v=20260325a`;
 
 export const metadata: Metadata = {

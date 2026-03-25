@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     ? "VENUS | tap to reveal the wildcard mc"
     : title;
   const socialDescription = isVenus
-    ? "the wildcard mc is in. reveal mc cobby perry, catch the live experience, and lock late-entry for venus at glass lounge."
+    ? "the wildcard mc is in. reveal the face, catch the live experience, and lock late-entry for venus at glass lounge."
     : description;
   const imagePath = isVenus ? "/wildcard.jpg?v=20260325a" : "/og.jpg?v=20260323a";
 
