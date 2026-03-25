@@ -30,13 +30,19 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
 
   const isVenus = event.slug === "venus";
   const title = isVenus
-    ? "venus | countdown on, late-entry live"
+    ? "Venus at Glass Lounge, Accra | 27 March 2026 | Late-entry live"
     : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
   const description = isVenus
-    ? "450+ tickets are already gone. the countdown to 27 march is on, and late-entry tickets are still live at glass lounge, accra. tap for lineup and entry."
+    ? "Accra nightlife event by Zyra at Glass Lounge on 27 March 2026. 450+ tickets are already gone and late-entry tickets are still live."
     : `${event.description} venue: ${event.venue}, ${event.city}.`;
   const url = `${SITE_URL}/events/${event.slug}`;
-  const imagePath = "/og.jpg?v=20260323a";
+  const socialTitle = isVenus
+    ? "VENUS | tap to reveal the wildcard mc"
+    : title;
+  const socialDescription = isVenus
+    ? "the wildcard mc is in. reveal mc cobby perry, catch the live experience, and lock late-entry for venus at glass lounge."
+    : description;
+  const imagePath = isVenus ? "/wildcard.jpg?v=20260325a" : "/og.jpg?v=20260323a";
 
   return {
     title: {
@@ -49,15 +55,15 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     openGraph: {
       type: "website",
       url,
-      title,
-      description,
+      title: socialTitle,
+      description: socialDescription,
       siteName: SITE_NAME,
       images: [{ url: `${SITE_URL}${imagePath}` }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: socialTitle,
+      description: socialDescription,
       images: [`${SITE_URL}${imagePath}`],
     },
   };
@@ -109,6 +115,12 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
   return (
     <>
+      <div className="sr-only">
+        <h1>{`${event.name} at ${event.venue}, ${event.city} on ${event.dateLabel}`}</h1>
+        <p>
+          {`Explore lineup, venue details, and ticket information for ${event.name} by Zyra.`}
+        </p>
+      </div>
       {eventSchema ? (
         <script
           type="application/ld+json"

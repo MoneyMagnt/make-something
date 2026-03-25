@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
-const title = "venus | countdown on, late-entry live";
+const title = "Events | Zyra Growth Studio";
 const description =
-  "450+ tickets are already gone. the countdown to 27 march is on, and late-entry tickets are still live at glass lounge, accra. tap for lineup and entry.";
+  "Explore upcoming nightlife events in Accra from Zyra, including lineup, venue details, and ticket updates for current and upcoming drops.";
 const url = `${SITE_URL}/events`;
-const image = `${SITE_URL}/og.jpg?v=20260323a`;
+const socialTitle = "VENUS | tap to reveal the wildcard mc";
+const socialDescription =
+  "the wildcard mc is in. open the venus page to reveal mc cobby perry, catch the live experience, and lock late-entry for 27 march.";
+const image = `${SITE_URL}/wildcard.jpg?v=20260325a`;
 
 export const metadata: Metadata = {
   title: {
@@ -18,20 +21,20 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title,
-    description,
+    title: socialTitle,
+    description: socialDescription,
     url,
     images: [
       {
         url: image,
-        alt: "zyra growth studio event preview",
+        alt: "venus wildcard mc teaser",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title,
-    description,
+    title: socialTitle,
+    description: socialDescription,
     images: [image],
   },
 };
