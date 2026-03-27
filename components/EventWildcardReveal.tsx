@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 type EventWildcardRevealProps = {
@@ -11,6 +11,7 @@ type EventWildcardRevealProps = {
   revealName: string;
   revealRole?: string;
   compact?: boolean;
+  forceRevealed?: boolean;
 };
 
 type RevealStage = "sealed" | "revealed" | "experience";
@@ -30,8 +31,9 @@ export function EventWildcardReveal({
   revealVideoSrc,
   revealName,
   compact = false,
+  forceRevealed = false,
 }: EventWildcardRevealProps) {
-  const [stage, setStage] = useState<RevealStage>("sealed");
+  const [stage, setStage] = useState<RevealStage>(forceRevealed ? "revealed" : "sealed");
   const [hasStartedExperience, setHasStartedExperience] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -40,6 +42,12 @@ export function EventWildcardReveal({
     if (stage === "revealed") return "open wildcard experience";
     return "reset wildcard card";
   }, [stage]);
+
+  useEffect(() => {
+    if (forceRevealed && stage === "sealed") {
+      setStage("revealed");
+    }
+  }, [forceRevealed, stage]);
 
   const handleAdvance = () => {
     if (stage === "sealed") {
@@ -78,7 +86,7 @@ export function EventWildcardReveal({
       videoRef.current.currentTime = 0;
     }
     setHasStartedExperience(false);
-    setStage("sealed");
+    setStage(forceRevealed ? "revealed" : "sealed");
   };
 
   const handleStartExperience = async () => {

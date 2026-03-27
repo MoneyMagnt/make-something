@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 type EventCountdownChipProps = {
   targetIso?: string;
+  elapsedLabel?: string;
 };
 
 const getCountdownParts = (targetIso: string | undefined, now: number) => {
@@ -30,7 +31,10 @@ const getCountdownParts = (targetIso: string | undefined, now: number) => {
   ];
 };
 
-export function EventCountdownChip({ targetIso }: EventCountdownChipProps) {
+export function EventCountdownChip({
+  targetIso,
+  elapsedLabel = "doors open now",
+}: EventCountdownChipProps) {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -50,6 +54,16 @@ export function EventCountdownChip({ targetIso }: EventCountdownChipProps) {
 
   if (!units) {
     return <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">tickets live</span>;
+  }
+
+  const isElapsed = units.every((unit) => unit.value === 0);
+
+  if (isElapsed) {
+    return (
+      <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">
+        {elapsedLabel}
+      </span>
+    );
   }
 
   return (

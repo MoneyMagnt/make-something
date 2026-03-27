@@ -89,6 +89,8 @@ export function EventsPageClient() {
   const { theme } = useThemeMode();
   const [activeEvent, setActiveEvent] = useState<EventName>("VENUS");
   const [hasLoadedPersistedEvent, setHasLoadedPersistedEvent] = useState(false);
+  const [heroNow, setHeroNow] = useState(() => Date.now());
+  const [isLocalDoorsPreview, setIsLocalDoorsPreview] = useState(false);
   const hasTrackedInitialPageView = useRef(false);
 
   useEffect(() => {
@@ -119,6 +121,34 @@ export function EventsPageClient() {
     }
   }, [activeEvent, hasLoadedPersistedEvent]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const sync = () => setHeroNow(Date.now());
+    sync();
+
+    const timer = window.setInterval(sync, 15000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const hostname = window.location.hostname;
+    const isLocalHost =
+      hostname === "127.0.0.1" ||
+      hostname === "localhost" ||
+      hostname.startsWith("10.") ||
+      hostname.startsWith("172.") ||
+      hostname.startsWith("192.168.");
+    const params = new URLSearchParams(window.location.search);
+    setIsLocalDoorsPreview(isLocalHost && params.get("doors") === "open");
+  }, []);
+
 
   const activeMeta = useMemo(
     () => EVENTS.find((item) => item.name === activeEvent) ?? EVENTS[0],
@@ -140,6 +170,17 @@ export function EventsPageClient() {
     activeMeta.vibeCard?.actions.find((action) => action.platform === "whatsapp") ??
     activeMeta.vibeCard?.actions[0];
   const isVenusSoldOutMoment = isVenusEvent && !activeControl.passesEnabled;
+  const eventStartTimestamp = useMemo(() => {
+    if (!activeMeta.startDateIso) {
+      return Number.NaN;
+    }
+
+    return new Date(activeMeta.startDateIso).getTime();
+  }, [activeMeta.startDateIso]);
+  const isDoorsOpenMoment =
+    isVenusEvent &&
+    (isLocalDoorsPreview ||
+      (Number.isFinite(eventStartTimestamp) && heroNow >= eventStartTimestamp));
   const heroSummary =
     activeMeta.name === "VENUS"
       ? isVenusSoldOutMoment
@@ -161,6 +202,15 @@ export function EventsPageClient() {
       return activeMeta.egoticketsEventUrl;
     }
   }, [activeMeta.egoticketsEventUrl, activeMeta.slug]);
+  const lateEntryAction =
+    isVenusSoldOutMoment && primaryTicketLink
+      ? {
+          href: primaryTicketLink,
+          label: "get late-entry ticket",
+          detail: `${activeMeta.fallbackPrice} late-entry ticket is live now`,
+          external: true,
+        }
+      : null;
   const primaryAction =
     activeControl.passesEnabled && egoticketsPassUrl
       ? {
@@ -184,11 +234,29 @@ export function EventsPageClient() {
               external: true,
             }
           : {
-              href: tableReservationUrl,
-              label: "reserve table",
-              detail: "jump to whatsapp and lock in your crew",
-              external: true,
-            };
+            href: tableReservationUrl,
+            label: "reserve table",
+            detail: "jump to whatsapp and lock in your crew",
+            external: true,
+          };
+  const heroPrimaryAction = isDoorsOpenMoment
+    ? {
+        href: mapsUrl,
+        label: "get directions",
+        detail: `doors open now at ${activeMeta.venue}`,
+        external: true,
+      }
+    : primaryAction;
+  const heroSecondaryAction =
+    isDoorsOpenMoment && lateEntryAction
+      ? lateEntryAction
+      : isVenusSoldOutMoment && communityAction
+        ? {
+            href: communityAction.url,
+            label: "join whatsapp community",
+            external: true,
+          }
+        : null;
 
 
   const trackFeature = useCallback(
@@ -343,7 +411,7 @@ export function EventsPageClient() {
               <div className="relative flex min-h-[10.75rem] flex-col items-center justify-center pt-12 text-center sm:min-h-[11.75rem] sm:pt-12 lg:min-h-[13.25rem] lg:pt-12">
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 sm:gap-3">
                   <div suppressHydrationWarning className="inline-flex h-9 max-w-[calc(100%-8.5rem)] items-center rounded-full border border-cyan-200 bg-cyan-100 px-3 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-                    <EventCountdownChip targetIso={activeMeta.startDateIso} />
+                    <EventCountdownChip targetIso={activeMeta.startDateIso} elapsedLabel="doors open now" />
                   </div>
                   <div className="inline-flex h-9 items-center rounded-full border border-cyan-200/80 bg-cyan-100/88 px-3 text-cyan-900 shadow-[0_10px_22px_rgba(15,23,42,0.06)] dark:border-cyan-700/45 dark:bg-cyan-900/22 dark:text-cyan-200/90">
                     <EventsBrandMark size="compact" className="min-w-0" />
@@ -358,6 +426,7 @@ export function EventsPageClient() {
                       revealImageSrc="/Mc%20Cobby%20Perry.jpg"
                       revealVideoSrc="/Cobby%20Perry%20video.mp4"
                       revealName="Mc Cobby Perry"
+                      forceRevealed={isDoorsOpenMoment}
                       compact
                     />
                   </div>
@@ -375,12 +444,33 @@ export function EventsPageClient() {
                 <div className="space-y-4">
                   {isVenusEvent ? (
                     <div className="max-w-2xl">
-                      <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-fuchsia-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(249,245,255,0.98))] px-3 py-2 shadow-[0_16px_38px_rgba(168,85,247,0.1)] backdrop-blur-xl dark:border-fuchsia-400/20 dark:bg-[linear-gradient(135deg,rgba(30,27,75,0.7),rgba(12,10,30,0.82))] dark:shadow-[0_20px_44px_rgba(99,102,241,0.16)] sm:px-4">
-                        <span className="h-2 w-2 rounded-full bg-[linear-gradient(135deg,#c084fc,#22d3ee)] shadow-[0_0_0_4px_rgba(244,114,182,0.14)]" />
-                        <span className="truncate font-[family-name:var(--font-space-grotesk)] text-[10px] font-semibold uppercase tracking-[0.22em] text-fuchsia-700 dark:text-fuchsia-200/90 sm:text-[11px]">
-                          nightlife experience by zyra
-                        </span>
-                      </div>
+                      {isDoorsOpenMoment ? (
+                        <div className="space-y-2">
+                          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(220,252,231,0.96))] px-3 py-2 shadow-[0_16px_38px_rgba(34,197,94,0.12)] backdrop-blur-xl dark:border-emerald-400/20 dark:bg-[linear-gradient(135deg,rgba(6,78,59,0.76),rgba(5,46,22,0.82))] dark:shadow-[0_20px_44px_rgba(34,197,94,0.16)] sm:px-4">
+                            <span className="h-2 w-2 rounded-full bg-[linear-gradient(135deg,#22c55e,#22d3ee)] shadow-[0_0_0_4px_rgba(34,197,94,0.14)]" />
+                            <span className="truncate font-[family-name:var(--font-space-grotesk)] text-[10px] font-semibold uppercase tracking-[0.22em] text-emerald-700 dark:text-emerald-100 sm:text-[11px]">
+                              doors open now
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {lateEntryAction ? (
+                              <span className="inline-flex rounded-full border border-white/55 bg-white/86 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-800 shadow-[0_10px_24px_rgba(15,23,42,0.06)] dark:border-slate-600/50 dark:bg-slate-900/72 dark:text-slate-100">
+                                late entry active
+                              </span>
+                            ) : null}
+                            <span className="inline-flex rounded-full border border-white/55 bg-white/86 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-800 shadow-[0_10px_24px_rgba(15,23,42,0.06)] dark:border-slate-600/50 dark:bg-slate-900/72 dark:text-slate-100">
+                              {activeMeta.venue}, {activeMeta.city}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-fuchsia-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(249,245,255,0.98))] px-3 py-2 shadow-[0_16px_38px_rgba(168,85,247,0.1)] backdrop-blur-xl dark:border-fuchsia-400/20 dark:bg-[linear-gradient(135deg,rgba(30,27,75,0.7),rgba(12,10,30,0.82))] dark:shadow-[0_20px_44px_rgba(99,102,241,0.16)] sm:px-4">
+                          <span className="h-2 w-2 rounded-full bg-[linear-gradient(135deg,#c084fc,#22d3ee)] shadow-[0_0_0_4px_rgba(244,114,182,0.14)]" />
+                          <span className="truncate font-[family-name:var(--font-space-grotesk)] text-[10px] font-semibold uppercase tracking-[0.22em] text-fuchsia-700 dark:text-fuchsia-200/90 sm:text-[11px]">
+                            nightlife experience by zyra
+                          </span>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
@@ -391,29 +481,35 @@ export function EventsPageClient() {
                     <div className="flex flex-wrap items-center gap-2">
                       <Button
                         as={Link}
-                        href={primaryAction.href}
-                        target={primaryAction.external ? "_blank" : undefined}
-                        rel={primaryAction.external ? "noopener noreferrer" : undefined}
+                        href={heroPrimaryAction.href}
+                        target={heroPrimaryAction.external ? "_blank" : undefined}
+                        rel={heroPrimaryAction.external ? "noopener noreferrer" : undefined}
                         className={`h-12 w-full border text-base font-semibold text-white shadow-[0_18px_40px_rgba(14,165,233,0.22)] transition-transform hover:-translate-y-0.5 sm:w-fit sm:px-8 ${
                           activeControl.passesEnabled && egoticketsPassUrl
                             ? "border-emerald-300/80 bg-gradient-to-r from-emerald-500 to-cyan-500"
-                            : "border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500"
+                            : isDoorsOpenMoment
+                              ? "border-fuchsia-300/70 bg-gradient-to-r from-fuchsia-500 to-cyan-500"
+                              : "border-cyan-300/70 bg-gradient-to-r from-cyan-500 to-blue-500"
                         }`}
                         onPress={() => {
                           trackFeature("ticket_click", activeMeta.name)
                         }}
                       >
-                        {primaryAction.label}
+                        {heroPrimaryAction.label}
                       </Button>
-                      {isVenusSoldOutMoment && communityAction ? (
+                      {heroSecondaryAction ? (
                         <Button
                           as={Link}
-                          href={communityAction.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="h-12 w-full border border-emerald-300/90 bg-[linear-gradient(135deg,rgba(220,252,231,0.96),rgba(187,247,208,0.96))] text-emerald-950 shadow-[0_12px_28px_rgba(34,197,94,0.14)] transition-all hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-[linear-gradient(135deg,rgba(209,250,229,1),rgba(167,243,208,1))] hover:text-emerald-950 dark:border-emerald-500/45 dark:bg-[linear-gradient(135deg,rgba(6,78,59,0.9),rgba(5,46,22,0.88))] dark:text-emerald-100 dark:hover:border-emerald-400/60 dark:hover:bg-[linear-gradient(135deg,rgba(6,95,70,0.92),rgba(6,78,59,0.9))] sm:w-fit sm:px-6"
+                          href={heroSecondaryAction.href}
+                          target={heroSecondaryAction.external ? "_blank" : undefined}
+                          rel={heroSecondaryAction.external ? "noopener noreferrer" : undefined}
+                          className={`h-12 w-full border transition-all hover:-translate-y-0.5 sm:w-fit sm:px-6 ${
+                            isDoorsOpenMoment
+                              ? "border-cyan-300/90 bg-[linear-gradient(135deg,rgba(224,242,254,0.96),rgba(207,250,254,0.96))] text-cyan-950 shadow-[0_12px_28px_rgba(6,182,212,0.12)] hover:border-cyan-400 hover:bg-[linear-gradient(135deg,rgba(186,230,253,1),rgba(165,243,252,1))] hover:text-cyan-950 dark:border-cyan-500/45 dark:bg-[linear-gradient(135deg,rgba(8,47,73,0.92),rgba(12,74,110,0.88))] dark:text-cyan-100 dark:hover:border-cyan-400/60 dark:hover:bg-[linear-gradient(135deg,rgba(14,116,144,0.92),rgba(8,47,73,0.9))]"
+                              : "border-emerald-300/90 bg-[linear-gradient(135deg,rgba(220,252,231,0.96),rgba(187,247,208,0.96))] text-emerald-950 shadow-[0_12px_28px_rgba(34,197,94,0.14)] hover:border-emerald-400 hover:bg-[linear-gradient(135deg,rgba(209,250,229,1),rgba(167,243,208,1))] hover:text-emerald-950 dark:border-emerald-500/45 dark:bg-[linear-gradient(135deg,rgba(6,78,59,0.9),rgba(5,46,22,0.88))] dark:text-emerald-100 dark:hover:border-emerald-400/60 dark:hover:bg-[linear-gradient(135deg,rgba(6,95,70,0.92),rgba(6,78,59,0.9))]"
+                          }`}
                         >
-                          join whatsapp community
+                          {heroSecondaryAction.label}
                         </Button>
                       ) : null}
                     </div>
@@ -428,20 +524,22 @@ export function EventsPageClient() {
                   </div>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
-                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">date</p>
-                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.dateLabel}</p>
+                {!isDoorsOpenMoment ? (
+                  <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                    <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">date</p>
+                      <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.dateLabel}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">venue</p>
+                      <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.venue}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">time</p>
+                      <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.timeLabel}</p>
+                    </div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
-                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">venue</p>
-                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.venue}</p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
-                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">time</p>
-                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{activeMeta.timeLabel}</p>
-                  </div>
-                </div>
+                ) : null}
               </div>
             </CardBody>
           </Card>

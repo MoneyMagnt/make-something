@@ -11,7 +11,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { ADMIN_ACCESS_KEY, ADMIN_PRIVATE_PATH } from "@/lib/adminAccess";
+import { ADMIN_PRIVATE_PATH } from "@/lib/adminAccess";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 
 type NavKey = "home" | "events" | "services" | "admin";
@@ -52,33 +52,14 @@ export function ZyraSiteNav({
     () => true,
     () => false
   );
-  const isAdminSession = useSyncExternalStore(
-    (onStoreChange) => {
-      if (typeof window === "undefined") {
-        return () => {};
-      }
-
-      const handler = () => onStoreChange();
-      window.addEventListener("storage", handler);
-      return () => window.removeEventListener("storage", handler);
-    },
-    () => {
-      if (typeof window === "undefined") {
-        return false;
-      }
-
-      return localStorage.getItem(ADMIN_ACCESS_KEY) === "1";
-    },
-    () => false
-  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = useMemo(() => {
-    if (isAdminSession || active === "admin") {
+    if (active === "admin") {
       return [...BASE_NAV_ITEMS, ADMIN_NAV_ITEM];
     }
     return BASE_NAV_ITEMS;
-  }, [active, isAdminSession]);
+  }, [active]);
 
   const activeItem = navItems.find((item) => item.key === active) ?? navItems[0];
 
