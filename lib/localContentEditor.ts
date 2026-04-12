@@ -41,28 +41,28 @@ export type LocalContentState = {
 
 export const DEFAULT_LOCAL_CONTENT: LocalContentState = {
   home: {
-    heroChipLabel: "premium growth systems",
-    heroChipSubLabel: "for brands that need visible momentum",
+    heroChipLabel: "for growing brands",
+    heroChipSubLabel: "that need more visibility and action",
     heroEyebrow: "zyra growth studio",
-    heroTitle: "visibility, search, and campaigns that make momentum visible.",
+    heroTitle: "need more people to notice your brand and take action?",
     heroBody:
-      "built in ghana for brands that need clearer demand, sharper presentation, and a next step people can see fast.",
-    primaryCtaLabel: "book growth audit",
-    secondaryCtaLabel: "explore services",
+      "zyra helps growing brands in ghana get seen, look credible online, and turn attention into real inquiries, ticket sales, and customers.",
+    primaryCtaLabel: "see how we help",
+    secondaryCtaLabel: "book a quick growth call",
   },
   services: {
-    heroChip: "service architecture for visible growth",
+    heroChip: "clear support for growing brands",
     heroEyebrow: "zyra service studio",
-    heroTitle: "choose the system that matches the bottleneck.",
+    heroTitle: "pick the support that fixes the real bottleneck.",
     heroBody:
-      "search, content, creators, and founder websites packaged as clear operating systems instead of one long list of marketing tasks.",
-    primaryCtaLabel: "book growth audit",
-    secondaryCtaLabel: "review systems",
+      "from search to content to websites and creator campaigns, we help you choose the next move that actually matters.",
+    primaryCtaLabel: "book a quick growth call",
+    secondaryCtaLabel: "see the options",
   },
   events: {
     heroEyebrow: "nightlife experience by zyra",
     heroTitle: "",
-    heroHighlight: "450+ tickets already gone",
+    heroHighlight: "free passes sold out in under 24 hours",
     statusPill: "late entry - ghs 50",
     primaryCtaLabel: "get late-entry ticket",
     secondaryCtaLabel: "join whatsapp community",

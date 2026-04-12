@@ -50,8 +50,8 @@ export type ServiceVisual = {
 
 const DEFAULT_VISUAL: ServiceVisual = {
   eyebrow: "signal build",
-  caption: "visual systems, cleaner messaging, and a stronger next move in one pass.",
-  proof: "designed to turn attention into action",
+  caption: "clearer messaging, stronger visuals, and a better next step in one pass.",
+  proof: "built to turn attention into action",
   accentLabel: "brand signal",
   gradient: "from-cyan-300 via-sky-400 to-blue-700",
   glowClass: "bg-cyan-400/28",
@@ -60,39 +60,39 @@ const DEFAULT_VISUAL: ServiceVisual = {
 };
 
 export const SERVICE_VISUALS: Record<string, ServiceVisual> = {
-  "seo growth system": {
+  "show up in search": {
     eyebrow: "discoverable demand",
-    caption: "intent-led pages and search surfaces that look premium before the first call.",
-    proof: "search journeys shaped for revenue, not traffic alone",
+    caption: "show up for the searches that matter and send people to pages with a clear next step.",
+    proof: "search pages built to bring inquiries, not empty traffic",
     accentLabel: "search signal",
     gradient: "from-cyan-300 via-sky-400 to-blue-700",
     glowClass: "bg-cyan-400/30",
     chipClass: "border-cyan-200/70 bg-cyan-100/85 text-cyan-900",
     surfaceBackground: `linear-gradient(155deg,rgba(6,18,40,0.18),rgba(2,6,23,0.76)), url(${HOME_PHOTOS.lagosBusinesswomen})`,
   },
-  "content studio": {
+  "build trust with content": {
     eyebrow: "editorial engine",
-    caption: "campaign rhythm, content packaging, and visual sequencing that keep the brand feeling alive.",
-    proof: "story-first assets with sharper creative direction",
+    caption: "content that explains the offer better, looks sharper, and gives people a reason to keep paying attention.",
+    proof: "clearer brand stories and stronger buying confidence",
     accentLabel: "content signal",
     gradient: "from-emerald-300 via-teal-300 to-cyan-700",
     glowClass: "bg-emerald-400/30",
     chipClass: "border-emerald-200/70 bg-emerald-100/85 text-emerald-900",
     surfaceBackground: `linear-gradient(155deg,rgba(7,22,30,0.18),rgba(2,6,23,0.72)), url(${HOME_PHOTOS.lagosCollabStanding})`,
   },
-  "influencer strategy": {
+  "run creator campaigns": {
     eyebrow: "culture-led reach",
-    caption: "creator programs that feel curated, visible, and tied to action instead of noise.",
-    proof: "creator fit, rollout timing, and clearer offer lift",
+    caption: "creator campaigns built around the right fit, the right hook, and a real action at the end.",
+    proof: "creator fit, rollout timing, and a cleaner response path",
     accentLabel: "creator signal",
     gradient: "from-indigo-300 via-violet-300 to-fuchsia-700",
     glowClass: "bg-violet-400/28",
     chipClass: "border-violet-200/70 bg-violet-100/85 text-violet-900",
     surfaceBackground: `linear-gradient(155deg,rgba(18,22,44,0.16),rgba(2,6,23,0.74)), url(${HOME_PHOTOS.lagosTeamMeeting})`,
   },
-  "founder website sprint": {
+  "launch a website that converts": {
     eyebrow: "conversion surface",
-    caption: "founder pages that frame the offer fast and make the brand feel more expensive.",
+    caption: "founder pages that explain the offer fast and move people toward whatsapp, forms, or checkout.",
     proof: "positioning, page flow, and conversion clarity in one sprint",
     accentLabel: "site signal",
     gradient: "from-amber-300 via-orange-300 to-rose-500",

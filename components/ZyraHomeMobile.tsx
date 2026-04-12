@@ -113,6 +113,51 @@ export default function ZyraHomeMobile({
           </p>
         </div>
 
+        <div className="space-y-4">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
+            {homeContent.heroEyebrow}
+          </p>
+          <p className="max-w-[10ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(3.9rem,16vw,5.6rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
+            {homeContent.heroTitle}
+          </p>
+          <p className="max-w-md text-base leading-8 text-slate-600 dark:text-slate-300">
+            {homeContent.heroBody}
+          </p>
+        </div>
+
+        <div className="grid gap-4 border-y border-slate-200/80 py-5 dark:border-slate-800/80">
+          {quickStats.map((item) => (
+            <div key={item.label} className="space-y-1">
+              <p className="font-[family-name:var(--font-manrope)] text-[2.15rem] font-semibold tracking-[-0.06em] text-slate-950 dark:text-slate-100">
+                {item.value}
+              </p>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                {item.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Button
+            as={Link}
+            href="#mobile-services"
+            className="h-12 rounded-full bg-slate-950 font-semibold text-white dark:bg-slate-100 dark:text-slate-950"
+          >
+            {homeContent.primaryCtaLabel}
+          </Button>
+          <Button
+            as={Link}
+            href={growthAuditUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="bordered"
+            className="h-12 rounded-full border-slate-300/90 bg-white/80 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
+          >
+            {homeContent.secondaryCtaLabel}
+          </Button>
+        </div>
+
         <div className="overflow-hidden rounded-[1.8rem] border border-slate-200/70 bg-white/80 p-2.5 shadow-[0_20px_46px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/70">
           <div className="grid gap-2 sm:grid-cols-2">
             {HERO_PREVIEW_PANELS.map((panel, index) => (
@@ -140,51 +185,6 @@ export default function ZyraHomeMobile({
           </div>
         </div>
 
-        <div className="space-y-4">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-            {homeContent.heroEyebrow}
-          </p>
-          <p className="max-w-[10ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(3.9rem,16vw,5.6rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-            {homeContent.heroTitle}
-          </p>
-          <p className="max-w-md text-base leading-8 text-slate-600 dark:text-slate-300">
-            {homeContent.heroBody}
-          </p>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Button
-            as={Link}
-            href={growthAuditUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="h-12 rounded-full bg-slate-950 font-semibold text-white dark:bg-slate-100 dark:text-slate-950"
-          >
-            {homeContent.primaryCtaLabel}
-          </Button>
-          <Button
-            as={Link}
-            href="#mobile-services"
-            variant="bordered"
-            className="h-12 rounded-full border-slate-300/90 bg-white/80 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
-          >
-            {homeContent.secondaryCtaLabel}
-          </Button>
-        </div>
-
-        <div className="grid gap-4 border-y border-slate-200/80 py-5 dark:border-slate-800/80">
-          {quickStats.map((item) => (
-            <div key={item.label} className="space-y-1">
-              <p className="font-[family-name:var(--font-manrope)] text-3xl font-semibold tracking-[-0.06em] text-slate-950 dark:text-slate-100">
-                {item.value}
-              </p>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-                {item.label}
-              </p>
-            </div>
-          ))}
-        </div>
-
         <div className="relative overflow-hidden rounded-[2rem] border border-slate-200/70 bg-slate-900 shadow-[0_28px_70px_rgba(15,23,42,0.12)]">
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -196,7 +196,7 @@ export default function ZyraHomeMobile({
             <div className="rounded-[1.8rem] border border-white/12 bg-slate-950/54 p-5 text-white shadow-[0_18px_48px_rgba(2,6,23,0.26)] backdrop-blur-xl">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-white/62">selected lane</p>
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-white/62">featured support</p>
                   <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-white/58">{activeVisual.eyebrow}</p>
                 </div>
                 <span className={`h-2.5 w-14 rounded-full bg-gradient-to-r ${activeService.tone}`} />
@@ -207,7 +207,7 @@ export default function ZyraHomeMobile({
                 </h2>
                 <p className="max-w-xs text-sm leading-7 text-white/80">{activeVisual.caption}</p>
                 <Link href={activeService.href} className="text-sm font-semibold uppercase tracking-[0.14em] text-cyan-300">
-                  {`see ${activeService.title}`}
+                  learn more
                 </Link>
               </div>
             </div>
@@ -269,7 +269,7 @@ export default function ZyraHomeMobile({
         <div className="space-y-2">
           <p className="text-[11px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">services</p>
           <h2 className="max-w-[10ch] font-[family-name:var(--font-instrument-serif)] text-5xl leading-[0.94] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-            pick the lane you need.
+            what do you need help with right now?
           </h2>
         </div>
 
@@ -324,7 +324,7 @@ export default function ZyraHomeMobile({
                       href={service.href}
                       className={`text-sm font-semibold uppercase tracking-[0.14em] ${isActive ? "text-cyan-300 dark:text-cyan-700" : "text-cyan-700 dark:text-cyan-300"}`}
                     >
-                      {`see ${service.title}`}
+                      learn more
                     </Link>
                   </div>
                 </CardBody>
@@ -447,10 +447,10 @@ export default function ZyraHomeMobile({
             <div>
               <p className="text-[11px] uppercase tracking-[0.18em] text-cyan-100/76">next move</p>
               <p className="mt-3 max-w-[11ch] font-[family-name:var(--font-instrument-serif)] text-4xl leading-[0.94] text-white">
-                book the audit and we shape the first lane worth shipping.
+                book a quick growth call and we'll map the clearest next move.
               </p>
               <p className="mt-3 text-sm leading-7 text-white/80">
-                structure, positioning, and the clearest conversion surface in one focused pass.
+                you leave with a clearer offer, the highest-priority fix, and a practical next step to ship.
               </p>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -461,7 +461,7 @@ export default function ZyraHomeMobile({
                 rel="noopener noreferrer"
                 className="h-12 rounded-full bg-white font-semibold text-slate-950"
               >
-                {homeContent.primaryCtaLabel}
+                {homeContent.secondaryCtaLabel}
               </Button>
               <Button
                 as={Link}

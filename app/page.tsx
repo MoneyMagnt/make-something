@@ -7,60 +7,60 @@ import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "seo, content, influencer, and founder websites in ghana",
+  title: "marketing and website support for growing brands in ghana",
   description:
-    "zyra builds seo, content, influencer, and founder website systems in ghana for brands that need visible momentum.",
+    "zyra helps growing brands in ghana get noticed, look credible online, and turn attention into inquiries, ticket sales, and customers.",
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: "seo, content, influencer, and founder websites in ghana",
+    title: "marketing and website support for growing brands in ghana",
     description:
-      "zyra builds seo, content, influencer, and founder website systems in ghana for brands that need visible momentum.",
+      "zyra helps growing brands in ghana get noticed, look credible online, and turn attention into inquiries, ticket sales, and customers.",
     images: [`${SITE_URL}/opengraph-image`],
   },
   twitter: {
     card: "summary_large_image",
-    title: "seo, content, influencer, and founder websites in ghana",
+    title: "marketing and website support for growing brands in ghana",
     description:
-      "zyra builds seo, content, influencer, and founder website systems in ghana for brands that need visible momentum.",
+      "zyra helps growing brands in ghana get noticed, look credible online, and turn attention into inquiries, ticket sales, and customers.",
     images: [`${SITE_URL}/opengraph-image`],
   },
 };
 
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
-  "hi zyra, i want to book a growth audit."
+  "hi zyra, i want to talk through the best next move for my brand."
 )}`;
 
 const SERVICES = [
   {
-    title: "seo growth system",
-    body: "capture high-intent demand and convert it into pipeline.",
-    points: ["technical cleanup", "keyword intent mapping", "conversion pages"],
+    title: "show up in search",
+    body: "help people find your brand when they search for the problem you solve.",
+    points: ["technical cleanup", "search intent mapping", "pages built to convert"],
     tone: "from-cyan-500 to-blue-500",
     href: "/services/seo",
   },
   {
-    title: "content studio",
-    body: "build trust-led content that shortens buying decisions.",
-    points: ["campaign hooks", "short + long-form assets", "performance loop"],
+    title: "build trust with content",
+    body: "make your brand easier to trust with sharper content and clearer storytelling.",
+    points: ["content angles", "brand-led assets", "performance feedback loop"],
     tone: "from-emerald-500 to-teal-500",
     href: "/services/content",
   },
   {
-    title: "influencer strategy",
-    body: "run creator campaigns tied to action, not vanity reach.",
-    points: ["creator matching", "offer narrative", "launch operations"],
+    title: "run creator campaigns",
+    body: "run creator campaigns with a clear hook, the right fit, and a real next step.",
+    points: ["creator matching", "offer framing", "rollout support"],
     tone: "from-indigo-500 to-violet-500",
     href: "/services/influencer",
   },
   {
-    title: "founder website sprint",
-    body: "launch a conversion-ready website for founders scaling offers.",
-    points: ["offer positioning", "conversion page structure", "analytics setup"],
+    title: "launch a website that converts",
+    body: "build a website that explains the offer fast and moves people to act.",
+    points: ["offer positioning", "conversion structure", "tracking setup"],
     tone: "from-amber-500 to-orange-500",
     href: "/services/founder-websites",
   },
@@ -68,91 +68,91 @@ const SERVICES = [
 
 const FAQS = [
   {
-    q: "do you only work with event brands?",
-    a: "no. events were our first proving ground, but we also work with founders and growth-focused teams.",
+    q: "who is zyra best for?",
+    a: "growing brands, founders, and event teams that need more visibility, clearer trust, and a stronger next step online.",
   },
   {
     q: "how soon can we start?",
     a: "most projects start within 7 days after a discovery call and clear scope.",
   },
   {
-    q: "can we begin with one service only?",
-    a: "yes. we can start with one channel and expand after we validate wins.",
+    q: "do we have to start with everything?",
+    a: "no. we usually start with the one area slowing growth down most, then build from there.",
   },
 ];
 
 const STATS = [
   { label: "events produced", value: "25+" },
-  { label: "attendees reached", value: "7000+" },
-  { label: "contacts in database (growing)", value: "7300+" },
-  { label: "avg kickoff window", value: "7 days" },
-  { label: "reporting rhythm", value: "weekly" },
+  { label: "audiences reached", value: "7000+" },
+  { label: "contacts in active reach list", value: "7300+" },
+  { label: "website sprint launch window", value: "7 days" },
+  { label: "reporting cadence", value: "weekly" },
 ];
 
 const ABOVE_FOLD_PROOF = [
-  { label: "contacts in database", value: "7300+" },
-  { label: "avg kickoff window", value: "7 days" },
-  { label: "reporting rhythm", value: "weekly" },
+  { label: "venus free passes", value: "sold out <24 hrs" },
+  { label: "people in reach list", value: "7300+" },
+  { label: "founder site launch avg", value: "7 days" },
 ];
 
 const WHY_ZYRA = [
-  "clear revenue goals every sprint.",
-  "one team for strategy, execution, and reporting.",
-  "ai-assisted content with human quality control.",
-  "founder website sprints plus sms and analytics for scale.",
+  "your offer should make sense in one screen.",
+  "people should know the next step without hunting for it.",
+  "strategy, copy, visuals, and rollout stay in one team.",
+  "we start with the clearest bottleneck, not a bloated retainer.",
 ];
 
 const SYSTEM_STEPS = [
   {
-    title: "acquire",
-    body: "seo, ai-assisted content, and influencer campaigns bring in high-intent attention.",
+    title: "clarify",
+    body: "we find the real bottleneck first: visibility, trust, response, or conversion.",
   },
   {
-    title: "activate",
-    body: "sms campaigns convert interest into direct response and buyer action.",
+    title: "build",
+    body: "we tighten the message, assets, and pages around one clear next step.",
   },
   {
-    title: "optimize",
-    body: "data cleaning and weekly analytics reduce waste and improve results.",
+    title: "move",
+    body: "we launch, watch the response, and improve what people actually react to.",
   },
 ];
 
 const RESULT_SNAPSHOTS = [
   {
-    title: "event demand sprint",
-    challenge: "ticket demand was flat before launch week.",
-    action: "we aligned creator rollout, landing page updates, and sms reminder cadence.",
-    outcome: "campaign momentum recovered and conversions stabilized week over week.",
+    title: "free passes sold out in under 24 hours",
+    challenge: "venus needed fast attention once the host shared the link.",
+    action: "we paired the landing page with the host push and made the next step obvious.",
+    outcome: "free passes sold out in under 24 hours and the page kept moving people toward the event.",
   },
   {
-    title: "service funnel rebuild",
-    challenge: "traffic existed but qualified leads were inconsistent.",
-    action: "we rebuilt offer pages, tightened messaging, and mapped intent-based content.",
-    outcome: "lead quality improved and pipeline became easier to forecast.",
+    title: "an offer people could understand faster",
+    challenge: "the message was spending too much time on the method and not enough on the result.",
+    action: "we simplified the promise, tightened the structure, and made the next move easier to see.",
+    outcome: "visitors could understand the offer faster and act without reading every section.",
   },
   {
-    title: "creator campaign optimization",
-    challenge: "reach was high but direct response stayed low.",
-    action: "we reworked hooks, offers, and audience segmentation for each creator cluster.",
-    outcome: "response rate improved and winning formats became repeatable.",
+    title: "creator campaigns with a clearer call to action",
+    challenge: "attention was there, but the response path was weak.",
+    action: "we matched creators to the right hook and tied every drop to a clearer action.",
+    outcome: "the campaign felt easier to follow and stronger responses became easier to repeat.",
   },
 ];
 
 const OPERATING_NOTES = [
   {
     step: "01",
-    title: "diagnose",
-    body: "we audit channels, identify leaks, and set one clear scorecard.",
+    title: "start small",
+    body: "we would rather fix the clearest leak first than sell you everything at once.",
   },
   {
     step: "02",
     title: "build",
-    body: "we ship the strategy, content, and conversion assets quickly.",
+    body: "we ship the clearest message, assets, and conversion path quickly.",
   },
   {
     step: "03",
     title: "scale",
-    body: "we keep what works, cut what does not, and compound weekly.",
+    body: "we keep what works, cut what does not, and grow from real response.",
   },
 ];
 
@@ -165,7 +165,7 @@ const homeJsonLd = JSON.stringify([
     url: SITE_URL,
     logo: `${SITE_URL}/icon.svg?v=20260303a`,
     description:
-      "zyra builds seo, content, and influencer demand systems that turn attention into revenue.",
+      "zyra helps growing brands in ghana get noticed, look credible online, and turn attention into inquiries, ticket sales, and customers.",
     sameAs: [SITE_URL],
   },
   {
@@ -219,7 +219,7 @@ export default function Home() {
 
       <main id="main-content" className="relative mx-auto max-w-[1360px] px-5 pb-28 pt-12 sm:px-6 lg:px-8">
         <h1 className="sr-only">
-          visibility, search, and campaigns that make momentum visible.
+          need more people to notice your brand and take action?
         </h1>
         <div className="lg:hidden">
           <ZyraHomeMobile

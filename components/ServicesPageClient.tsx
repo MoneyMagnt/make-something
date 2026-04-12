@@ -13,35 +13,35 @@ import { useLocalContent } from "@/lib/localContentEditor";
 
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
-  "hi zyra, i want to book a growth audit."
+  "hi zyra, i want to talk through the best next move for my brand."
 )}`;
 
 const SERVICES = [
   {
-    title: "seo growth system",
-    summary: "capture high-intent demand and convert it into pipeline.",
-    outcomes: ["technical cleanup", "intent mapping", "high-conversion pages"],
+    title: "show up in search",
+    summary: "help people find your brand when they search for the problem you solve.",
+    outcomes: ["technical cleanup", "search intent map", "pages built to convert"],
     tone: "from-cyan-500 to-blue-500",
     href: "/services/seo",
   },
   {
-    title: "content studio",
-    summary: "build trust-led content that shortens buying decisions.",
-    outcomes: ["campaign concepts", "asset production", "performance loop"],
+    title: "build trust with content",
+    summary: "make your brand easier to trust with sharper content and clearer storytelling.",
+    outcomes: ["content angles", "brand-led assets", "performance feedback loop"],
     tone: "from-emerald-500 to-teal-500",
     href: "/services/content",
   },
   {
-    title: "influencer strategy",
-    summary: "run creator campaigns tied to action, not vanity reach.",
-    outcomes: ["creator fit checks", "offer design", "launch operations"],
+    title: "run creator campaigns",
+    summary: "run creator campaigns with a clear hook, the right fit, and a real next step.",
+    outcomes: ["creator matching", "offer framing", "rollout support"],
     tone: "from-indigo-500 to-violet-500",
     href: "/services/influencer",
   },
   {
-    title: "founder website sprint",
-    summary: "launch a conversion-ready website that supports scaling.",
-    outcomes: ["offer positioning", "conversion page flow", "tracking + handoff"],
+    title: "launch a website that converts",
+    summary: "build a website that explains the offer fast and moves people to act.",
+    outcomes: ["offer positioning", "conversion structure", "tracking + handoff"],
     tone: "from-amber-500 to-orange-500",
     href: "/services/founder-websites",
   },
@@ -66,42 +66,42 @@ const SERVICE_HERO_PANELS = [
 ] as const;
 
 const SERVICE_PAGE_VISUALS: Record<string, string> = {
-  "seo growth system": `linear-gradient(155deg,rgba(6,18,40,0.18),rgba(2,6,23,0.76)), url(${HOME_PHOTOS.workspaceBlueWall})`,
-  "content studio": `linear-gradient(155deg,rgba(7,22,30,0.18),rgba(2,6,23,0.72)), url(${HOME_PHOTOS.creativeMeetingOffice})`,
-  "influencer strategy": `linear-gradient(155deg,rgba(18,22,44,0.16),rgba(2,6,23,0.74)), url(${HOME_PHOTOS.studioTeam})`,
-  "founder website sprint": `linear-gradient(155deg,rgba(32,20,7,0.16),rgba(2,6,23,0.74)), url(${HOME_PHOTOS.strategyMeeting})`,
+  "show up in search": `linear-gradient(155deg,rgba(6,18,40,0.18),rgba(2,6,23,0.76)), url(${HOME_PHOTOS.workspaceBlueWall})`,
+  "build trust with content": `linear-gradient(155deg,rgba(7,22,30,0.18),rgba(2,6,23,0.72)), url(${HOME_PHOTOS.creativeMeetingOffice})`,
+  "run creator campaigns": `linear-gradient(155deg,rgba(18,22,44,0.16),rgba(2,6,23,0.74)), url(${HOME_PHOTOS.studioTeam})`,
+  "launch a website that converts": `linear-gradient(155deg,rgba(32,20,7,0.16),rgba(2,6,23,0.74)), url(${HOME_PHOTOS.strategyMeeting})`,
 };
 
 const PERFORMANCE_LAYER = [
-  "ai-assisted content with human quality control",
-  "sms activation for direct response",
-  "data cleaning and segmentation for tighter targeting",
-  "weekly analytics with the next move already defined",
+  "clear messaging before more marketing spend",
+  "content and rollout support inside one team",
+  "cleaner conversion paths across website and campaigns",
+  "weekly reporting with the next move already defined",
 ] as const;
 
 const RESULTS_FOCUS = [
   {
-    title: "faster launch cycles",
-    detail: "strategy, visuals, and rollout stay inside one operating rhythm, so momentum shows up sooner.",
+    title: "faster launch decisions",
+    detail: "you stop guessing what to do next and start moving on the clearest priority.",
   },
   {
-    title: "clearer targeting",
-    detail: "search intent, audience fit, and offer packaging work together instead of fighting each other.",
+    title: "clearer offers",
+    detail: "people understand what you do, who it is for, and what to do next much faster.",
   },
   {
-    title: "stronger founder presence",
-    detail: "the brand feels more considered before the first call, not only after someone reads every section.",
+    title: "stronger trust",
+    detail: "the brand feels more considered before the first call or whatsapp message.",
   },
   {
-    title: "easier weekly decisions",
-    detail: "reporting is built for action, so scaling and course-correction happen faster.",
+    title: "easier follow-through",
+    detail: "your website, content, and campaigns point to one next step instead of pulling apart.",
   },
 ] as const;
 
 const SERVICES_PROOF = [
-  { label: "contacts in database", value: "7300+" },
-  { label: "avg kickoff window", value: "7 days" },
-  { label: "reporting rhythm", value: "weekly" },
+  { label: "venus free passes", value: "sold out <24 hrs" },
+  { label: "people in reach list", value: "7300+" },
+  { label: "founder site launch avg", value: "7 days" },
 ] as const;
 
 const servicesJsonLd = JSON.stringify([
@@ -111,7 +111,7 @@ const servicesJsonLd = JSON.stringify([
     name: "zyra services",
     url: `${SITE_URL}/services`,
     description:
-      "explore zyra growth services: seo, ai-assisted content, influencer campaigns, and founder website sprints.",
+      "explore zyra services for growing brands: showing up in search, building trust with content, running creator campaigns, and launching websites that convert.",
   },
   {
     "@context": "https://schema.org",
@@ -266,7 +266,7 @@ export function ServicesPageClient() {
 
                 <div className="grid gap-5 rounded-[2rem] border border-white/12 bg-slate-950/56 p-6 text-white shadow-[0_20px_52px_rgba(2,6,23,0.28)] backdrop-blur-xl lg:grid-cols-[0.7fr_0.3fr] lg:items-end">
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.22em] text-white/62">featured system</p>
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-white/62">featured support</p>
                     <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-white/58">{activeVisual.eyebrow}</p>
                     <h2 className="mt-5 max-w-[9ch] font-[family-name:var(--font-instrument-serif)] text-[3.3rem] leading-[0.92] tracking-[-0.05em]">
                       {activeService.title}
@@ -275,7 +275,7 @@ export function ServicesPageClient() {
                   </div>
                   <div className="space-y-3">
                     <Link href={activeService.href} className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
-                      open system details
+                      learn more
                     </Link>
                     <span className={`block h-2.5 w-16 rounded-full bg-gradient-to-r ${activeService.tone}`} />
                     <div className="grid gap-2">
@@ -302,9 +302,9 @@ export function ServicesPageClient() {
           className="mt-16 grid gap-8 xl:grid-cols-[0.34fr_0.66fr]"
         >
           <div className="space-y-5 xl:sticky xl:top-28 xl:self-start">
-            <p className="text-[11px] uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">systems</p>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">services</p>
             <h2 className="max-w-[9ch] font-[family-name:var(--font-instrument-serif)] text-6xl leading-[0.92] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-              compare the operating systems.
+              what do you need help with right now?
             </h2>
             <div className="grid gap-3">
               {PERFORMANCE_LAYER.slice(0, 2).map((item, index) => (
@@ -374,7 +374,7 @@ export function ServicesPageClient() {
                         href={service.href}
                         className={`text-sm font-semibold uppercase tracking-[0.14em] ${isActive ? "text-cyan-300 dark:text-cyan-700" : "text-cyan-700 dark:text-cyan-300"}`}
                       >
-                        see how it works →
+                        learn more
                       </Link>
                     </div>
                   </CardBody>
@@ -401,10 +401,10 @@ export function ServicesPageClient() {
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">shared layer</p>
                   <h2 className="mt-3 max-w-[10ch] font-[family-name:var(--font-instrument-serif)] text-5xl leading-[0.94] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-                    what every system still needs.
+                    what every brand still needs.
                   </h2>
                   <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-                    even when the offer changes, these support layers keep the system usable and measurable.
+                    even when the offer changes, these support layers keep the work clear, usable, and measurable.
                   </p>
                 </div>
                 <div className="grid gap-3">
@@ -480,10 +480,10 @@ export function ServicesPageClient() {
               <div>
                 <p className="text-[11px] uppercase tracking-[0.16em] text-cyan-100/76">next move</p>
                 <p className="mt-3 max-w-2xl font-[family-name:var(--font-instrument-serif)] text-4xl text-white md:text-5xl">
-                  not sure which system lands first? we map the first move with you.
+                  not sure what to fix first? we map the clearest next move with you.
                 </p>
                 <p className="mt-3 max-w-xl text-sm leading-7 text-white/82">
-                  one call, one clear first move, and a service path that actually matches the bottleneck instead of guessing at everything at once.
+                  one call, one clear first move, and support that matches the real bottleneck instead of guessing at everything at once.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -502,7 +502,7 @@ export function ServicesPageClient() {
                   variant="bordered"
                   className="border-white/45 bg-white/10 px-6 font-semibold text-white"
                 >
-                  compare systems again
+                  compare services again
                 </Button>
               </div>
             </div>

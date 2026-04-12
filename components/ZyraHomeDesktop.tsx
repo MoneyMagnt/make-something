@@ -64,7 +64,7 @@ const defaultReveal = {
 function Metric({ item }: { item: StatItem }) {
   return (
     <div className="space-y-1 border-l border-slate-200/80 pl-4 dark:border-slate-800/80">
-      <p className="font-[family-name:var(--font-manrope)] text-3xl font-semibold tracking-[-0.06em] text-slate-950 dark:text-slate-100">
+      <p className="font-[family-name:var(--font-manrope)] text-[clamp(1.9rem,3vw,2.35rem)] font-semibold tracking-[-0.06em] text-slate-950 dark:text-slate-100">
         {item.value}
       </p>
       <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
@@ -124,6 +124,44 @@ export default function ZyraHomeDesktop({
             {homeContent.heroChipLabel} {homeContent.heroChipSubLabel}
           </Chip>
 
+          <div className="space-y-5">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
+              {homeContent.heroEyebrow}
+            </p>
+            <p className="max-w-[11ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(4.8rem,7vw,6.9rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
+              {homeContent.heroTitle}
+            </p>
+            <p className="max-w-3xl text-[1.04rem] leading-8 text-slate-600 dark:text-slate-300">
+              {homeContent.heroBody}
+            </p>
+          </div>
+
+          <div className="grid gap-6 border-y border-slate-200/80 py-6 sm:grid-cols-3 dark:border-slate-800/80">
+            {aboveFoldProof.map((item) => (
+              <Metric key={item.label} item={item} />
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Button
+              as={Link}
+              href="#service-preview"
+              className="h-12 rounded-full bg-slate-950 px-6 font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] dark:bg-slate-100 dark:text-slate-950"
+            >
+              {homeContent.primaryCtaLabel}
+            </Button>
+            <Button
+              as={Link}
+              href={growthAuditUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="bordered"
+              className="h-12 rounded-full border-slate-300/90 bg-white/80 px-6 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
+            >
+              {homeContent.secondaryCtaLabel}
+            </Button>
+          </div>
+
           <div className="max-w-6xl overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/80 p-3 shadow-[0_24px_54px_rgba(15,23,42,0.06)] backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/70">
             <div className="grid gap-3 lg:grid-cols-[1.2fr_0.9fr_0.9fr]">
               {HERO_PREVIEW_PANELS.map((panel, index) => (
@@ -150,38 +188,6 @@ export default function ZyraHomeDesktop({
               ))}
             </div>
           </div>
-
-          <div className="space-y-5">
-            <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
-              {homeContent.heroEyebrow}
-            </p>
-            <p className="max-w-[11ch] font-[family-name:var(--font-instrument-serif)] text-[clamp(4.8rem,7vw,6.9rem)] leading-[0.9] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-              {homeContent.heroTitle}
-            </p>
-            <p className="max-w-3xl text-[1.04rem] leading-8 text-slate-600 dark:text-slate-300">
-              {homeContent.heroBody}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Button
-              as={Link}
-              href={growthAuditUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="h-12 rounded-full bg-slate-950 px-6 font-semibold text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] dark:bg-slate-100 dark:text-slate-950"
-            >
-              {homeContent.primaryCtaLabel}
-            </Button>
-            <Button
-              as={Link}
-              href="#service-preview"
-              variant="bordered"
-              className="h-12 rounded-full border-slate-300/90 bg-white/80 px-6 font-semibold text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
-            >
-              {homeContent.secondaryCtaLabel}
-            </Button>
-          </div>
         </div>
 
         <div className="relative min-h-[54rem] overflow-hidden rounded-[2.5rem] border border-slate-200/70 bg-slate-900 shadow-[0_38px_94px_rgba(15,23,42,0.12)]">
@@ -194,7 +200,7 @@ export default function ZyraHomeDesktop({
           <div className="absolute inset-x-0 bottom-0 z-10 p-7 xl:p-8">
             <div className="grid gap-6 rounded-[2rem] border border-white/12 bg-slate-950/56 p-6 text-white shadow-[0_20px_52px_rgba(2,6,23,0.28)] backdrop-blur-xl xl:grid-cols-[0.7fr_0.3fr] xl:items-end">
               <div>
-                <p className="text-[11px] uppercase tracking-[0.22em] text-white/62">selected lane</p>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-white/62">featured support</p>
                 <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-white/58">{activeVisual.eyebrow}</p>
                 <h2 className="mt-5 max-w-[9ch] font-[family-name:var(--font-instrument-serif)] text-[3.9rem] leading-[0.92] tracking-[-0.05em]">
                   {activeService.title}
@@ -203,7 +209,7 @@ export default function ZyraHomeDesktop({
               </div>
               <div className="space-y-3">
                 <Link href={activeService.href} className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
-                  {`see ${activeService.title}`}
+                  learn more
                 </Link>
                 <span className={`block h-2.5 w-16 rounded-full bg-gradient-to-r ${activeService.tone}`} />
                 <div className="grid gap-2">
@@ -219,12 +225,6 @@ export default function ZyraHomeDesktop({
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="grid gap-6 border-y border-slate-200/80 py-6 sm:grid-cols-3 dark:border-slate-800/80">
-          {aboveFoldProof.map((item) => (
-            <Metric key={item.label} item={item} />
-          ))}
         </div>
       </motion.section>
 
@@ -297,7 +297,7 @@ export default function ZyraHomeDesktop({
             services
           </p>
           <h2 className="max-w-[10ch] font-[family-name:var(--font-instrument-serif)] text-6xl leading-[0.92] tracking-[-0.05em] text-slate-950 dark:text-slate-100">
-            pick the lane you need.
+            what do you need help with right now?
           </h2>
           <p className="max-w-sm text-base leading-8 text-slate-600 dark:text-slate-300">
             every offer gets one clear promise, one real visual, and one obvious next step.
@@ -368,7 +368,7 @@ export default function ZyraHomeDesktop({
                       href={service.href}
                       className={`text-sm font-semibold uppercase tracking-[0.14em] ${isActive ? "text-cyan-300 dark:text-cyan-700" : "text-cyan-700 dark:text-cyan-300"}`}
                     >
-                      {`see ${service.title}`}
+                      learn more
                     </Link>
                   </div>
                 </CardBody>
@@ -499,10 +499,10 @@ export default function ZyraHomeDesktop({
             <div>
               <p className="text-[11px] uppercase tracking-[0.2em] text-cyan-100/76">next move</p>
               <h2 className="mt-3 max-w-[11ch] font-[family-name:var(--font-instrument-serif)] text-6xl leading-[0.92] tracking-[-0.05em]">
-                book the audit and we shape the first lane worth shipping.
+                book a quick growth call and we'll map the clearest next move.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-8 text-white/80">
-                structure, positioning, and the clearest conversion surface get mapped in one focused pass.
+                you leave with a clearer offer, the highest-priority fix, and a practical next step to ship.
               </p>
             </div>
             <div className="flex flex-col gap-3 xl:items-end">
@@ -513,7 +513,7 @@ export default function ZyraHomeDesktop({
                 rel="noopener noreferrer"
                 className="h-12 rounded-full bg-white px-6 font-semibold text-slate-950"
               >
-                {homeContent.primaryCtaLabel}
+                {homeContent.secondaryCtaLabel}
               </Button>
               <Button
                 as={Link}
