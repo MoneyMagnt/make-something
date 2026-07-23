@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     ? "Venus at Glass Lounge, Accra | 27 March 2026 | Late-entry live"
     : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
   const description = isVenus
-    ? "Accra nightlife event by Zyra at Glass Lounge on 27 March 2026. 450+ tickets are already gone and late-entry tickets are still live."
+    ? "Accra nightlife event by Zyra at Glass Lounge on 27 March 2026. Free passes sold out in under 24 hours after the host push, with late-entry carrying the final run."
     : `${event.description} venue: ${event.venue}, ${event.city}.`;
   const url = `${SITE_URL}/events/${event.slug}`;
   const socialTitle = isVenus

@@ -43,7 +43,7 @@ const seoServiceJsonLd = JSON.stringify([
     areaServed: "Global",
     url: `${SITE_URL}/services/seo`,
     description:
-      "technical seo, intent mapping, and conversion-focused pages to turn search traffic into qualified pipeline.",
+      "technical SEO, intent mapping, and conversion-focused pages that help the right people find your brand and take action.",
   },
   {
     "@context": "https://schema.org",
@@ -88,7 +88,7 @@ export default function SeoServicePage() {
             seo growth system
           </h1>
           <p className="mt-3 max-w-3xl text-base text-slate-700 sm:text-lg dark:text-slate-300">
-            we turn search intent into qualified pipeline with technical fixes, content strategy, and conversion-ready pages.
+            we help the right people find your brand through search, then move them toward a clear next step.
           </p>
         </section>
 

@@ -6,7 +6,7 @@ import { FormEvent, useState } from "react";
 
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const GROWTH_AUDIT_URL = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
-  "hi zyra, i want to book a growth audit."
+  "hi zyra, i want to talk through the best next move for my brand."
 )}`;
 
 const buildNewsletterIntentUrl = (email: string) => {
@@ -47,7 +47,7 @@ export function ZyraSiteFooter() {
               zyra
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              we build ai-assisted demand systems that turn attention into pipeline and sales.
+              we help growing brands get noticed, look credible online, and turn attention into inquiries, sales, and ticket demand.
             </p>
             <p className="text-xs uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
               permission-based outreach only
@@ -58,7 +58,7 @@ export function ZyraSiteFooter() {
               rel="noopener noreferrer"
               className="text-sm font-semibold text-cyan-700 hover:text-cyan-600 dark:text-cyan-300 dark:hover:text-cyan-200"
             >
-              book growth audit
+              book a quick growth call
             </Link>
           </section>
 
@@ -72,21 +72,21 @@ export function ZyraSiteFooter() {
                 href="/services/seo"
                 className="text-slate-700 hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300"
               >
-                seo growth system
+                seo support
               </Link>
               <Link
                 as={NextLink}
                 href="/services/content"
                 className="text-slate-700 hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300"
               >
-                content studio
+                content support
               </Link>
               <Link
                 as={NextLink}
                 href="/services/influencer"
                 className="text-slate-700 hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300"
               >
-                influencer strategy
+                creator campaigns
               </Link>
               <Link
                 as={NextLink}
@@ -108,14 +108,14 @@ export function ZyraSiteFooter() {
                 href="/#proof"
                 className="text-slate-700 hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300"
               >
-                proof snapshot
+                proof
               </Link>
               <Link
                 as={NextLink}
                 href="/#results"
                 className="text-slate-700 hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300"
               >
-                results snapshot
+                case snapshots
               </Link>
               <Link
                 as={NextLink}
@@ -137,17 +137,17 @@ export function ZyraSiteFooter() {
                 rel="noopener noreferrer"
                 className="text-slate-700 hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300"
               >
-                chat on whatsapp
+                talk on whatsapp
               </Link>
             </div>
           </section>
 
           <section className="space-y-3">
             <p className="font-[family-name:var(--font-space-grotesk)] text-sm font-bold uppercase tracking-[0.13em] text-slate-700 dark:text-slate-300">
-              zyra growth brief
+              zyra notes
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              one practical growth insight every week. no spam. unsubscribe anytime.
+              occasional notes on visibility, trust, websites, and campaigns when they are worth your time.
             </p>
             <form className="grid gap-2" onSubmit={handleSubmit}>
               <Input
@@ -167,7 +167,7 @@ export function ZyraSiteFooter() {
                 size="sm"
                 className="bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
               >
-                join growth brief
+                join zyra notes
               </Button>
             </form>
             {helperText ? (
@@ -178,7 +178,7 @@ export function ZyraSiteFooter() {
 
         <div className="mt-8 border-t border-slate-200/80 pt-4 text-xs text-slate-500 dark:border-slate-700/80 dark:text-slate-400">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p>(c) {new Date().getFullYear()} zyra. built for measurable growth, clean data, and compliant outreach.</p>
+            <p>(c) {new Date().getFullYear()} zyra. built for clearer offers, stronger trust, and cleaner next steps.</p>
             <div className="flex flex-wrap items-center gap-3">
               <Link as={NextLink} href="/privacy" className="text-slate-500 hover:text-cyan-700 dark:text-slate-400 dark:hover:text-cyan-300">
                 privacy

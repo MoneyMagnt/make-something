@@ -35,7 +35,7 @@ const CHECKPOINTS = [
 const SUCCESS_METRICS = [
   "qualified traffic from creator-led campaigns",
   "offer response rate across creator segments",
-  "campaign-attributed pipeline and sales influence",
+  "campaign-attributed inquiries, sales, and audience lift",
 ];
 
 const influencerServiceJsonLd = JSON.stringify([

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 import { EventLineupSection } from "@/components/EventLineupSection";
 import { EventWildcardReveal } from "@/components/EventWildcardReveal";
+import { WeOutsideCampaignSection } from "@/components/WeOutsideCampaignSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
 import { EventCountdownChip } from "@/components/EventCountdownChip";
@@ -20,7 +21,6 @@ import { SITE_URL } from "@/lib/site";
 const ACTIVE_EVENT_STORAGE_KEY = "zyra_events_active_event_v1";
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
 const TRACK_DEBUG_STORAGE_KEY = "zyra_event_track_debug_v1";
-
 function EventBrandName({ event, selected = false }: { event: EventMeta; selected?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2.5">
@@ -87,10 +87,12 @@ const buildTableReservationUrl = (event: EventMeta) => {
 
 export function EventsPageClient() {
   const { theme } = useThemeMode();
-  const [activeEvent, setActiveEvent] = useState<EventName>("VENUS");
+  const [activeEvent, setActiveEvent] = useState<EventName>("We Outside");
   const [hasLoadedPersistedEvent, setHasLoadedPersistedEvent] = useState(false);
   const [heroNow, setHeroNow] = useState(() => Date.now());
   const [isLocalDoorsPreview, setIsLocalDoorsPreview] = useState(false);
+  const [isLocalRecapPreview, setIsLocalRecapPreview] = useState(false);
+  const [isLocalRecapDisabled, setIsLocalRecapDisabled] = useState(false);
   const hasTrackedInitialPageView = useRef(false);
 
   useEffect(() => {
@@ -101,7 +103,7 @@ export function EventsPageClient() {
 
     try {
       const savedEvent = localStorage.getItem(ACTIVE_EVENT_STORAGE_KEY);
-      if (savedEvent === "VENUS" || savedEvent === "We Outside") {
+      if (savedEvent === "We Outside") {
         setActiveEvent(savedEvent);
       }
     } finally {
@@ -147,6 +149,8 @@ export function EventsPageClient() {
       hostname.startsWith("192.168.");
     const params = new URLSearchParams(window.location.search);
     setIsLocalDoorsPreview(isLocalHost && params.get("doors") === "open");
+    setIsLocalRecapPreview(isLocalHost && params.get("recap") === "on");
+    setIsLocalRecapDisabled(isLocalHost && params.get("recap") === "off");
   }, []);
 
 
@@ -154,6 +158,7 @@ export function EventsPageClient() {
     () => EVENTS.find((item) => item.name === activeEvent) ?? EVENTS[0],
     [activeEvent]
   );
+  const isWeOutsideEvent = activeMeta.name === "We Outside";
   const isVenusEvent = activeMeta.name === "VENUS";
   const activeTickets = DEFAULT_EVENT_TICKETS[activeMeta.name];
   const activeControl = EVENT_CONTROL_DEFAULTS[activeMeta.name];
@@ -169,6 +174,10 @@ export function EventsPageClient() {
   const communityAction =
     activeMeta.vibeCard?.actions.find((action) => action.platform === "whatsapp") ??
     activeMeta.vibeCard?.actions[0];
+  const instagramAction =
+    activeMeta.vibeCard?.actions.find((action) => action.platform === "instagram") ??
+    activeMeta.vibeCard?.actions[0];
+  const isClassicEventsView = activeMeta.name === "We Outside" || activeMeta.name === "VENUS";
   const isVenusSoldOutMoment = isVenusEvent && !activeControl.passesEnabled;
   const eventStartTimestamp = useMemo(() => {
     if (!activeMeta.startDateIso) {
@@ -177,16 +186,37 @@ export function EventsPageClient() {
 
     return new Date(activeMeta.startDateIso).getTime();
   }, [activeMeta.startDateIso]);
+  const eventRecapTimestamp = useMemo(() => {
+    if (!Number.isFinite(eventStartTimestamp)) {
+      return Number.NaN;
+    }
+
+    return eventStartTimestamp + 8 * 60 * 60 * 1000;
+  }, [eventStartTimestamp]);
+  const isPostEventMoment =
+    isVenusEvent &&
+    (isLocalRecapPreview ||
+      (!isLocalRecapDisabled &&
+        Number.isFinite(eventRecapTimestamp) &&
+        heroNow >= eventRecapTimestamp));
   const isDoorsOpenMoment =
     isVenusEvent &&
+    !isPostEventMoment &&
     (isLocalDoorsPreview ||
       (Number.isFinite(eventStartTimestamp) && heroNow >= eventStartTimestamp));
   const heroSummary =
-    activeMeta.name === "VENUS"
+    isClassicEventsView
+      ? activeMeta.name === "We Outside"
+        ? "the next event is coming soon."
+        : "venus returns soon."
+      : activeMeta.name === "VENUS"
       ? isVenusSoldOutMoment
         ? "Venus by zyra at Glass Lounge, Accra. Late entry is open for 27 March 2026."
         : "Venus by zyra with free pass access before standard entry."
       : activeMeta.description;
+  const nextDropWhatsAppUrl = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
+    `hi zyra, i want first access to the next ${activeMeta.name.toLowerCase()} drop.`
+  )}`;
   const egoticketsPassUrl = useMemo(() => {
     if (!activeMeta.egoticketsEventUrl) {
       return "";
@@ -239,17 +269,39 @@ export function EventsPageClient() {
             detail: "jump to whatsapp and lock in your crew",
             external: true,
           };
-  const heroPrimaryAction = isDoorsOpenMoment
+  const heroPrimaryAction = isClassicEventsView
     ? {
-        href: mapsUrl,
-        label: "get directions",
-        detail: `doors open now at ${activeMeta.venue}`,
+        href: nextDropWhatsAppUrl,
+        label: "stay close",
+        detail: "get the full drop first",
         external: true,
       }
-    : primaryAction;
+    : isPostEventMoment
+    ? {
+        href: communityAction?.url ?? nextDropWhatsAppUrl,
+        label: "join whatsapp first",
+        detail: "get the next drop before it lands anywhere else",
+        external: true,
+      }
+    : isDoorsOpenMoment
+      ? {
+          href: mapsUrl,
+          label: "get directions",
+          detail: `doors open now at ${activeMeta.venue}`,
+          external: true,
+        }
+      : primaryAction;
   const heroSecondaryAction =
-    isDoorsOpenMoment && lateEntryAction
-      ? lateEntryAction
+    isClassicEventsView
+      ? null
+      : isPostEventMoment
+      ? {
+          href: instagramAction?.url ?? detailPageUrl,
+          label: "see what you missed",
+          external: Boolean(instagramAction),
+        }
+      : isDoorsOpenMoment && lateEntryAction
+        ? lateEntryAction
       : isVenusSoldOutMoment && communityAction
         ? {
             href: communityAction.url,
@@ -309,10 +361,10 @@ export function EventsPageClient() {
     theme === "dark"
       ? isVenusEvent
         ? "from-indigo-900/82 via-violet-800/70 to-slate-950/85 border-violet-300/25"
-        : "from-emerald-900/82 via-cyan-900/70 to-slate-950/85 border-cyan-300/25"
+        : "from-orange-950/92 via-fuchsia-950/88 to-violet-950/92 border-orange-300/30"
       : isVenusEvent
         ? "from-violet-300/80 via-fuchsia-300/68 to-rose-200/55 border-fuchsia-400/55"
-        : "from-emerald-300/82 via-cyan-300/70 to-sky-200/60 border-cyan-400/55";
+        : "from-orange-400/92 via-pink-500/86 to-violet-700/90 border-amber-200/70";
 
   const pageStyle = useMemo(
     () => ({
@@ -320,10 +372,10 @@ export function EventsPageClient() {
         theme === "dark"
           ? isVenusEvent
             ? "radial-gradient(1260px 780px at 8% -12%, rgba(129,140,248,0.34), transparent 60%), radial-gradient(1080px 650px at 92% -8%, rgba(217,70,239,0.28), transparent 62%), radial-gradient(980px 640px at 50% 112%, rgba(168,85,247,0.24), transparent 68%), linear-gradient(180deg, #140830 0%, #11183d 46%, #060d28 100%)"
-            : "radial-gradient(1260px 780px at 8% -12%, rgba(20,184,166,0.34), transparent 60%), radial-gradient(1080px 650px at 92% -8%, rgba(14,165,233,0.28), transparent 62%), radial-gradient(980px 640px at 50% 112%, rgba(45,212,191,0.24), transparent 68%), linear-gradient(180deg, #0b332b 0%, #0b2e44 46%, #060d28 100%)"
+            : "radial-gradient(1180px 720px at 8% -10%, rgba(255,122,24,0.38), transparent 60%), radial-gradient(980px 620px at 92% 0%, rgba(236,72,153,0.34), transparent 62%), radial-gradient(1080px 720px at 50% 110%, rgba(79,70,229,0.36), transparent 68%), linear-gradient(180deg, #2b071f 0%, #2b0b55 52%, #10042d 100%)"
           : isVenusEvent
             ? "radial-gradient(1180px 700px at 10% -14%, rgba(167,139,250,0.52), transparent 64%), radial-gradient(980px 590px at 90% -8%, rgba(244,114,182,0.42), transparent 62%), radial-gradient(1040px 620px at 50% 112%, rgba(129,140,248,0.28), transparent 70%), linear-gradient(180deg, #fcf8ff 0%, #f6eeff 54%, #e7dcff 100%)"
-            : "radial-gradient(1180px 700px at 10% -14%, rgba(16,185,129,0.48), transparent 64%), radial-gradient(980px 590px at 90% -8%, rgba(6,182,212,0.44), transparent 62%), radial-gradient(1040px 620px at 50% 112%, rgba(59,130,246,0.28), transparent 70%), linear-gradient(180deg, #f0fffb 0%, #ecfbff 54%, #dbeeff 100%)",
+            : "radial-gradient(1180px 700px at 8% -12%, rgba(255,122,24,0.48), transparent 62%), radial-gradient(980px 620px at 92% -4%, rgba(236,72,153,0.38), transparent 62%), radial-gradient(1080px 680px at 50% 108%, rgba(109,40,217,0.3), transparent 68%), linear-gradient(180deg, #fff6e7 0%, #ffe7dc 48%, #eadfff 100%)",
     }),
     [isVenusEvent, theme]
   );
@@ -351,7 +403,10 @@ export function EventsPageClient() {
             description: venus.description,
             startDate: venus.startDateIso,
             eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-            eventStatus: "https://schema.org/EventScheduled",
+            eventStatus:
+              isPostEventMoment
+                ? "https://schema.org/EventCompleted"
+                : "https://schema.org/EventScheduled",
             location: {
               "@type": "Place",
               name: venus.venue,
@@ -367,18 +422,20 @@ export function EventsPageClient() {
               name: "zyra",
               url: SITE_URL,
             },
-            offers: {
-              "@type": "Offer",
-              priceCurrency: "GHS",
-              price: "50",
-              availability: "https://schema.org/InStock",
-              url: `${SITE_URL}/events/${venus.slug}`,
-            },
+            offers: isPostEventMoment
+              ? undefined
+              : {
+                  "@type": "Offer",
+                  priceCurrency: "GHS",
+                  price: "50",
+                  availability: "https://schema.org/InStock",
+                  url: `${SITE_URL}/events/${venus.slug}`,
+                },
           }
         : null;
 
     return JSON.stringify(venusSchema ? [itemList, venusSchema] : [itemList]);
-  }, []);
+  }, [isPostEventMoment]);
 
   return (
     <div
@@ -405,20 +462,44 @@ export function EventsPageClient() {
       />
 
       <main id="main-content" className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
-        <section className="mb-8">
-          <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
+        {isWeOutsideEvent ? (
+          <WeOutsideCampaignSection
+            firstAccessUrl={nextDropWhatsAppUrl}
+            onFirstAccess={() => {
+              trackFeature("ticket_click", activeMeta.name);
+            }}
+          />
+        ) : null}
+
+        {!isWeOutsideEvent ? (
+          <section className="mb-8">
+            <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-6">
               <div className="relative flex min-h-[10.75rem] flex-col items-center justify-center pt-12 text-center sm:min-h-[11.75rem] sm:pt-12 lg:min-h-[13.25rem] lg:pt-12">
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 sm:gap-3">
-                  <div suppressHydrationWarning className="inline-flex h-9 max-w-[calc(100%-8.5rem)] items-center rounded-full border border-cyan-200 bg-cyan-100 px-3 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
-                    <EventCountdownChip targetIso={activeMeta.startDateIso} elapsedLabel="doors open now" />
-                  </div>
+                  {isClassicEventsView ? (
+                    <div className="inline-flex h-9 max-w-[calc(100%-8.5rem)] items-center rounded-full border border-cyan-200/80 bg-white/96 px-3 text-slate-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-slate-600/55 dark:bg-slate-900/82 dark:text-slate-100">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">
+                        coming soon
+                      </span>
+                    </div>
+                  ) : isPostEventMoment ? (
+                    <div className="inline-flex h-9 max-w-[calc(100%-8.5rem)] items-center rounded-full border border-fuchsia-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(250,245,255,0.98))] px-3 text-fuchsia-900 shadow-[0_12px_28px_rgba(168,85,247,0.1)] dark:border-fuchsia-500/35 dark:bg-[linear-gradient(135deg,rgba(59,7,100,0.54),rgba(30,27,75,0.76))] dark:text-fuchsia-100">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">
+                        next drop priority
+                      </span>
+                    </div>
+                  ) : (
+                    <div suppressHydrationWarning className="inline-flex h-9 max-w-[calc(100%-8.5rem)] items-center rounded-full border border-cyan-200 bg-cyan-100 px-3 text-cyan-900 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-cyan-700/60 dark:bg-cyan-900/35 dark:text-cyan-200">
+                      <EventCountdownChip targetIso={activeMeta.startDateIso} elapsedLabel="doors open now" />
+                    </div>
+                  )}
                   <div className="inline-flex h-9 items-center rounded-full border border-cyan-200/80 bg-cyan-100/88 px-3 text-cyan-900 shadow-[0_10px_22px_rgba(15,23,42,0.06)] dark:border-cyan-700/45 dark:bg-cyan-900/22 dark:text-cyan-200/90">
                     <EventsBrandMark size="compact" className="min-w-0" />
                   </div>
                 </div>
                 <h1 className="sr-only">{activeMeta.name}</h1>
-                {isVenusEvent ? (
+                {isVenusEvent && !isClassicEventsView ? (
                   <div className="w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[470px]">
                     <EventWildcardReveal
                       logoSrc={activeMeta.logo}
@@ -426,7 +507,7 @@ export function EventsPageClient() {
                       revealImageSrc="/Mc%20Cobby%20Perry.jpg"
                       revealVideoSrc="/Cobby%20Perry%20video.mp4"
                       revealName="Mc Cobby Perry"
-                      forceRevealed={isDoorsOpenMoment}
+                      forceRevealed={isDoorsOpenMoment || isPostEventMoment}
                       compact
                     />
                   </div>
@@ -444,7 +525,13 @@ export function EventsPageClient() {
                 <div className="space-y-4">
                   {isVenusEvent ? (
                     <div className="max-w-2xl">
-                      {isDoorsOpenMoment ? (
+                      {isClassicEventsView ? (
+                        <p className="max-w-2xl text-sm text-slate-600 dark:text-slate-300 sm:text-base">
+                          {heroSummary}
+                        </p>
+                      ) : isPostEventMoment ? (
+                        <div aria-hidden="true" className="h-0" />
+                      ) : isDoorsOpenMoment ? (
                         <div className="space-y-2">
                           <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-200/80 bg-[linear-gradient(135deg,rgba(236,253,245,0.98),rgba(220,252,231,0.96))] px-3 py-2 shadow-[0_16px_38px_rgba(34,197,94,0.12)] backdrop-blur-xl dark:border-emerald-400/20 dark:bg-[linear-gradient(135deg,rgba(6,78,59,0.76),rgba(5,46,22,0.82))] dark:shadow-[0_20px_44px_rgba(34,197,94,0.16)] sm:px-4">
                             <span className="h-2 w-2 rounded-full bg-[linear-gradient(135deg,#22c55e,#22d3ee)] shadow-[0_0_0_4px_rgba(34,197,94,0.14)]" />
@@ -485,7 +572,9 @@ export function EventsPageClient() {
                         target={heroPrimaryAction.external ? "_blank" : undefined}
                         rel={heroPrimaryAction.external ? "noopener noreferrer" : undefined}
                         className={`h-12 w-full border text-base font-semibold text-white shadow-[0_18px_40px_rgba(14,165,233,0.22)] transition-transform hover:-translate-y-0.5 sm:w-fit sm:px-8 ${
-                          activeControl.passesEnabled && egoticketsPassUrl
+                          isPostEventMoment
+                            ? "border-violet-300/80 bg-gradient-to-r from-violet-500 to-fuchsia-500"
+                            : activeControl.passesEnabled && egoticketsPassUrl
                             ? "border-emerald-300/80 bg-gradient-to-r from-emerald-500 to-cyan-500"
                             : isDoorsOpenMoment
                               ? "border-fuchsia-300/70 bg-gradient-to-r from-fuchsia-500 to-cyan-500"
@@ -504,7 +593,9 @@ export function EventsPageClient() {
                           target={heroSecondaryAction.external ? "_blank" : undefined}
                           rel={heroSecondaryAction.external ? "noopener noreferrer" : undefined}
                           className={`h-12 w-full border transition-all hover:-translate-y-0.5 sm:w-fit sm:px-6 ${
-                            isDoorsOpenMoment
+                            isPostEventMoment
+                              ? "border-cyan-300/90 bg-[linear-gradient(135deg,rgba(224,242,254,0.96),rgba(240,249,255,0.96))] text-cyan-950 shadow-[0_12px_28px_rgba(6,182,212,0.12)] hover:border-cyan-400 hover:bg-[linear-gradient(135deg,rgba(186,230,253,1),rgba(224,242,254,1))] hover:text-cyan-950 dark:border-cyan-500/45 dark:bg-[linear-gradient(135deg,rgba(8,47,73,0.92),rgba(30,41,59,0.88))] dark:text-cyan-100 dark:hover:border-cyan-400/60 dark:hover:bg-[linear-gradient(135deg,rgba(14,116,144,0.92),rgba(8,47,73,0.9))]"
+                              : isDoorsOpenMoment
                               ? "border-cyan-300/90 bg-[linear-gradient(135deg,rgba(224,242,254,0.96),rgba(207,250,254,0.96))] text-cyan-950 shadow-[0_12px_28px_rgba(6,182,212,0.12)] hover:border-cyan-400 hover:bg-[linear-gradient(135deg,rgba(186,230,253,1),rgba(165,243,252,1))] hover:text-cyan-950 dark:border-cyan-500/45 dark:bg-[linear-gradient(135deg,rgba(8,47,73,0.92),rgba(12,74,110,0.88))] dark:text-cyan-100 dark:hover:border-cyan-400/60 dark:hover:bg-[linear-gradient(135deg,rgba(14,116,144,0.92),rgba(8,47,73,0.9))]"
                               : "border-emerald-300/90 bg-[linear-gradient(135deg,rgba(220,252,231,0.96),rgba(187,247,208,0.96))] text-emerald-950 shadow-[0_12px_28px_rgba(34,197,94,0.14)] hover:border-emerald-400 hover:bg-[linear-gradient(135deg,rgba(209,250,229,1),rgba(167,243,208,1))] hover:text-emerald-950 dark:border-emerald-500/45 dark:bg-[linear-gradient(135deg,rgba(6,78,59,0.9),rgba(5,46,22,0.88))] dark:text-emerald-100 dark:hover:border-emerald-400/60 dark:hover:bg-[linear-gradient(135deg,rgba(6,95,70,0.92),rgba(6,78,59,0.9))]"
                           }`}
@@ -513,18 +604,20 @@ export function EventsPageClient() {
                         </Button>
                       ) : null}
                     </div>
-                    <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-600 dark:text-slate-400">
-                      <Link href="#lineup-reel" className="text-slate-700 no-underline transition-colors hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300">
-                        view lineup
-                      </Link>
-                      <Link href="#event-actions" className="text-slate-700 no-underline transition-colors hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300">
-                        event guide
-                      </Link>
-                    </div>
+                    {!isClassicEventsView ? (
+                      <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-600 dark:text-slate-400">
+                        <Link href="#lineup-reel" className="text-slate-700 no-underline transition-colors hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300">
+                          view lineup
+                        </Link>
+                        <Link href="#event-actions" className="text-slate-700 no-underline transition-colors hover:text-cyan-700 dark:text-slate-300 dark:hover:text-cyan-300">
+                          {isPostEventMoment ? "first access" : "event guide"}
+                        </Link>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
-                {!isDoorsOpenMoment ? (
+                {!isDoorsOpenMoment && !isPostEventMoment && !isClassicEventsView ? (
                   <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
                     <div className="rounded-2xl border border-slate-200/85 bg-white/92 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.07)] backdrop-blur-lg dark:border-slate-700/55 dark:bg-slate-950/70">
                       <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">date</p>
@@ -542,63 +635,131 @@ export function EventsPageClient() {
                 ) : null}
               </div>
             </CardBody>
-          </Card>
-        </section>
+            </Card>
+          </section>
+        ) : null}
 
-        <EventLineupSection members={activeLineup} vibeCard={activeMeta.vibeCard} sectionClassName="mb-8" />
+        {!isClassicEventsView ? (
+          <EventLineupSection members={activeLineup} vibeCard={activeMeta.vibeCard} sectionClassName="mb-8" />
+        ) : null}
 
-        <section id="event-actions" className="mb-8">
-          <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
+        {!isWeOutsideEvent ? (
+          <section id="event-actions" className="mb-8">
+            <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-4">
               <div>
                 <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-                  arrival details
+                  {isClassicEventsView ? "drop status" : isPostEventMoment ? "what's next" : "arrival details"}
                 </p>
                 <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  plan your arrival
+                  {isClassicEventsView ? "details land later" : isPostEventMoment ? "keep the momentum" : "plan your arrival"}
                 </h2>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                <Link
-                  href={mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
-                >
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">arrival</p>
-                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
-                    get directions
-                  </p>
-                </Link>
+                {isClassicEventsView ? (
+                  <>
+                    <div className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 shadow-[0_14px_32px_rgba(15,23,42,0.08)] dark:border-slate-700/55 dark:bg-slate-950/70">
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">date</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        coming soon
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 shadow-[0_14px_32px_rgba(15,23,42,0.08)] dark:border-slate-700/55 dark:bg-slate-950/70">
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">venue</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        not verified yet
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 shadow-[0_14px_32px_rgba(15,23,42,0.08)] dark:border-slate-700/55 dark:bg-slate-950/70">
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">hosts + artists</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        not announced
+                      </p>
+                    </div>
+                  </>
+                ) : isPostEventMoment ? (
+                  <>
+                    <Link
+                      href={communityAction?.url ?? nextDropWhatsAppUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                    >
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">first access</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        join next-drop list
+                      </p>
+                    </Link>
 
-                <Link
-                  href={calendarUrl || detailPageUrl}
-                  target={calendarUrl ? "_blank" : undefined}
-                  rel={calendarUrl ? "noopener noreferrer" : undefined}
-                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
-                >
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">reminder</p>
-                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
-                    {calendarUrl ? "add to calendar" : "event page"}
-                  </p>
-                </Link>
+                    <Link
+                      href={instagramAction?.url ?? detailPageUrl}
+                      target={instagramAction ? "_blank" : undefined}
+                      rel={instagramAction ? "noopener noreferrer" : undefined}
+                      className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                    >
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">proof</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        see what you missed
+                      </p>
+                    </Link>
 
-                <Link
-                  href={tableReservationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
-                >
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">tables</p>
-                  <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
-                    reserve a table
-                  </p>
-                </Link>
+                    <Link
+                      href={nextDropWhatsAppUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                    >
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">next move</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        be there earlier next time
+                      </p>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                    >
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">arrival</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        get directions
+                      </p>
+                    </Link>
+
+                    <Link
+                      href={calendarUrl || detailPageUrl}
+                      target={calendarUrl ? "_blank" : undefined}
+                      rel={calendarUrl ? "noopener noreferrer" : undefined}
+                      className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                    >
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">reminder</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        {calendarUrl ? "add to calendar" : "event page"}
+                      </p>
+                    </Link>
+
+                    <Link
+                      href={tableReservationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-2xl border border-slate-300/85 bg-white/92 p-4 no-underline shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-cyan-300/90 hover:bg-cyan-50/70 dark:border-slate-700/55 dark:bg-slate-950/70 dark:hover:border-cyan-500/35 dark:hover:bg-slate-900/78"
+                    >
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">tables</p>
+                      <p className="mt-2 font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                        reserve a table
+                      </p>
+                    </Link>
+                  </>
+                )}
               </div>
             </CardBody>
-          </Card>
-        </section>
+            </Card>
+          </section>
+        ) : null}
 
         <section className="mb-10">
           <Card className="border border-slate-200/80 bg-white/78 shadow-[0_18px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
@@ -640,8 +801,8 @@ export function EventsPageClient() {
                         <EventBrandName event={event} selected={selected} />
                         <p className={`text-xs ${selected ? "text-slate-600 dark:text-slate-200/88" : "text-slate-600 dark:text-slate-400"}`}>
                           {event.name === "We Outside"
-                            ? "Next drop. Details when it's time."
-                            : `${event.dateLabel} - ${event.timeLabel}`}
+                            ? "coming soon"
+                            : "update soon"}
                         </p>
                       </div>
                       <span className={`text-xs uppercase tracking-[0.14em] ${selected ? "text-cyan-700 dark:text-cyan-200" : "text-slate-500 dark:text-slate-400"}`}>

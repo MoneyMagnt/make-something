@@ -5,685 +5,203 @@ import {
   Card,
   CardBody,
   Chip,
-  Image,
   Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
   Textarea,
 } from "@heroui/react";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import NextLink from "next/link";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
+import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 import { ADMIN_ACCESS_KEY, ADMIN_PASSCODE } from "@/lib/adminAccess";
+import {
+  DEFAULT_LOCAL_CONTENT,
+  readLocalContent,
+  resetLocalContent,
+  type LocalContentState,
+  writeLocalContent,
+} from "@/lib/localContentEditor";
 
-const STORAGE_KEY = "zyra_admin_state_v1";
-const VISITOR_COUNT_KEY = "zyra_visitor_count_v1";
+const sections = [
+  { key: "home", label: "home" },
+  { key: "services", label: "services" },
+  { key: "events", label: "events" },
+] as const;
 
-type VideoItem = { id: string; title: string; url: string };
-type PhotoItem = { id: string; caption: string; url: string };
-type AttendeeItem = {
-  id: string;
-  name: string;
-  email: string;
-  event: string;
-  ticket: string;
-};
-type TicketItem = { id: string; name: string; price: string; link: string };
-type PassItem = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  event: string;
-};
+type SectionKey = (typeof sections)[number]["key"];
 
-type AdminState = {
-  brandName: string;
-  headline: string;
-  subhead: string;
-  primary: string;
-  secondary: string;
-  passLimit: number;
-  videos: VideoItem[];
-  photos: PhotoItem[];
-  attendees: AttendeeItem[];
-  tickets: TicketItem[];
-  passes: PassItem[];
-};
-
-const defaultState: AdminState = {
-  brandName: "zyra",
-  headline: "Welcome to the house of legendary parties",
-  subhead: "We Outside · VENUS",
-  primary: "#2563eb",
-  secondary: "#7c3aed",
-  passLimit: 200,
-  videos: [],
-  photos: [],
-  attendees: [],
-  tickets: [],
-  passes: [],
-};
-
-const makeId = () => Math.random().toString(36).slice(2, 10);
-
-const loadInitialState = () => {
-  if (typeof window === "undefined") {
-    return { state: defaultState, passLimitInput: String(defaultState.passLimit), visitorCount: 0 };
-  }
-
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) {
-    const currentVisitors = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
-    return {
-      state: defaultState,
-      passLimitInput: String(defaultState.passLimit),
-      visitorCount: currentVisitors,
-    };
-  }
-
-  try {
-    const parsed = JSON.parse(saved) as AdminState;
-    const merged = { ...defaultState, ...parsed };
-    const currentVisitors = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
-    return {
-      state: merged,
-      passLimitInput: String(merged.passLimit ?? defaultState.passLimit),
-      visitorCount: currentVisitors,
-    };
-  } catch {
-    const currentVisitors = Number(localStorage.getItem(VISITOR_COUNT_KEY) ?? "0");
-    return {
-      state: defaultState,
-      passLimitInput: String(defaultState.passLimit),
-      visitorCount: currentVisitors,
-    };
-  }
-};
-
-export default function AdminPage() {
+export default function AdminPortalPage() {
   const { theme } = useThemeMode();
-  const [initialState] = useState(loadInitialState);
-  const [state, setState] = useState<AdminState>(initialState.state);
-  const [visitorCount] = useState(initialState.visitorCount);
   const [passcode, setPasscode] = useState("");
   const [isAuthed, setIsAuthed] = useState(false);
-  const [activeTab, setActiveTab] = useState("design");
-  const [videoTitle, setVideoTitle] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [photoCaption, setPhotoCaption] = useState("");
-  const [photoUrl, setPhotoUrl] = useState("");
-  const [attendeeName, setAttendeeName] = useState("");
-  const [attendeeEmail, setAttendeeEmail] = useState("");
-  const [attendeeEvent, setAttendeeEvent] = useState("We Outside");
-  const [attendeeTicket, setAttendeeTicket] = useState("General");
-  const [ticketName, setTicketName] = useState("");
-  const [ticketPrice, setTicketPrice] = useState("");
-  const [ticketLink, setTicketLink] = useState("");
-  const [passLimitInput, setPassLimitInput] = useState(initialState.passLimitInput);
-
-  const tryAuth = () => {
-    const allowed = passcode === ADMIN_PASSCODE;
-    setIsAuthed(allowed);
-    if (allowed) {
-      localStorage.setItem(ADMIN_ACCESS_KEY, "1");
-    }
-  };
+  const [activeSection, setActiveSection] = useState<SectionKey>("events");
+  const [draft, setDraft] = useState<LocalContentState>(DEFAULT_LOCAL_CONTENT);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const authed = window.localStorage.getItem(ADMIN_ACCESS_KEY) === "1";
+    setIsAuthed(authed);
+    setDraft(readLocalContent());
+  }, []);
 
   const themeStyle = useMemo(
     () => ({
       background:
         theme === "dark"
-          ? `radial-gradient(1240px 720px at 8% -12%, ${state.primary}66, transparent 58%), radial-gradient(1080px 640px at 92% -8%, ${state.secondary}66, transparent 60%), linear-gradient(180deg, #020617 0%, #0b1124 46%, #111827 100%)`
-          : `radial-gradient(1200px 600px at 10% -10%, ${state.primary}33, transparent), radial-gradient(900px 500px at 90% 10%, ${state.secondary}33, transparent), linear-gradient(180deg, #f8fbff 0%, #eef4ff 58%, #e8efff 100%)`,
+          ? "radial-gradient(1080px 680px at 10% -12%, rgba(34,211,238,0.18), transparent 58%), radial-gradient(980px 620px at 92% 2%, rgba(168,85,247,0.18), transparent 58%), linear-gradient(180deg, #020617 0%, #0b1124 46%, #111827 100%)"
+          : "radial-gradient(1080px 620px at 10% -12%, rgba(125,211,252,0.22), transparent 58%), radial-gradient(980px 560px at 94% 4%, rgba(59,130,246,0.12), transparent 58%), linear-gradient(180deg, #f8fbff 0%, #eef4ff 58%, #e8efff 100%)",
     }),
-    [state.primary, state.secondary, theme]
+    [theme]
   );
 
-  const passUsage = `${state.passes.length}/${state.passLimit}`;
-  const passPercent =
-    state.passLimit > 0 ? Math.round((state.passes.length / state.passLimit) * 100) : 0;
+  const saveDraft = () => {
+    writeLocalContent(draft);
+  };
 
-  const eventCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    state.passes.forEach((pass) => {
-      counts.set(pass.event, (counts.get(pass.event) ?? 0) + 1);
-    });
-    state.attendees.forEach((attendee) => {
-      counts.set(attendee.event, (counts.get(attendee.event) ?? 0) + 1);
-    });
-    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
-  }, [state.passes, state.attendees]);
+  const resetDraft = () => {
+    resetLocalContent();
+    setDraft(DEFAULT_LOCAL_CONTENT);
+  };
+
+  const tryAuth = () => {
+    const allowed = passcode === ADMIN_PASSCODE;
+    setIsAuthed(allowed);
+    if (allowed && typeof window !== "undefined") {
+      window.localStorage.setItem(ADMIN_ACCESS_KEY, "1");
+      setDraft(readLocalContent());
+    }
+  };
+
+  const logOut = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(ADMIN_ACCESS_KEY);
+    }
+    setIsAuthed(false);
+  };
 
   return (
     <div className="relative min-h-screen overflow-x-hidden text-slate-900 dark:text-slate-100" style={themeStyle}>
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-35 dark:opacity-25"
-          style={{
-            backgroundImage: "url(/233-events-logo.png)",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            backgroundSize: "min(65vw, 520px)",
-          }}
-        />
-        <div
-          className="absolute inset-0 mix-blend-multiply opacity-70 dark:mix-blend-screen dark:opacity-55"
-          style={{
-            background:
-              "radial-gradient(700px 360px at 20% 20%, rgba(59,130,246,0.55), transparent), radial-gradient(600px 320px at 80% 25%, rgba(139,92,246,0.55), transparent), linear-gradient(120deg, rgba(59,130,246,0.25), rgba(139,92,246,0.25))",
-          }}
-        />
-        <div className="absolute inset-0 bg-white/12 dark:bg-slate-950/35" />
-      </div>
-
-      <ZyraSiteNav
-        active="admin"
-        navbarClassName="bg-transparent border-b-0"
-        activeLinkClassName="text-violet-300"
-        brand={
-          <span className="flex items-center gap-2">
-            <span>{state.brandName}</span>
-            <Image removeWrapper alt="233 events logo" src="/233-events-logo.png" className="h-7 w-auto" />
-            <Chip className="bg-slate-900 text-white dark:bg-slate-700 dark:text-slate-100">admin</Chip>
-          </span>
-        }
-      />
+      <ZyraSiteNav active="admin" brand={<ZyraBrandMark />} />
 
       {!isAuthed ? (
-        <main className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 px-6">
-          <Card className="w-full border border-blue-100/60 bg-white/80 backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/78">
-            <CardBody className="gap-4">
-              <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-slate-900 dark:text-slate-100">
-                Admin access
-              </h1>
+        <main className="relative z-10 mx-auto flex min-h-[calc(100vh-4.8rem)] max-w-md flex-col items-center justify-center gap-6 px-6 py-10">
+          <Card className="w-full border border-slate-200/80 bg-white/88 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/82">
+            <CardBody className="gap-4 p-6">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">local editor</p>
+                <h1 className="mt-2 font-[family-name:var(--font-space-grotesk)] text-2xl font-semibold text-slate-950 dark:text-slate-100">
+                  content editing page
+                </h1>
+                <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                  this edits local browser content for home, services, and events so you can preview changes without touching code.
+                </p>
+              </div>
               <Input
-                label="Passcode"
+                label="passcode"
                 type="password"
                 value={passcode}
                 onValueChange={setPasscode}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") tryAuth();
+                  if (event.key === "Enter") {
+                    tryAuth();
+                  }
                 }}
               />
-              <Button className="bg-slate-900 text-white w-fit" onPress={tryAuth} isDisabled={!passcode}>
-                enter
+              <Button className="w-fit bg-slate-950 text-white dark:bg-slate-100 dark:text-slate-950" onPress={tryAuth}>
+                open editor
               </Button>
-              {passcode && passcode !== ADMIN_PASSCODE ? (
-                <p className="text-sm text-rose-600 dark:text-rose-300">wrong passcode</p>
-              ) : null}
             </CardBody>
           </Card>
         </main>
       ) : (
-        <>
-          <main className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 pb-16 pt-8">
-            <div className="mb-6 flex flex-wrap items-center gap-2">
+        <main className="relative z-10 mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6">
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <Button as={Link} href="/" target="_blank" rel="noopener noreferrer" className="bg-slate-950 text-white dark:bg-slate-100 dark:text-slate-950">
+              preview home
+            </Button>
+            <Button as={Link} href="/services" target="_blank" rel="noopener noreferrer" variant="flat" className="border border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100">
+              preview services
+            </Button>
+            <Button as={Link} href="/events" target="_blank" rel="noopener noreferrer" variant="flat" className="border border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100">
+              preview events
+            </Button>
+            <Button onPress={saveDraft} className="bg-cyan-600 text-white">
+              save local changes
+            </Button>
+            <Button onPress={resetDraft} variant="flat" className="border border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100">
+              reset all
+            </Button>
+            <Button onPress={logOut} variant="flat" className="border border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100">
+              log out
+            </Button>
+          </div>
+
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            {sections.map((section) => (
               <Button
-                as={NextLink}
-                href="/events"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-slate-900 text-white"
+                key={section.key}
+                onPress={() => setActiveSection(section.key)}
+                className={activeSection === section.key ? "bg-slate-950 text-white dark:bg-slate-100 dark:text-slate-950" : "border border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100"}
+                variant={activeSection === section.key ? "solid" : "flat"}
               >
-                preview events site
+                {section.label}
               </Button>
-              <Button
-                as={NextLink}
-                href="/"
-                variant="flat"
-                className="border border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-900/75 dark:text-slate-100"
-              >
-                zyra homepage
-              </Button>
-              <Button
-                className="bg-white text-slate-900"
-                onPress={() => {
-                  localStorage.removeItem(ADMIN_ACCESS_KEY);
-                  setIsAuthed(false);
-                }}
-              >
-                log out
-              </Button>
-              <Chip className="bg-slate-900 text-white">event control</Chip>
-            </div>
+            ))}
+          </div>
 
-            <motion.section
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="mb-8"
-            >
-              <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
-                {state.headline}
-              </h1>
-              <p className="mt-2 text-slate-600 dark:text-slate-300">{state.subhead}</p>
-            </motion.section>
+          {activeSection === "home" ? (
+            <Card className="border border-slate-200/80 bg-white/88 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/82">
+              <CardBody className="grid gap-4 p-6 md:grid-cols-2">
+                <Input label="chip label" value={draft.home.heroChipLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, home: { ...prev.home, heroChipLabel: value } }))} />
+                <Input label="chip sub label" value={draft.home.heroChipSubLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, home: { ...prev.home, heroChipSubLabel: value } }))} />
+                <Input label="eyebrow" value={draft.home.heroEyebrow} onValueChange={(value) => setDraft((prev) => ({ ...prev, home: { ...prev.home, heroEyebrow: value } }))} />
+                <Input label="primary button" value={draft.home.primaryCtaLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, home: { ...prev.home, primaryCtaLabel: value } }))} />
+                <Input label="secondary button" value={draft.home.secondaryCtaLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, home: { ...prev.home, secondaryCtaLabel: value } }))} />
+                <div />
+                <Textarea label="headline" value={draft.home.heroTitle} onValueChange={(value) => setDraft((prev) => ({ ...prev, home: { ...prev.home, heroTitle: value } }))} className="md:col-span-2" minRows={3} />
+                <Textarea label="support text" value={draft.home.heroBody} onValueChange={(value) => setDraft((prev) => ({ ...prev, home: { ...prev.home, heroBody: value } }))} className="md:col-span-2" minRows={4} />
+              </CardBody>
+            </Card>
+          ) : null}
 
-            <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-              <div className="flex items-center gap-2 w-max">
-                {[
-                  { key: "design", label: "Design" },
-                  { key: "media", label: "Media" },
-                  { key: "attendees", label: "Attendees" },
-                  { key: "tickets", label: "Tickets & passes" },
-                  { key: "analytics", label: "Analytics" },
-                ].map((item) => (
-                  <Button
-                    key={item.key}
-                    size="sm"
-                    className={
-                      activeTab === item.key
-                        ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-                        : "bg-white/90 text-slate-700 dark:bg-slate-900/75 dark:text-slate-200"
-                    }
-                    onPress={() => setActiveTab(item.key)}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
+          {activeSection === "services" ? (
+            <Card className="border border-slate-200/80 bg-white/88 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/82">
+              <CardBody className="grid gap-4 p-6 md:grid-cols-2">
+                <Input label="chip" value={draft.services.heroChip} onValueChange={(value) => setDraft((prev) => ({ ...prev, services: { ...prev.services, heroChip: value } }))} className="md:col-span-2" />
+                <Input label="eyebrow" value={draft.services.heroEyebrow} onValueChange={(value) => setDraft((prev) => ({ ...prev, services: { ...prev.services, heroEyebrow: value } }))} />
+                <Input label="primary button" value={draft.services.primaryCtaLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, services: { ...prev.services, primaryCtaLabel: value } }))} />
+                <Input label="secondary button" value={draft.services.secondaryCtaLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, services: { ...prev.services, secondaryCtaLabel: value } }))} />
+                <div />
+                <Textarea label="headline" value={draft.services.heroTitle} onValueChange={(value) => setDraft((prev) => ({ ...prev, services: { ...prev.services, heroTitle: value } }))} className="md:col-span-2" minRows={3} />
+                <Textarea label="support text" value={draft.services.heroBody} onValueChange={(value) => setDraft((prev) => ({ ...prev, services: { ...prev.services, heroBody: value } }))} className="md:col-span-2" minRows={4} />
+              </CardBody>
+            </Card>
+          ) : null}
 
-            {activeTab === "design" && (
-              <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                <Card className="bg-white/80 backdrop-blur border border-blue-100/60">
-                  <CardBody className="gap-4">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <Input
-                        label="Brand name"
-                        value={state.brandName}
-                        onValueChange={(value) =>
-                          setState((prev) => ({ ...prev, brandName: value }))
-                        }
-                      />
-                      <Input
-                        label="Headline"
-                        value={state.headline}
-                        onValueChange={(value) =>
-                          setState((prev) => ({ ...prev, headline: value }))
-                        }
-                      />
-                    </div>
-                    <Textarea
-                      label="Subhead"
-                      value={state.subhead}
-                      onValueChange={(value) =>
-                        setState((prev) => ({ ...prev, subhead: value }))
-                      }
-                    />
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <Input
-                        label="Primary color"
-                        value={state.primary}
-                        onValueChange={(value) =>
-                          setState((prev) => ({ ...prev, primary: value }))
-                        }
-                      />
-                      <Input
-                        label="Secondary color"
-                        value={state.secondary}
-                        onValueChange={(value) =>
-                          setState((prev) => ({ ...prev, secondary: value }))
-                        }
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
+          {activeSection === "events" ? (
+            <Card className="border border-slate-200/80 bg-white/88 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/82">
+              <CardBody className="grid gap-4 p-6 md:grid-cols-2">
+                <Input label="eyebrow" value={draft.events.heroEyebrow} onValueChange={(value) => setDraft((prev) => ({ ...prev, events: { ...prev.events, heroEyebrow: value } }))} />
+                <Input label="main title" value={draft.events.heroTitle} onValueChange={(value) => setDraft((prev) => ({ ...prev, events: { ...prev.events, heroTitle: value } }))} />
+                <Input label="highlight line" value={draft.events.heroHighlight} onValueChange={(value) => setDraft((prev) => ({ ...prev, events: { ...prev.events, heroHighlight: value } }))} className="md:col-span-2" />
+                <Input label="status pill" value={draft.events.statusPill} onValueChange={(value) => setDraft((prev) => ({ ...prev, events: { ...prev.events, statusPill: value } }))} />
+                <Input label="ticket button" value={draft.events.primaryCtaLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, events: { ...prev.events, primaryCtaLabel: value } }))} />
+                <Input label="community button" value={draft.events.secondaryCtaLabel} onValueChange={(value) => setDraft((prev) => ({ ...prev, events: { ...prev.events, secondaryCtaLabel: value } }))} />
+              </CardBody>
+            </Card>
+          ) : null}
 
-                <Card className="bg-white/80 backdrop-blur border border-violet-100/60">
-                  <CardBody className="gap-3">
-                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900">
-                      Live preview
-                    </h2>
-                    <div
-                      className="rounded-xl p-5 text-white"
-                      style={{
-                        background: `linear-gradient(120deg, ${state.primary}, ${state.secondary})`,
-                      }}
-                    >
-                      <p className="uppercase tracking-[0.2em] text-xs">{state.brandName}</p>
-                      <p className="text-2xl font-semibold mt-2">{state.headline}</p>
-                      <p className="text-sm mt-2">{state.subhead}</p>
-                      <div className="mt-4 flex gap-2">
-                        <Button className="bg-white text-slate-900">we outside</Button>
-                        <Button className="bg-black/30 text-white" variant="flat">
-                          venus
-                        </Button>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            )}
-
-            {activeTab === "media" && (
-              <div className="grid gap-6 lg:grid-cols-2">
-                <Card className="bg-white/80 backdrop-blur border border-blue-100/60">
-                  <CardBody className="gap-4">
-                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900">
-                      Event videos
-                    </h2>
-                    <div className="grid gap-3">
-                      <Input label="Video title" value={videoTitle} onValueChange={setVideoTitle} />
-                      <Input label="Video URL" value={videoUrl} onValueChange={setVideoUrl} />
-                      <Button
-                        className="bg-blue-600 text-white w-fit"
-                        onPress={() => {
-                          if (!videoTitle || !videoUrl) return;
-                          setState((prev) => ({
-                            ...prev,
-                            videos: [
-                              { id: makeId(), title: videoTitle, url: videoUrl },
-                              ...prev.videos,
-                            ],
-                          }));
-                          setVideoTitle("");
-                          setVideoUrl("");
-                        }}
-                        isDisabled={!videoTitle || !videoUrl}
-                      >
-                        add video
-                      </Button>
-                    </div>
-                    <div className="grid gap-3">
-                      {state.videos.map((video) => (
-                        <Card key={video.id} className="bg-white/90">
-                          <CardBody className="gap-2">
-                            <p className="font-semibold text-slate-900">{video.title}</p>
-                            <p className="text-sm text-slate-600">{video.url}</p>
-                          </CardBody>
-                        </Card>
-                      ))}
-                    </div>
-                  </CardBody>
-                </Card>
-
-                <Card className="bg-white/80 backdrop-blur border border-violet-100/60">
-                  <CardBody className="gap-4">
-                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900">
-                      Event photos
-                    </h2>
-                    <div className="grid gap-3">
-                      <Input label="Photo caption" value={photoCaption} onValueChange={setPhotoCaption} />
-                      <Input label="Photo URL" value={photoUrl} onValueChange={setPhotoUrl} />
-                      <Button
-                        className="bg-violet-600 text-white w-fit"
-                        onPress={() => {
-                          if (!photoCaption || !photoUrl) return;
-                          setState((prev) => ({
-                            ...prev,
-                            photos: [
-                              { id: makeId(), caption: photoCaption, url: photoUrl },
-                              ...prev.photos,
-                            ],
-                          }));
-                          setPhotoCaption("");
-                          setPhotoUrl("");
-                        }}
-                        isDisabled={!photoCaption || !photoUrl}
-                      >
-                        add photo
-                      </Button>
-                    </div>
-                    <div className="grid gap-3">
-                      {state.photos.map((photo) => (
-                        <Card key={photo.id} className="bg-white/90">
-                          <CardBody className="gap-2">
-                            <p className="font-semibold text-slate-900">{photo.caption}</p>
-                            <p className="text-sm text-slate-600">{photo.url}</p>
-                          </CardBody>
-                        </Card>
-                      ))}
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            )}
-
-            {activeTab === "attendees" && (
-              <Card className="bg-white/80 backdrop-blur border border-blue-100/60">
-                <CardBody className="gap-4">
-                  <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900">
-                    Attendee data
-                  </h2>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <Input label="Name" value={attendeeName} onValueChange={setAttendeeName} />
-                    <Input label="Email" value={attendeeEmail} onValueChange={setAttendeeEmail} />
-                    <Input label="Event" value={attendeeEvent} onValueChange={setAttendeeEvent} />
-                    <Input label="Ticket type" value={attendeeTicket} onValueChange={setAttendeeTicket} />
-                  </div>
-                  <Button
-                    className="bg-blue-600 text-white w-fit"
-                    onPress={() => {
-                      if (!attendeeName || !attendeeEmail) return;
-                      setState((prev) => ({
-                        ...prev,
-                        attendees: [
-                          {
-                            id: makeId(),
-                            name: attendeeName,
-                            email: attendeeEmail,
-                            event: attendeeEvent,
-                            ticket: attendeeTicket,
-                          },
-                          ...prev.attendees,
-                        ],
-                      }));
-                      setAttendeeName("");
-                      setAttendeeEmail("");
-                    }}
-                    isDisabled={!attendeeName || !attendeeEmail}
-                  >
-                    add attendee
-                  </Button>
-
-                  <div className="overflow-x-auto">
-                    <Table aria-label="Attendee list" className="bg-white/90 min-w-[520px]">
-                      <TableHeader>
-                        <TableColumn>Name</TableColumn>
-                        <TableColumn>Email</TableColumn>
-                        <TableColumn>Event</TableColumn>
-                        <TableColumn>Ticket</TableColumn>
-                      </TableHeader>
-                      <TableBody emptyContent="no attendees yet">
-                        {state.attendees.map((attendee) => (
-                          <TableRow key={attendee.id}>
-                            <TableCell>{attendee.name}</TableCell>
-                            <TableCell>{attendee.email}</TableCell>
-                            <TableCell>{attendee.event}</TableCell>
-                            <TableCell>{attendee.ticket}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardBody>
-              </Card>
-            )}
-
-            {activeTab === "tickets" && (
-              <div className="grid gap-6 lg:grid-cols-2">
-                <Card className="bg-white/80 backdrop-blur border border-blue-100/60">
-                  <CardBody className="gap-4">
-                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900">
-                      Ticket setup
-                    </h2>
-                    <div className="grid gap-3">
-                      <Input label="Ticket name" value={ticketName} onValueChange={setTicketName} />
-                      <Input label="Price" value={ticketPrice} onValueChange={setTicketPrice} />
-                      <Input label="Purchase link" value={ticketLink} onValueChange={setTicketLink} />
-                      <Button
-                        className="bg-blue-600 text-white w-fit"
-                        onPress={() => {
-                          if (!ticketName || !ticketPrice) return;
-                          setState((prev) => ({
-                            ...prev,
-                            tickets: [
-                              { id: makeId(), name: ticketName, price: ticketPrice, link: ticketLink },
-                              ...prev.tickets,
-                            ],
-                          }));
-                          setTicketName("");
-                          setTicketPrice("");
-                          setTicketLink("");
-                        }}
-                        isDisabled={!ticketName || !ticketPrice}
-                      >
-                        add ticket
-                      </Button>
-                    </div>
-                    <div className="grid gap-3">
-                      {state.tickets.map((ticket) => (
-                        <Card key={ticket.id} className="bg-white/90">
-                          <CardBody className="gap-2">
-                            <p className="font-semibold text-slate-900">{ticket.name}</p>
-                            <p className="text-sm text-slate-600">{ticket.price}</p>
-                            {ticket.link ? (
-                              <p className="text-xs text-slate-500">{ticket.link}</p>
-                            ) : null}
-                          </CardBody>
-                        </Card>
-                      ))}
-                    </div>
-                  </CardBody>
-                </Card>
-
-                <Card className="bg-white/80 backdrop-blur border border-violet-100/60">
-                  <CardBody className="gap-4">
-                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-xl font-semibold text-slate-900">
-                      Free pass control
-                    </h2>
-                    <div className="grid gap-3">
-                      <Input label="Pass limit" value={passLimitInput} onValueChange={setPassLimitInput} />
-                      <Button
-                        className="bg-violet-600 text-white w-fit"
-                        onPress={() => {
-                          const next = Number(passLimitInput || 0);
-                          if (!Number.isFinite(next) || next <= 0) return;
-                          setState((prev) => ({ ...prev, passLimit: next }));
-                        }}
-                        isDisabled={!passLimitInput}
-                      >
-                        set limit
-                      </Button>
-                      <Chip className="bg-slate-900 text-white w-fit">{passUsage} used</Chip>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                      <Table aria-label="Pass reservations" className="bg-white/90 min-w-[520px]">
-                        <TableHeader>
-                          <TableColumn>Name</TableColumn>
-                          <TableColumn>Email</TableColumn>
-                          <TableColumn>Phone</TableColumn>
-                          <TableColumn>Event</TableColumn>
-                        </TableHeader>
-                        <TableBody emptyContent="no passes yet">
-                          {state.passes.map((pass) => (
-                            <TableRow key={pass.id}>
-                              <TableCell>{pass.name}</TableCell>
-                              <TableCell>{pass.email}</TableCell>
-                              <TableCell>{pass.phone}</TableCell>
-                              <TableCell>{pass.event}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            )}
-
-            {activeTab === "analytics" && (
-              <>
-                <div className="grid gap-6 lg:grid-cols-4">
-                  <Card className="bg-white/80 backdrop-blur border border-blue-100/60">
-                    <CardBody className="gap-2">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Passes</p>
-                      <p className="text-3xl font-semibold text-slate-900">{passUsage}</p>
-                      <p className="text-sm text-slate-600">{passPercent}% used</p>
-                    </CardBody>
-                  </Card>
-                  <Card className="bg-white/80 backdrop-blur border border-violet-100/60">
-                    <CardBody className="gap-2">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Attendees</p>
-                      <p className="text-3xl font-semibold text-slate-900">{state.attendees.length}</p>
-                      <p className="text-sm text-slate-600">total recorded</p>
-                    </CardBody>
-                  </Card>
-                  <Card className="bg-white/80 backdrop-blur border border-blue-100/60">
-                    <CardBody className="gap-2">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Tickets</p>
-                      <p className="text-3xl font-semibold text-slate-900">{state.tickets.length}</p>
-                      <p className="text-sm text-slate-600">active ticket types</p>
-                    </CardBody>
-                  </Card>
-                  <Card className="bg-white/80 backdrop-blur border border-violet-100/60">
-                    <CardBody className="gap-2">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Visitors</p>
-                      <p className="text-3xl font-semibold text-slate-900">{visitorCount}</p>
-                      <p className="text-sm text-slate-600">site views</p>
-                    </CardBody>
-                  </Card>
-                </div>
-
-                <div className="mt-6 grid gap-6 lg:grid-cols-2">
-                  <Card className="bg-white/80 backdrop-blur border border-violet-100/60">
-                    <CardBody className="gap-3">
-                      <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-slate-900">
-                        Media library
-                      </h3>
-                      <div className="grid gap-2">
-                        <div className="flex items-center justify-between text-sm text-slate-700">
-                          <span>videos</span>
-                          <span className="font-semibold">{state.videos.length}</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm text-slate-700">
-                          <span>photos</span>
-                          <span className="font-semibold">{state.photos.length}</span>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-
-                  <Card className="bg-white/80 backdrop-blur border border-blue-100/60">
-                    <CardBody className="gap-3">
-                      <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-slate-900">
-                        Most active events
-                      </h3>
-                      {eventCounts.length === 0 ? (
-                        <p className="text-sm text-slate-600">no activity yet</p>
-                      ) : (
-                        <div className="grid gap-2">
-                          {eventCounts.slice(0, 4).map(([event, count]) => (
-                            <div key={event} className="flex items-center justify-between text-sm text-slate-700">
-                              <span>{event}</span>
-                              <span className="font-semibold">{count}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardBody>
-                  </Card>
-                </div>
-              </>
-            )}
-          </main>
-        </>
+          <div className="mt-6 flex flex-wrap items-center gap-2">
+            <Chip className="bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">local only</Chip>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              this editor saves to your browser on this machine. it is not a full cms yet.
+            </p>
+          </div>
+        </main>
       )}
     </div>
   );
 }
-
-

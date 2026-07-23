@@ -53,6 +53,8 @@ next-env.d.ts
 
 # local agent temp
 .npm-cache/
+.tmp/
+.tmp-*
 .tmp-*/
 .dev.log
 .tmp-*.log

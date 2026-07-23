@@ -230,12 +230,12 @@ export function EventDetailClient({
           {isVenusSoldOutMoment ? (
             <div className="rounded-2xl border border-cyan-200/80 bg-cyan-100/75 p-4 backdrop-blur-lg dark:border-cyan-700/55 dark:bg-cyan-950/35">
               <div className="flex flex-wrap items-center gap-2">
-                <Chip className="bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">450+ gone</Chip>
+                <Chip className="bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">free passes gone &lt;24 hrs</Chip>
                 <Chip className="bg-cyan-500 text-white">late-entry live</Chip>
               </div>
               <p className="mt-3 text-2xl font-bold text-slate-900 dark:text-slate-100">late-entry tickets live</p>
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                450+ tickets are already gone. join the community for event-day updates.
+                free passes sold out in under 24 hours after the host push. join the community for event-day updates.
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 <Button

@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 
 const title = "Services | Zyra Growth Studio";
 const description =
-  "seo, content, influencer, and founder website systems from zyra growth studio for brands that need visible momentum.";
+  "choose the support your growing brand needs next: search visibility, sharper content, creator campaigns, or a better-converting website.";
 const url = `${SITE_URL}/services`;
 
 export const metadata: Metadata = {

@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 
 const title = "SEO Growth System | Zyra Growth Studio";
 const description =
-  "technical seo, intent mapping, and conversion-focused pages from zyra growth studio to turn search traffic into qualified pipeline.";
+  "technical SEO, intent mapping, and conversion-focused pages that help the right people find your brand and take action.";
 const url = `${SITE_URL}/services/seo`;
 
 export const metadata: Metadata = {

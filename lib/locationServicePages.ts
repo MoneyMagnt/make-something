@@ -55,7 +55,7 @@ export const LOCATION_SERVICE_PAGES: LocationServicePage[] = [
     slug: "seo-agency-accra",
     pageTitle: "seo agency in accra",
     metaDescription:
-      "seo support for accra brands that want more qualified search traffic, stronger visibility, and measurable pipeline growth.",
+      "seo support for accra brands that want more qualified search traffic, stronger visibility, and measurable business growth.",
     headline: "seo agency in accra",
     subheading:
       "zyra helps accra-based teams win more demand from search with technical cleanup, content planning, and conversion-first pages.",
@@ -194,7 +194,7 @@ export const LOCATION_SERVICE_PAGES: LocationServicePage[] = [
       "creator campaign support for accra brands that want stronger reach, better brand fit, and trackable business results.",
     headline: "influencer marketing in accra",
     subheading:
-      "zyra helps accra teams plan and execute creator campaigns that convert attention into pipeline and sales.",
+      "zyra helps accra teams plan and execute creator campaigns that convert attention into inquiries and sales.",
     serviceType: "Influencer Marketing",
     areaServed: "Accra, Ghana",
     benefits: [
