@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, Chip, Link } from "@heroui/react";
+import { Accordion, AccordionItem, Button, Chip, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import NextImage from "next/image";
+import { WE_OUTSIDE_FAQS } from "@/lib/weOutsideSeo";
 
 const CREATIVE_ROLES = [
   {
@@ -124,9 +125,10 @@ export function WeOutsideCampaignSection({
                 </span>
               </h1>
               <p className="mt-6 max-w-[38rem] text-base font-medium leading-7 text-white/88 sm:text-lg">
-                We Outside returns this year, bigger, bolder, and more immersive.
-                We&apos;re building a beachfront festival where people, culture,
-                music, and community meet.
+                We Outside Ghana returns as an Accra beach festival, bigger,
+                bolder, and more immersive. Built by Zyra and +233events, the
+                beachfront experience brings music, culture, creators, and
+                community together.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -203,8 +205,9 @@ export function WeOutsideCampaignSection({
                 Help us build what happens beyond the shore.
               </h2>
               <p className="mt-5 max-w-[40rem] text-base leading-7 text-white/78 sm:text-lg">
-                We&apos;re opening the team to people who can shape the sound,
-                story, look, and energy of the next We Outside experience.
+                Applications are open for DJs, MCs, influencers, videographers,
+                content creators, designers, models, and festival volunteers who
+                can shape the next We Outside experience in Accra.
               </p>
 
               <div className="mt-7 grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -265,6 +268,48 @@ export function WeOutsideCampaignSection({
               </p>
             </motion.div>
           </div>
+
+          <div className="my-12 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent sm:my-16" />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.18 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="mx-auto max-w-4xl"
+          >
+            <div className="mb-6 text-center">
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">
+                plan your next move
+              </p>
+              <h2 className="mt-3 font-[family-name:var(--font-bricolage)] text-4xl font-black tracking-[-0.05em] text-white sm:text-5xl">
+                What to know before we go outside.
+              </h2>
+            </div>
+
+            <Accordion
+              selectionMode="multiple"
+              variant="splitted"
+              itemClasses={{
+                base: "border border-white/18 bg-white/10 px-2 shadow-[0_16px_38px_rgba(10,2,38,0.24)] backdrop-blur-md",
+                title:
+                  "font-[family-name:var(--font-bricolage)] text-base font-black text-white sm:text-lg",
+                trigger: "py-4 data-[hover=true]:bg-white/5",
+                indicator: "text-yellow-300",
+                content: "pb-5 text-sm leading-6 text-white/76 sm:text-base",
+              }}
+            >
+              {WE_OUTSIDE_FAQS.map((item) => (
+                <AccordionItem
+                  key={item.question}
+                  aria-label={item.question}
+                  title={item.question}
+                >
+                  {item.answer}
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </motion.div>
         </div>
       </div>
     </section>

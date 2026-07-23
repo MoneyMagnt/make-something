@@ -5,6 +5,7 @@ import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUpdatedAt = new Date("2026-03-23T00:00:00.000Z");
+  const weOutsideUpdatedAt = new Date("2026-07-23T00:00:00.000Z");
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
@@ -62,7 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${SITE_URL}/events`,
-      lastModified: siteUpdatedAt,
+      lastModified: weOutsideUpdatedAt,
       changeFrequency: "daily",
       priority: 0.9,
     },
@@ -70,7 +71,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const eventRoutes: MetadataRoute.Sitemap = EVENTS.map((event) => ({
     url: `${SITE_URL}/events/${event.slug}`,
-    lastModified: siteUpdatedAt,
+    lastModified:
+      event.slug === "we-outside" ? weOutsideUpdatedAt : siteUpdatedAt,
     changeFrequency: "daily",
     priority: 0.85,
   }));

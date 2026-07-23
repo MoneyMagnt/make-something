@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { WE_OUTSIDE_SOCIAL_IMAGE_PATH } from "@/lib/weOutsideSeo";
 
-const title = "Events | Zyra Growth Studio";
+const title = "Accra Events | Zyra Growth Studio";
 const description =
-  "Explore upcoming nightlife events in Accra from Zyra, including lineup, venue details, and ticket updates for current and upcoming drops.";
+  "Explore upcoming Zyra experiences in Accra, including We Outside Ghana, event announcements, access updates, and creative team opportunities.";
 const url = `${SITE_URL}/events`;
-const socialTitle = "VENUS | tap to reveal the wildcard mc";
+const socialTitle = "We Outside Ghana is back";
 const socialDescription =
-  "the wildcard mc is in. open the venus page to reveal the face, catch the live experience, and lock late-entry for 27 march.";
-const image = `${SITE_URL}/wildcard.jpg?v=20260325a`;
+  "An Accra beach festival bringing music, culture, creators, and community together. Get first access to the next drop.";
+const image = `${SITE_URL}${WE_OUTSIDE_SOCIAL_IMAGE_PATH}`;
 
 export const metadata: Metadata = {
   title: {
@@ -24,10 +25,13 @@ export const metadata: Metadata = {
     title: socialTitle,
     description: socialDescription,
     url,
+    locale: "en_GH",
     images: [
       {
         url: image,
-        alt: "venus wildcard mc teaser",
+        width: 1080,
+        height: 1536,
+        alt: "We Outside Ghana returns this year",
       },
     ],
   },

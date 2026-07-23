@@ -2,6 +2,7 @@
 
 import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
 import { useCallback, useMemo } from "react";
+import { WeOutsideCampaignSection } from "@/components/WeOutsideCampaignSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
 import {
@@ -18,6 +19,9 @@ type EventDetailClientProps = {
 };
 
 const TRACK_DEBUG_STORAGE_KEY = "zyra_event_track_debug_v1";
+const WE_OUTSIDE_FIRST_ACCESS_URL = `https://wa.me/233556877954?text=${encodeURIComponent(
+  "hi zyra, i want first access to the next we outside drop."
+)}`;
 
 const getOrCreateTrackingSessionId = () => {
   if (typeof window === "undefined") {
@@ -146,6 +150,45 @@ export function EventDetailClient({
             detail: "ticket link is still cooking, but reservations are open",
             external: false,
           };
+
+  if (event.name === "We Outside") {
+    return (
+      <div
+        className="relative min-h-screen overflow-x-clip text-slate-900 dark:text-slate-100"
+        style={{
+          background:
+            "radial-gradient(1180px 700px at 8% -12%, rgba(255,122,24,0.48), transparent 62%), radial-gradient(980px 620px at 92% -4%, rgba(236,72,153,0.38), transparent 62%), radial-gradient(1080px 680px at 50% 108%, rgba(109,40,217,0.3), transparent 68%), linear-gradient(180deg, #fff6e7 0%, #ffe7dc 48%, #eadfff 100%)",
+        }}
+      >
+        <ZyraSiteNav
+          active="events"
+          navbarClassName="border-b border-amber-200/70 bg-gradient-to-r from-orange-400/92 via-pink-500/86 to-violet-700/90 backdrop-blur-lg"
+          brand={<EventsBrandMark />}
+        />
+
+        <main
+          id="main-content"
+          className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10"
+        >
+          <div className="mb-4 flex justify-start">
+            <Button
+              as={Link}
+              href="/events"
+              className="border border-orange-200/80 bg-white/85 px-5 font-bold text-violet-950 shadow-[0_10px_26px_rgba(72,20,126,0.14)]"
+            >
+              all events
+            </Button>
+          </div>
+          <WeOutsideCampaignSection
+            firstAccessUrl={WE_OUTSIDE_FIRST_ACCESS_URL}
+            onFirstAccess={() => {
+              trackFeature("ticket_click");
+            }}
+          />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
