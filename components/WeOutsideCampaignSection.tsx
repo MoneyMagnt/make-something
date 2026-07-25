@@ -74,7 +74,11 @@ export function WeOutsideCampaignSection({
   return (
     <section
       id="event-actions"
-      className={fullBleed ? "scroll-mt-24" : "mb-8 scroll-mt-24"}
+      className={
+        fullBleed
+          ? "relative left-1/2 w-[100dvw] -translate-x-1/2 scroll-mt-24"
+          : "mb-8 scroll-mt-24"
+      }
     >
       <div
         className={

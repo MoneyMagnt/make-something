@@ -461,13 +461,19 @@ export function EventsPageClient() {
         brand={<EventsBrandMark />}
       />
 
-      <main id="main-content" className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
+      <main
+        id="main-content"
+        className={`relative z-10 mx-auto max-w-6xl px-4 pb-20 sm:px-6 ${
+          isWeOutsideEvent ? "pt-0" : "pt-8 sm:pt-10"
+        }`}
+      >
         {isWeOutsideEvent ? (
           <WeOutsideCampaignSection
             firstAccessUrl={nextDropWhatsAppUrl}
             onFirstAccess={() => {
               trackFeature("ticket_click", activeMeta.name);
             }}
+            fullBleed
           />
         ) : null}
 
