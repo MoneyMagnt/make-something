@@ -63,15 +63,26 @@ const buildRoleWhatsAppUrl = (message: string) =>
 type WeOutsideCampaignSectionProps = {
   firstAccessUrl: string;
   onFirstAccess: () => void;
+  fullBleed?: boolean;
 };
 
 export function WeOutsideCampaignSection({
   firstAccessUrl,
   onFirstAccess,
+  fullBleed = false,
 }: WeOutsideCampaignSectionProps) {
   return (
-    <section id="event-actions" className="mb-8 scroll-mt-24">
-      <div className="relative isolate overflow-hidden rounded-[2rem] border border-orange-300/70 bg-[#2d0871] text-white shadow-[0_34px_90px_rgba(72,20,126,0.38)] sm:rounded-[2.5rem]">
+    <section
+      id="event-actions"
+      className={fullBleed ? "scroll-mt-24" : "mb-8 scroll-mt-24"}
+    >
+      <div
+        className={
+          fullBleed
+            ? "relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden bg-[#2d0871] text-white"
+            : "relative isolate overflow-hidden rounded-[2rem] border border-orange-300/70 bg-[#2d0871] text-white shadow-[0_34px_90px_rgba(72,20,126,0.38)] sm:rounded-[2.5rem]"
+        }
+      >
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-[48rem] opacity-95"
@@ -87,7 +98,13 @@ export function WeOutsideCampaignSection({
         <div aria-hidden="true" className="absolute -left-20 top-[27rem] h-56 w-56 rounded-full border-[2.2rem] border-white/16 bg-red-500/40 shadow-[inset_0_0_0_1.2rem_rgba(255,255,255,0.12)]" />
         <div aria-hidden="true" className="absolute -right-28 top-[43rem] h-72 w-72 rounded-full border-[2.7rem] border-white/15 bg-cyan-400/35 shadow-[inset_0_0_0_1.5rem_rgba(255,255,255,0.1)]" />
 
-        <div className="relative z-10 p-5 sm:p-8 lg:p-12">
+        <div
+          className={
+            fullBleed
+              ? "relative z-10 mx-auto w-full max-w-[96rem] px-5 py-8 sm:px-8 sm:py-12 lg:px-16 lg:py-16 xl:px-20"
+              : "relative z-10 p-5 sm:p-8 lg:p-12"
+          }
+        >
           <div className="mb-7 flex flex-wrap items-center justify-between gap-3">
             <Chip className="border border-yellow-200/80 bg-yellow-300 px-2 font-bold uppercase tracking-[0.18em] text-violet-950 shadow-[0_10px_24px_rgba(72,20,126,0.2)]">
               beyond the shore

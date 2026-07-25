@@ -153,37 +153,20 @@ export function EventDetailClient({
 
   if (event.name === "We Outside") {
     return (
-      <div
-        className="relative min-h-screen overflow-x-clip text-slate-900 dark:text-slate-100"
-        style={{
-          background:
-            "radial-gradient(1180px 700px at 8% -12%, rgba(255,122,24,0.48), transparent 62%), radial-gradient(980px 620px at 92% -4%, rgba(236,72,153,0.38), transparent 62%), radial-gradient(1080px 680px at 50% 108%, rgba(109,40,217,0.3), transparent 68%), linear-gradient(180deg, #fff6e7 0%, #ffe7dc 48%, #eadfff 100%)",
-        }}
-      >
+      <div className="relative min-h-screen overflow-x-clip bg-[#2d0871] text-slate-100">
         <ZyraSiteNav
           active="events"
-          navbarClassName="border-b border-amber-200/70 bg-gradient-to-r from-orange-400/92 via-pink-500/86 to-violet-700/90 backdrop-blur-lg"
+          navbarClassName="bg-gradient-to-r from-orange-400/92 via-pink-500/86 to-violet-700/90 backdrop-blur-lg"
           brand={<EventsBrandMark />}
         />
 
-        <main
-          id="main-content"
-          className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10"
-        >
-          <div className="mb-4 flex justify-start">
-            <Button
-              as={Link}
-              href="/events"
-              className="border border-orange-200/80 bg-white/85 px-5 font-bold text-violet-950 shadow-[0_10px_26px_rgba(72,20,126,0.14)]"
-            >
-              all events
-            </Button>
-          </div>
+        <main id="main-content" className="relative z-10 w-full">
           <WeOutsideCampaignSection
             firstAccessUrl={WE_OUTSIDE_FIRST_ACCESS_URL}
             onFirstAccess={() => {
               trackFeature("ticket_click");
             }}
+            fullBleed
           />
         </main>
       </div>
