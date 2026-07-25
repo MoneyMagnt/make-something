@@ -6,6 +6,7 @@ import { useThemeMode } from "@/components/ThemeModeProvider";
 import { EventLineupSection } from "@/components/EventLineupSection";
 import { EventWildcardReveal } from "@/components/EventWildcardReveal";
 import { WeOutsideCampaignSection } from "@/components/WeOutsideCampaignSection";
+import { WeOutsideNextEventSection } from "@/components/WeOutsideNextEventSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
 import { EventCountdownChip } from "@/components/EventCountdownChip";
@@ -463,8 +464,8 @@ export function EventsPageClient() {
 
       <main
         id="main-content"
-        className={`relative z-10 mx-auto max-w-6xl px-4 pb-20 sm:px-6 ${
-          isWeOutsideEvent ? "pt-0" : "pt-8 sm:pt-10"
+        className={`relative z-10 mx-auto max-w-6xl px-4 sm:px-6 ${
+          isWeOutsideEvent ? "pb-0 pt-0" : "pb-20 pt-8 sm:pt-10"
         }`}
       >
         {isWeOutsideEvent ? (
@@ -767,60 +768,69 @@ export function EventsPageClient() {
           </section>
         ) : null}
 
-        <section className="mb-10">
-          <Card className="border border-slate-200/80 bg-white/78 shadow-[0_18px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
-            <CardBody className="gap-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-                    more from zyra
-                  </p>
-                  <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
-                    other events
-                  </h2>
+        {isWeOutsideEvent ? (
+          <WeOutsideNextEventSection
+            onOpenVenus={() => {
+              trackFeature("event_switch", "VENUS");
+              setActiveEvent("VENUS");
+            }}
+          />
+        ) : (
+          <section className="mb-10">
+            <Card className="border border-slate-200/80 bg-white/78 shadow-[0_18px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
+              <CardBody className="gap-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                      more from zyra
+                    </p>
+                    <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+                      other events
+                    </h2>
+                  </div>
+                  <div className="rounded-full border border-slate-200/90 bg-white/90 px-3 py-1.5 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-slate-700/55 dark:bg-slate-900/70">
+                    <EventsBrandMark size="compact" />
+                  </div>
                 </div>
-                <div className="rounded-full border border-slate-200/90 bg-white/90 px-3 py-1.5 shadow-[0_12px_28px_rgba(15,23,42,0.08)] dark:border-slate-700/55 dark:bg-slate-900/70">
-                  <EventsBrandMark size="compact" />
+
+                <div className="grid gap-3 lg:grid-cols-2">
+                  {EVENTS.map((event) => {
+                    const selected = event.name === activeEvent
+
+                    return (
+                      <Button
+                        key={event.slug}
+                        className={`h-auto justify-between border px-4 py-4 ${
+                          selected
+                            ? "border-cyan-300/90 bg-[linear-gradient(135deg,rgba(236,254,255,0.98),rgba(224,242,254,0.98))] text-slate-950 shadow-[0_16px_34px_rgba(8,145,178,0.14)] dark:border-cyan-400/60 dark:bg-[linear-gradient(135deg,rgba(8,47,73,0.98),rgba(49,46,129,0.96))] dark:text-white dark:shadow-[0_18px_42px_rgba(8,145,178,0.26)]"
+                            : "border-slate-300/85 bg-white/92 text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.07)] hover:border-cyan-300/70 hover:bg-white dark:border-slate-700/55 dark:bg-slate-950/66 dark:text-slate-200"
+                        }`}
+                        onPress={() => {
+                          if (event.name !== activeEvent) {
+                            trackFeature("event_switch", event.name)
+                          }
+                          setActiveEvent(event.name)
+                        }}
+                      >
+                        <div className="flex flex-col items-start gap-1 text-left">
+                          <EventBrandName event={event} selected={selected} />
+                          <p className={`text-xs ${selected ? "text-slate-600 dark:text-slate-200/88" : "text-slate-600 dark:text-slate-400"}`}>
+                            {event.name === "We Outside"
+                              ? "coming soon"
+                              : "update soon"}
+                          </p>
+                        </div>
+                        <span className={`text-xs uppercase tracking-[0.14em] ${selected ? "text-cyan-700 dark:text-cyan-200" : "text-slate-500 dark:text-slate-400"}`}>
+                          {selected ? "selected" : "view"}
+                        </span>
+                      </Button>
+                    )
+                  })}
                 </div>
-              </div>
-
-              <div className="grid gap-3 lg:grid-cols-2">
-                {EVENTS.map((event) => {
-                  const selected = event.name === activeEvent
-
-                  return (
-                    <Button
-                      key={event.slug}
-                      className={`h-auto justify-between border px-4 py-4 ${
-                        selected
-                          ? "border-cyan-300/90 bg-[linear-gradient(135deg,rgba(236,254,255,0.98),rgba(224,242,254,0.98))] text-slate-950 shadow-[0_16px_34px_rgba(8,145,178,0.14)] dark:border-cyan-400/60 dark:bg-[linear-gradient(135deg,rgba(8,47,73,0.98),rgba(49,46,129,0.96))] dark:text-white dark:shadow-[0_18px_42px_rgba(8,145,178,0.26)]"
-                          : "border-slate-300/85 bg-white/92 text-slate-900 shadow-[0_10px_24px_rgba(15,23,42,0.07)] hover:border-cyan-300/70 hover:bg-white dark:border-slate-700/55 dark:bg-slate-950/66 dark:text-slate-200"
-                      }`}
-                      onPress={() => {
-                        if (event.name !== activeEvent) {
-                          trackFeature("event_switch", event.name)
-                        }
-                        setActiveEvent(event.name)
-                      }}
-                    >
-                      <div className="flex flex-col items-start gap-1 text-left">
-                        <EventBrandName event={event} selected={selected} />
-                        <p className={`text-xs ${selected ? "text-slate-600 dark:text-slate-200/88" : "text-slate-600 dark:text-slate-400"}`}>
-                          {event.name === "We Outside"
-                            ? "coming soon"
-                            : "update soon"}
-                        </p>
-                      </div>
-                      <span className={`text-xs uppercase tracking-[0.14em] ${selected ? "text-cyan-700 dark:text-cyan-200" : "text-slate-500 dark:text-slate-400"}`}>
-                        {selected ? "selected" : "view"}
-                      </span>
-                    </Button>
-                  )
-                })}
-              </div>
-            </CardBody>
-          </Card>
-        </section>
+              </CardBody>
+            </Card>
+          </section>
+        )}
       </main>
     </div>
   );
