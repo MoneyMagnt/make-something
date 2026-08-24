@@ -118,6 +118,8 @@ export const EVENTS: EventMeta[] = [
       {
         role: "mc",
         name: "Viperlino",
+        image: "/lineup/viperlino.jpg",
+        socialUrl: "https://www.tiktok.com/@viperlinogh",
       },
       {
         role: "mc",
