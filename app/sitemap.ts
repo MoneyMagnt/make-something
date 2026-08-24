@@ -68,6 +68,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    {
+      url: `${SITE_URL}/venus`,
+      lastModified: venusUpdatedAt,
+      changeFrequency: "daily",
+      priority: 0.95,
+    },
   ];
 
   const eventRoutes: MetadataRoute.Sitemap = EVENTS.map((event) => ({

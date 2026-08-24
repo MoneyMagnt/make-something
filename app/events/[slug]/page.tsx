@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     : isVenus
       ? "VENUS lands at Jet BBL Ack Lounge, Ashaley Botwe, on 11 September 2026 at 9pm. Get your tickets on Egotickets and meet us at 3rd Gate."
       : `${event.description} venue: ${event.venue}, ${event.city}.`;
-  const url = `${SITE_URL}/events/${event.slug}`;
+  const url = isVenus ? `${SITE_URL}/venus` : `${SITE_URL}/events/${event.slug}`;
   const socialTitle = isVenus
     ? "VENUS | 11 September 2026 in Accra"
     : title;
@@ -106,9 +106,9 @@ export default async function EventDetailPage({ params }: EventPageProps) {
     notFound();
   }
 
-  const pageUrl = `${SITE_URL}/events/${event.slug}`;
   const isWeOutside = event.slug === "we-outside";
   const isVenus = event.slug === "venus";
+  const pageUrl = isVenus ? `${SITE_URL}/venus` : `${SITE_URL}/events/${event.slug}`;
   const eventSchema =
     event.startDateIso
       ? {
