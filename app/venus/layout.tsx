@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 const VENUS_URL = `${SITE_URL}/venus`;
-const VENUS_IMAGE = `${SITE_URL}/venus/opengraph-image`;
+const VENUS_IMAGE = `${SITE_URL}/events/venus/venus-flyer.jpg`;
 const VENUS_TITLE = "VENUS | +233Events Opens Jet BBlack Lounge";
 const VENUS_DESCRIPTION =
   "Accra, meet VENUS. +233Events officially opens Jet BBlack Lounge with an unforgettable celebration of a major milestone. Get your tickets now and be part of the beginning.";
@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: VENUS_IMAGE,
-        width: 1200,
-        height: 630,
-        alt: "+233Events opens Jet BBlack Lounge with VENUS",
+        width: 1600,
+        height: 2844,
+        alt: "Updated VENUS flyer for +233Events at Jet BBlack Lounge",
       },
     ],
   },
