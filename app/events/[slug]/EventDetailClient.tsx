@@ -2,6 +2,7 @@
 
 import { Button, Card, CardBody, Chip, Image, Link } from "@heroui/react";
 import { useCallback, useMemo } from "react";
+import { VenusCampaignSection } from "@/components/VenusCampaignSection";
 import { WeOutsideCampaignSection } from "@/components/WeOutsideCampaignSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
@@ -167,6 +168,26 @@ export function EventDetailClient({
               trackFeature("ticket_click");
             }}
             fullBleed
+          />
+        </main>
+      </div>
+    );
+  }
+
+  if (event.name === "VENUS") {
+    return (
+      <div className="relative min-h-screen overflow-x-clip bg-[#f5fa78] text-[#123b55]">
+        <ZyraSiteNav
+          active="events"
+          navbarClassName="border-b border-[#123b55]/15 bg-gradient-to-r from-[#f5fa78]/96 via-[#8ee4df]/94 to-[#f50096]/88 backdrop-blur-lg"
+          brand={<EventsBrandMark />}
+        />
+        <main id="main-content" className="relative z-10 w-full">
+          <VenusCampaignSection
+            fullBleed
+            onPassClick={() => {
+              trackFeature("ticket_click");
+            }}
           />
         </main>
       </div>

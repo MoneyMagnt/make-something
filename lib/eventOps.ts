@@ -23,7 +23,7 @@ export type EventPublicSnapshot = {
 
 export const EVENT_CONTROL_DEFAULTS: Record<EventName, EventControl> = {
   VENUS: {
-    passesEnabled: false,
+    passesEnabled: true,
     passLimit: 200,
     liveTicketCount: 1,
   },

@@ -39,24 +39,24 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
   const title = isWeOutside
     ? WE_OUTSIDE_SEO_TITLE
     : isVenus
-      ? "Venus at Glass Lounge, Accra | 27 March 2026 | Late-entry live"
+      ? "VENUS Accra | 11 September 2026 at Jet BBL Ack Lounge"
       : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
   const description = isWeOutside
     ? WE_OUTSIDE_SEO_DESCRIPTION
     : isVenus
-      ? "Accra nightlife event by Zyra at Glass Lounge on 27 March 2026. Free passes sold out in under 24 hours after the host push, with late-entry carrying the final run."
+      ? "VENUS lands at Jet BBL Ack Lounge, Ashaley Botwe, on 11 September 2026 at 9pm. Get your tickets on Egotickets and meet us at 3rd Gate."
       : `${event.description} venue: ${event.venue}, ${event.city}.`;
   const url = `${SITE_URL}/events/${event.slug}`;
   const socialTitle = isVenus
-    ? "VENUS | tap to reveal the wildcard mc"
+    ? "VENUS | 11 September 2026 in Accra"
     : title;
   const socialDescription = isVenus
-    ? "the wildcard mc is in. reveal the face, catch the live experience, and lock late-entry for venus at glass lounge."
+    ? "A bright new night at Jet BBL Ack Lounge, Ashaley Botwe. 9pm sharp. Get your VENUS tickets on Egotickets."
     : description;
   const imagePath = isWeOutside
     ? WE_OUTSIDE_SOCIAL_IMAGE_PATH
     : isVenus
-      ? "/wildcard.jpg?v=20260325a"
+      ? "/events/venus/venus-flyer.jpg"
       : "/og.jpg?v=20260323a";
 
   return {
@@ -81,8 +81,8 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
       images: [
         {
           url: `${SITE_URL}${imagePath}`,
-          width: isWeOutside ? 1080 : 1200,
-          height: isWeOutside ? 1536 : 630,
+          width: isWeOutside ? 1080 : isVenus ? 1600 : 1200,
+          height: isWeOutside ? 1536 : isVenus ? 2844 : 630,
           alt: isWeOutside
             ? "We Outside Ghana returns this year"
             : `${event.name} by Zyra`,
@@ -108,6 +108,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
   const pageUrl = `${SITE_URL}/events/${event.slug}`;
   const isWeOutside = event.slug === "we-outside";
+  const isVenus = event.slug === "venus";
   const eventSchema =
     event.startDateIso
       ? {
@@ -133,14 +134,21 @@ export default async function EventDetailPage({ params }: EventPageProps) {
             name: SITE_NAME,
             url: SITE_URL,
           },
-          offers: DEFAULT_EVENT_TICKETS[event.name].map((ticket) => ({
-            "@type": "Offer",
-            priceCurrency: "GHS",
-            price: ticket.price.replace("GHS ", ""),
-            availability: "https://schema.org/InStock",
-            url: `${SITE_URL}/events/${event.slug}`,
-            name: ticket.name,
-          })),
+          offers: isVenus
+            ? {
+                "@type": "Offer",
+                availability: "https://schema.org/InStock",
+                url: "https://egotickets.com/events/venus-the-beginning/register",
+                name: "Get VENUS tickets on Egotickets",
+              }
+            : DEFAULT_EVENT_TICKETS[event.name].map((ticket) => ({
+                "@type": "Offer",
+                priceCurrency: "GHS",
+                price: ticket.price.replace("GHS ", ""),
+                availability: "https://schema.org/InStock",
+                url: pageUrl,
+                name: ticket.name,
+              })),
         }
       : null;
   const weOutsideSchema = isWeOutside
@@ -207,7 +215,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
   return (
     <>
-      {!isWeOutside ? (
+      {!isWeOutside && !isVenus ? (
         <div className="sr-only">
           <h1>{`${event.name} at ${event.venue}, ${event.city} on ${event.dateLabel}`}</h1>
           <p>

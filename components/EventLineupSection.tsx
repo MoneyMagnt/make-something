@@ -9,6 +9,7 @@ type EventLineupSectionProps = {
   members: EventLineupMember[];
   vibeCard?: EventVibeCard;
   sectionClassName?: string;
+  cardClassName?: string;
 };
 
 const getLineupInitials = (name: string) =>
@@ -166,6 +167,7 @@ export function EventLineupSection({
   members,
   vibeCard,
   sectionClassName = "mt-8",
+  cardClassName = "",
 }: EventLineupSectionProps) {
   const railRef = useRef<HTMLDivElement | null>(null);
 
@@ -189,7 +191,7 @@ export function EventLineupSection({
 
   return (
     <section id="lineup-reel" className={sectionClassName}>
-      <Card className="overflow-hidden border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
+      <Card className={`overflow-hidden border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58 ${cardClassName}`}>
         <CardBody className="gap-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>

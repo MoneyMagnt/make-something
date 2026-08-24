@@ -79,26 +79,27 @@ export const EVENTS: EventMeta[] = [
   {
     name: "VENUS",
     slug: "venus",
-    day: "27",
-    month: "MAR",
-    dateLabel: "27 March 2026",
-    timeLabel: "8pm till late",
-    startDateIso: "2026-03-27T20:00:00+00:00",
-    venue: "Glass Lounge",
-    city: "Accra",
+    day: "11",
+    month: "SEP",
+    dateLabel: "11 September 2026",
+    timeLabel: "9pm sharp",
+    startDateIso: "2026-09-11T21:00:00+00:00",
+    venue: "Jet BBL Ack Lounge",
+    city: "Ashaley Botwe, 3rd Gate, Accra",
     logo: "/VENUS_logo.PNG",
-    bannerTone: "from-indigo-500 to-fuchsia-500",
-    auraA: "rgba(99,102,241,0.36)",
-    auraB: "rgba(217,70,239,0.28)",
-    fallbackPrice: "GHS 50",
+    bannerTone: "from-[#f5fa78] to-[#58d2db]",
+    auraA: "rgba(245,250,120,0.58)",
+    auraB: "rgba(245,0,150,0.32)",
+    fallbackPrice: "Get tickets on Egotickets",
+    egoticketsEventUrl:
+      "https://egotickets.com/events/venus-the-beginning/register",
     description:
-      "Signature venus nightlife experience by zyra at Glass Lounge, Accra, on 27 March 2026.",
-    egoticketsEventUrl: "https://egotickets.com/events/venus-the-beginning/register",
+      "VENUS returns to Jet BBL Ack Lounge in Ashaley Botwe, Accra, on 11 September 2026 at 9pm.",
     vibeCard: {
       title: "follow venus updates",
       badgeLabel: "stay connected",
-      summary: "recaps, crowd energy, and updates in one place.",
-      poster: "/lineup/venus%20flyer.jpeg",
+      summary: "passes, lineup updates, and event-night energy in one place.",
+      poster: "/events/venus/venus-flyer.jpg",
       actions: [
         {
           platform: "instagram",
@@ -115,42 +116,23 @@ export const EVENTS: EventMeta[] = [
     },
     lineup: [
       {
-        role: "host",
-        name: "Xeno The Rev",
-        image: "/lineup/xeno-the-rev-20260312.jpeg",
-        socialUrl: "https://snapchat.com/t/yocjSfV6",
+        role: "mc",
+        name: "Viperlino",
       },
       {
         role: "mc",
-        name: "Tim Jeezy",
-        image: "/lineup/tim-jeezy.jpg",
-        socialUrl: "https://snapchat.com/t/Wgi9sqZs",
-      },
-      {
-        role: "mc",
-        name: "Mr Hollywoode",
+        name: "Hollywoode",
         image: "/lineup/mr-hollywoode.jpg",
-        socialUrl:
-          "https://www.tiktok.com/@mc_mrhollywoode/video/7614935145937816853?is_from_webapp=1&sender_device=pc&web_id=7601476827635271186",
       },
       {
         role: "dj",
-        name: "King Switch",
-        image: "/lineup/king-switch.jpg",
-        socialUrl: "https://www.tiktok.com/@kingswitchofficial?_r=1&_t=ZS-94bpnMYHG9F",
+        name: "Debowy",
       },
       {
         role: "dj",
         name: "Tormhe",
         image: "/lineup/tormhe.jpg",
         socialUrl: "https://www.tiktok.com/@iamdjtormhe",
-      },
-      {
-        role: "dj",
-        name: "Hero",
-        image: "/lineup/hero.jpg",
-        socialUrl:
-          "https://www.tiktok.com/@dj_hero_gh/video/7616004376083090710?is_from_webapp=1&sender_device=pc&web_id=7601476827635271186",
       },
     ],
   },
@@ -163,16 +145,16 @@ export const DEFAULT_EVENT_TICKETS: Record<EventName, TicketItem[]> = {
   ],
   VENUS: [
     {
-      id: "venus-standard",
-      name: "late-entry ticket",
-      price: "GHS 50",
+      id: "venus-pass",
+      name: "VENUS tickets",
+      price: "Egotickets",
       link: "https://egotickets.com/events/venus-the-beginning/register",
     },
   ],
 };
 
 export const VENUS_FREE_PASS_LIMIT = 200;
-export const VENUS_POST_PASS_PRICE = "GHS 50";
+export const VENUS_POST_PASS_PRICE = "Egotickets";
 
 export function getEventBySlug(slug: string): EventMeta | undefined {
   return EVENTS.find((event) => event.slug === slug);

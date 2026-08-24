@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useThemeMode } from "@/components/ThemeModeProvider";
 import { EventLineupSection } from "@/components/EventLineupSection";
 import { EventWildcardReveal } from "@/components/EventWildcardReveal";
+import { VenusCampaignSection } from "@/components/VenusCampaignSection";
 import { WeOutsideCampaignSection } from "@/components/WeOutsideCampaignSection";
 import { WeOutsideNextEventSection } from "@/components/WeOutsideNextEventSection";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
@@ -209,11 +210,11 @@ export function EventsPageClient() {
     isClassicEventsView
       ? activeMeta.name === "We Outside"
         ? "the next event is coming soon."
-        : "venus returns soon."
+        : "venus lands at Jet BBL Ack Lounge on 11 September 2026."
       : activeMeta.name === "VENUS"
       ? isVenusSoldOutMoment
-        ? "Venus by zyra at Glass Lounge, Accra. Late entry is open for 27 March 2026."
-        : "Venus by zyra with free pass access before standard entry."
+        ? "Venus by zyra at Jet BBL Ack Lounge, Ashaley Botwe."
+        : "Get your VENUS tickets on Egotickets."
       : activeMeta.description;
   const nextDropWhatsAppUrl = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(
     `hi zyra, i want first access to the next ${activeMeta.name.toLowerCase()} drop.`
@@ -361,10 +362,10 @@ export function EventsPageClient() {
   const navToneClass =
     theme === "dark"
       ? isVenusEvent
-        ? "from-indigo-900/82 via-violet-800/70 to-slate-950/85 border-violet-300/25"
+        ? "from-[#d9ed72]/95 via-[#62d5d8]/92 to-[#f50096]/90 border-[#123b55]/20"
         : "from-orange-950/92 via-fuchsia-950/88 to-violet-950/92 border-orange-300/30"
       : isVenusEvent
-        ? "from-violet-300/80 via-fuchsia-300/68 to-rose-200/55 border-fuchsia-400/55"
+        ? "from-[#f5fa78]/96 via-[#8ee4df]/94 to-[#f50096]/88 border-[#123b55]/15"
         : "from-orange-400/92 via-pink-500/86 to-violet-700/90 border-amber-200/70";
 
   const pageStyle = useMemo(
@@ -372,10 +373,10 @@ export function EventsPageClient() {
       background:
         theme === "dark"
           ? isVenusEvent
-            ? "radial-gradient(1260px 780px at 8% -12%, rgba(129,140,248,0.34), transparent 60%), radial-gradient(1080px 650px at 92% -8%, rgba(217,70,239,0.28), transparent 62%), radial-gradient(980px 640px at 50% 112%, rgba(168,85,247,0.24), transparent 68%), linear-gradient(180deg, #140830 0%, #11183d 46%, #060d28 100%)"
+            ? "linear-gradient(180deg, #f5fa78 0%, #62d5d8 72%, #f50096 100%)"
             : "radial-gradient(1180px 720px at 8% -10%, rgba(255,122,24,0.38), transparent 60%), radial-gradient(980px 620px at 92% 0%, rgba(236,72,153,0.34), transparent 62%), radial-gradient(1080px 720px at 50% 110%, rgba(79,70,229,0.36), transparent 68%), linear-gradient(180deg, #2b071f 0%, #2b0b55 52%, #10042d 100%)"
           : isVenusEvent
-            ? "radial-gradient(1180px 700px at 10% -14%, rgba(167,139,250,0.52), transparent 64%), radial-gradient(980px 590px at 90% -8%, rgba(244,114,182,0.42), transparent 62%), radial-gradient(1040px 620px at 50% 112%, rgba(129,140,248,0.28), transparent 70%), linear-gradient(180deg, #fcf8ff 0%, #f6eeff 54%, #e7dcff 100%)"
+            ? "linear-gradient(180deg, #f5fa78 0%, #62d5d8 72%, #f50096 100%)"
             : "radial-gradient(1180px 700px at 8% -12%, rgba(255,122,24,0.48), transparent 62%), radial-gradient(980px 620px at 92% -4%, rgba(236,72,153,0.38), transparent 62%), radial-gradient(1080px 680px at 50% 108%, rgba(109,40,217,0.3), transparent 68%), linear-gradient(180deg, #fff6e7 0%, #ffe7dc 48%, #eadfff 100%)",
     }),
     [isVenusEvent, theme]
@@ -427,10 +428,9 @@ export function EventsPageClient() {
               ? undefined
               : {
                   "@type": "Offer",
-                  priceCurrency: "GHS",
-                  price: "50",
                   availability: "https://schema.org/InStock",
-                  url: `${SITE_URL}/events/${venus.slug}`,
+                  url: "https://egotickets.com/events/venus-the-beginning/register",
+                  name: "Get VENUS tickets on Egotickets",
                 },
           }
         : null;
@@ -465,7 +465,7 @@ export function EventsPageClient() {
       <main
         id="main-content"
         className={`relative z-10 mx-auto max-w-6xl px-4 sm:px-6 ${
-          isWeOutsideEvent ? "pb-0 pt-0" : "pb-20 pt-8 sm:pt-10"
+          isClassicEventsView ? "pb-0 pt-0" : "pb-20 pt-8 sm:pt-10"
         }`}
       >
         {isWeOutsideEvent ? (
@@ -478,7 +478,16 @@ export function EventsPageClient() {
           />
         ) : null}
 
-        {!isWeOutsideEvent ? (
+        {isVenusEvent ? (
+          <VenusCampaignSection
+            fullBleed
+            onPassClick={() => {
+              trackFeature("ticket_click", activeMeta.name);
+            }}
+          />
+        ) : null}
+
+        {!isClassicEventsView ? (
           <section className="mb-8">
             <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-6">
@@ -650,7 +659,7 @@ export function EventsPageClient() {
           <EventLineupSection members={activeLineup} vibeCard={activeMeta.vibeCard} sectionClassName="mb-8" />
         ) : null}
 
-        {!isWeOutsideEvent ? (
+        {!isClassicEventsView ? (
           <section id="event-actions" className="mb-8">
             <Card className="border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58">
             <CardBody className="gap-4">
@@ -775,7 +784,7 @@ export function EventsPageClient() {
               setActiveEvent("VENUS");
             }}
           />
-        ) : (
+        ) : isVenusEvent ? null : (
           <section className="mb-10">
             <Card className="border border-slate-200/80 bg-white/78 shadow-[0_18px_44px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/52">
               <CardBody className="gap-4">
