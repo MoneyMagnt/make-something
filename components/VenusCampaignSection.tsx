@@ -241,21 +241,36 @@ function VenusTicketIntro({ onTicketClick }: { onTicketClick?: () => void }) {
             <span aria-hidden="true">&times;</span>
           </button>
 
-          <div className="absolute inset-x-0 bottom-0 z-20 flex min-h-32 items-center justify-center bg-[linear-gradient(180deg,rgba(245,0,150,0),#f50096_28%,#dc007f_100%)] px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-10 sm:min-h-36">
-            <Button
-              as={Link}
-              href={VENUS_REGISTRATION_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative isolate min-h-14 w-full max-w-sm overflow-hidden border-2 border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#a8f2ee_28%,#f5fa78_50%,#ff83c5_72%,#ffffff_100%)] px-10 text-lg font-black tracking-[0.08em] text-[#123b55] shadow-[0_12px_0_#123b55,0_22px_44px_rgba(18,59,85,0.25)] transition-transform hover:-translate-y-1"
-              onPress={() => {
-                dismiss();
-                onTicketClick?.();
-              }}
+          <div className="absolute inset-x-0 bottom-0 z-20 flex min-h-52 items-end justify-center bg-[linear-gradient(180deg,rgba(245,0,150,0),rgba(245,0,150,0.92)_38%,#dc007f_100%)] px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-16 sm:min-h-56">
+            <motion.div
+              initial={{ opacity: 0, y: 22, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.35, duration: 0.5, ease: "easeOut" }}
+              className="w-full max-w-md"
             >
-              <span className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,transparent_0_38%,white_44%_54%,transparent_60%_100%)]" />
-              <span className="relative z-10">GET TICKETS NOW!</span>
-            </Button>
+              <div className="mb-5 text-center text-white [text-shadow:0_3px_16px_rgba(18,59,85,0.72)]">
+                <p className="text-xl font-black tracking-[0.08em] sm:text-2xl">
+                  JET BBLACK LOUNGE
+                </p>
+                <p className="mt-1 text-sm font-bold tracking-[0.14em] sm:text-base">
+                  ASHALEY BOTWE, 3RD GATE
+                </p>
+              </div>
+              <Button
+                as={Link}
+                href={VENUS_REGISTRATION_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative isolate min-h-14 w-full overflow-hidden border-2 border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#a8f2ee_28%,#f5fa78_50%,#ff83c5_72%,#ffffff_100%)] px-10 text-lg font-black tracking-[0.08em] text-[#123b55] shadow-[0_10px_0_#123b55,0_20px_40px_rgba(18,59,85,0.25)] transition-transform hover:-translate-y-1"
+                onPress={() => {
+                  dismiss();
+                  onTicketClick?.();
+                }}
+              >
+                <span className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,transparent_0_38%,white_44%_54%,transparent_60%_100%)]" />
+                <span className="relative z-10">GET TICKETS NOW!</span>
+              </Button>
+            </motion.div>
           </div>
         </motion.div>
       ) : null}

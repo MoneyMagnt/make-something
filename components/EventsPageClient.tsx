@@ -105,7 +105,7 @@ export function EventsPageClient() {
 
     try {
       const savedEvent = localStorage.getItem(ACTIVE_EVENT_STORAGE_KEY);
-      if (savedEvent === "We Outside") {
+      if (savedEvent === "We Outside" || savedEvent === "VENUS") {
         setActiveEvent(savedEvent);
       }
     } finally {
@@ -437,6 +437,15 @@ export function EventsPageClient() {
 
     return JSON.stringify(venusSchema ? [itemList, venusSchema] : [itemList]);
   }, [isPostEventMoment]);
+
+  if (!hasLoadedPersistedEvent) {
+    return (
+      <div
+        aria-hidden="true"
+        className="min-h-screen bg-[linear-gradient(180deg,#f5fa78_0%,#8ee4df_58%,#f50096_100%)]"
+      />
+    );
+  }
 
   return (
     <div
