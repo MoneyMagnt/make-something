@@ -79,20 +79,28 @@ export default function VenusTicketLandingPage() {
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
 
-      <div className="absolute inset-x-0 bottom-0 z-20 flex min-h-36 items-center justify-center bg-[linear-gradient(180deg,rgba(245,0,150,0),#f50096_30%,#d9007f_100%)] px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-12 sm:min-h-40">
+      <div className="absolute inset-x-0 bottom-0 z-20 flex min-h-52 items-end justify-center bg-[linear-gradient(180deg,rgba(245,0,150,0),rgba(245,0,150,0.92)_38%,#d9007f_100%)] px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-16 sm:min-h-56">
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.45, duration: 0.55, ease: "easeOut" }}
-          className="w-full max-w-sm"
+          className="w-full max-w-md"
         >
+          <div className="mb-5 text-center text-white [text-shadow:0_3px_16px_rgba(18,59,85,0.7)]">
+            <p className="text-xl font-black tracking-[0.08em] sm:text-2xl">
+              JET BBLACK LOUNGE
+            </p>
+            <p className="mt-1 text-sm font-bold tracking-[0.14em] sm:text-base">
+              ASHALEY BOTWE, 3RD GATE
+            </p>
+          </div>
           <Button
             as={Link}
             href={VENUS_TICKET_URL}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Get VENUS tickets now on Egotickets"
-            className="relative isolate min-h-14 w-full overflow-hidden border-2 border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#a8f2ee_28%,#f5fa78_50%,#ff83c5_72%,#ffffff_100%)] px-10 text-lg font-black tracking-[0.08em] text-[#123b55] shadow-[0_12px_0_#123b55,0_22px_44px_rgba(18,59,85,0.25)] transition-transform hover:-translate-y-1"
+            className="relative isolate min-h-14 w-full overflow-hidden border-2 border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#a8f2ee_28%,#f5fa78_50%,#ff83c5_72%,#ffffff_100%)] px-10 text-lg font-black tracking-[0.08em] text-[#123b55] shadow-[0_10px_0_#123b55,0_20px_40px_rgba(18,59,85,0.25)] transition-transform hover:-translate-y-1"
           >
             <span className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,transparent_0_38%,white_44%_54%,transparent_60%_100%)]" />
             <span className="relative z-10">GET TICKETS NOW!</span>
