@@ -2,6 +2,7 @@
 
 import { Button, Link } from "@heroui/react";
 import { motion } from "framer-motion";
+import { VenusHostReveal } from "@/components/VenusHostReveal";
 import { SITE_URL } from "@/lib/site";
 
 const VENUS_TICKET_URL =
@@ -78,6 +79,8 @@ export default function VenusTicketLandingPage() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
+
+      <VenusHostReveal />
 
       <div className="absolute inset-x-0 bottom-0 z-20 flex min-h-52 items-end justify-center bg-[linear-gradient(180deg,rgba(245,0,150,0),rgba(245,0,150,0.92)_38%,#d9007f_100%)] px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-16 sm:min-h-56">
         <motion.div
