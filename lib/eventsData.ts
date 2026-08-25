@@ -116,6 +116,13 @@ export const EVENTS: EventMeta[] = [
     },
     lineup: [
       {
+        role: "host",
+        name: "Peace",
+        image: "/lineup/peace-host.jpeg",
+        socialUrl:
+          "https://www.snapchat.com/add/itzz_peaceee?share_id=SsPqtRdVQ964_ktPqBzT9w&locale=en_US@rg=ghzzzz",
+      },
+      {
         role: "mc",
         name: "Viperlino",
         image: "/lineup/viperlino.jpg",

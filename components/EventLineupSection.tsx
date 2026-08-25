@@ -214,19 +214,23 @@ export function EventLineupSection({
 
             <div
               ref={railRef}
-              className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 pr-5 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto pb-2 pr-5 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {sortedMembers.map((member) => {
                 const hasProfile = Boolean(member.socialUrl);
-                const railItemClassName = "group min-w-[82%] snap-start sm:min-w-[19rem] lg:min-w-[21rem]";
+                const opensInSameTab = member.socialUrl?.includes("snapchat.com") ?? false;
+                const railItemClassName =
+                  "group flex w-[82%] min-w-[82%] snap-start sm:w-[19rem] sm:min-w-[19rem] lg:w-[21rem] lg:min-w-[21rem]";
 
                 const cardBody = (
-                  <Card className="min-h-full overflow-hidden border border-slate-200/85 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:border-cyan-300 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-slate-700/55 dark:bg-slate-950/70 dark:group-hover:border-cyan-500/45">
+                  <Card className="h-full w-full overflow-hidden border border-slate-200/85 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-shadow duration-300 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-slate-700/55 dark:bg-slate-950/70">
                     <div className="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-slate-900">
                       {member.image ? (
-                        <img
+                        <Image
                           src={member.image}
                           alt={member.name}
+                          fill
+                          sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         />
                       ) : (
@@ -252,7 +256,7 @@ export function EventLineupSection({
                         </div>
                       </div>
                     </div>
-                    <CardBody className="p-4">
+                    <CardBody className="min-h-[8rem] justify-start p-4">
                       <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
                         {member.name}
                       </h3>
@@ -272,8 +276,8 @@ export function EventLineupSection({
                   <Link
                     key={`${member.role}-${member.name}`}
                     href={member.socialUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={opensInSameTab ? undefined : "_blank"}
+                    rel={opensInSameTab ? undefined : "noopener noreferrer"}
                     className={`${railItemClassName} no-underline`}
                   >
                     {cardBody}
@@ -282,8 +286,8 @@ export function EventLineupSection({
               })}
 
               {vibeCard ? (
-                <div key={`vibe-${vibeCard.title}`} className="group min-w-[82%] snap-start sm:min-w-[19rem] lg:min-w-[21rem]">
-                  <Card className="min-h-full overflow-hidden border border-cyan-300/70 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:-translate-y-1 group-hover:border-cyan-400 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-cyan-500/35 dark:bg-slate-950/72 dark:group-hover:border-cyan-400/55">
+                <div key={`vibe-${vibeCard.title}`} className="group flex w-[82%] min-w-[82%] snap-start sm:w-[19rem] sm:min-w-[19rem] lg:w-[21rem] lg:min-w-[21rem]">
+                  <Card className="h-full w-full overflow-hidden border border-cyan-300/70 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-shadow duration-300 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-cyan-500/35 dark:bg-slate-950/72">
                     <div className="relative aspect-[4/5] overflow-hidden bg-slate-950">
                       <Image
                         src={vibeCard.poster}
@@ -308,7 +312,7 @@ export function EventLineupSection({
                         </div>
                       </div>
                     </div>
-                    <CardBody className="space-y-2 p-4">
+                    <CardBody className="min-h-[8rem] space-y-2 p-4">
                       <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
                         {vibeCard.title}
                       </h3>

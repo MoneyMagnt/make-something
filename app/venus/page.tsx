@@ -6,6 +6,7 @@ import { SITE_URL } from "@/lib/site";
 
 const VENUS_TICKET_URL =
   "https://egotickets.com/events/venus-the-beginning/register";
+const VENUS_INTRO_STORAGE_KEY = "venus_ticket_intro_seen_v2";
 
 const VENUS_EVENT_SCHEMA = {
   "@context": "https://schema.org",
@@ -43,6 +44,16 @@ const VENUS_EVENT_SCHEMA = {
 };
 
 export default function VenusTicketLandingPage() {
+  const closeToVenusPage = () => {
+    try {
+      sessionStorage.setItem(VENUS_INTRO_STORAGE_KEY, "true");
+    } catch {
+      // Navigation should still work if browser storage is unavailable.
+    }
+
+    window.location.assign("/events/venus");
+  };
+
   return (
     <main
       id="main-content"
@@ -78,6 +89,15 @@ export default function VenusTicketLandingPage() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
+
+      <Button
+        isIconOnly
+        onPress={closeToVenusPage}
+        aria-label="Close the VENUS intro and open the full VENUS event page"
+        className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-40 h-12 min-h-12 w-12 min-w-12 rounded-full border-2 border-white/85 bg-[#123b55]/82 text-3xl font-light leading-none text-white shadow-[0_12px_32px_rgba(18,59,85,0.3)] backdrop-blur-md transition-transform hover:scale-105 sm:right-6 sm:top-[max(1.5rem,env(safe-area-inset-top))]"
+      >
+        <span aria-hidden="true">&times;</span>
+      </Button>
 
       <div className="absolute inset-x-0 bottom-0 z-20 flex min-h-52 items-end justify-center bg-[linear-gradient(180deg,rgba(245,0,150,0),rgba(245,0,150,0.92)_38%,#d9007f_100%)] px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-16 sm:min-h-56">
         <motion.div
