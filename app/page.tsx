@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import ZyraHomeDesktop from "@/components/ZyraHomeDesktop";
-import ZyraHomeMobile from "@/components/ZyraHomeMobile";
+import ZyraResponsiveHome from "@/components/ZyraResponsiveHome";
 import { ZyraBrandMark } from "@/components/ZyraBrandMark";
 import { ZyraSiteFooter } from "@/components/ZyraSiteFooter";
 import { ZyraSiteNav } from "@/components/ZyraSiteNav";
@@ -221,33 +220,17 @@ export default function Home() {
         <h1 className="sr-only">
           need more people to notice your brand and take action?
         </h1>
-        <div className="lg:hidden">
-          <ZyraHomeMobile
-            growthAuditUrl={GROWTH_AUDIT_URL}
-            stats={STATS}
-            aboveFoldProof={ABOVE_FOLD_PROOF}
-            whyZyra={WHY_ZYRA}
-            systemSteps={SYSTEM_STEPS}
-            resultSnapshots={RESULT_SNAPSHOTS}
-            operatingNotes={OPERATING_NOTES}
-            services={SERVICES}
-            faqs={FAQS}
-          />
-        </div>
-
-        <div className="hidden lg:block">
-          <ZyraHomeDesktop
-            growthAuditUrl={GROWTH_AUDIT_URL}
-            stats={STATS}
-            aboveFoldProof={ABOVE_FOLD_PROOF}
-            whyZyra={WHY_ZYRA}
-            systemSteps={SYSTEM_STEPS}
-            resultSnapshots={RESULT_SNAPSHOTS}
-            operatingNotes={OPERATING_NOTES}
-            services={SERVICES}
-            faqs={FAQS}
-          />
-        </div>
+        <ZyraResponsiveHome
+          growthAuditUrl={GROWTH_AUDIT_URL}
+          stats={STATS}
+          aboveFoldProof={ABOVE_FOLD_PROOF}
+          whyZyra={WHY_ZYRA}
+          systemSteps={SYSTEM_STEPS}
+          resultSnapshots={RESULT_SNAPSHOTS}
+          operatingNotes={OPERATING_NOTES}
+          services={SERVICES}
+          faqs={FAQS}
+        />
       </main>
 
       <ZyraSiteFooter />

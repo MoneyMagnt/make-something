@@ -160,7 +160,13 @@ function FlyerBackdrop() {
   );
 }
 
-function VenusTicketIntro({ onTicketClick }: { onTicketClick?: () => void }) {
+function VenusTicketIntro({
+  onOpenChange,
+  onTicketClick,
+}: {
+  onOpenChange?: (isOpen: boolean) => void;
+  onTicketClick?: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -171,9 +177,12 @@ function VenusTicketIntro({ onTicketClick }: { onTicketClick?: () => void }) {
       shouldOpen = true;
     }
 
-    const timer = window.setTimeout(() => setIsOpen(shouldOpen), 0);
+    const timer = window.setTimeout(() => {
+      setIsOpen(shouldOpen);
+      onOpenChange?.(shouldOpen);
+    }, 0);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [onOpenChange]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -195,6 +204,7 @@ function VenusTicketIntro({ onTicketClick }: { onTicketClick?: () => void }) {
       // The intro can still close when browser storage is unavailable.
     }
     setIsOpen(false);
+    onOpenChange?.(false);
   };
 
   if (typeof document === "undefined") {
@@ -288,9 +298,14 @@ export function VenusCampaignSection({
   fullBleed = false,
   onPassClick,
 }: VenusCampaignSectionProps) {
+  const [isIntroOpen, setIsIntroOpen] = useState(true);
+
   return (
     <>
-      <VenusTicketIntro onTicketClick={onPassClick} />
+      <VenusTicketIntro
+        onOpenChange={setIsIntroOpen}
+        onTicketClick={onPassClick}
+      />
       <section
         id="event-actions"
         className={
@@ -300,7 +315,7 @@ export function VenusCampaignSection({
         }
       >
         <div className="relative isolate min-h-screen overflow-hidden text-slate-900">
-          <FlyerBackdrop />
+          {!isIntroOpen ? <FlyerBackdrop /> : null}
 
         <div className="relative z-20 mx-auto w-full max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
           <section className="mb-8">
