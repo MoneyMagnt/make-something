@@ -77,8 +77,7 @@ export default function VenusTicketLandingPage() {
       />
 
       <motion.video
-        src="/events/venus/venus-intro.mp4"
-        poster="/events/venus/venus-flyer.jpg"
+        poster="/events/venus/venus-flyer-poster.webp"
         autoPlay
         muted
         loop
@@ -88,7 +87,17 @@ export default function VenusTicketLandingPage() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="absolute inset-0 h-full w-full object-cover object-center"
-      />
+      >
+        <source
+          src="/events/venus/venus-intro-mobile.mp4"
+          media="(max-width: 640px)"
+          type="video/mp4"
+        />
+        <source
+          src="/events/venus/venus-intro-optimized.mp4"
+          type="video/mp4"
+        />
+      </motion.video>
 
       <Button
         isIconOnly

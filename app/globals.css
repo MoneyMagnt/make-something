@@ -98,6 +98,170 @@ html[data-theme-ready="false"] *::after {
   border-color: rgb(100 116 139 / 0.45) !important;
 }
 
+.venus-butterfly {
+  animation-delay: var(--venus-flight-delay, 0s);
+  animation-duration: var(--venus-flight-duration, 8.4s);
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  will-change: transform;
+}
+
+.venus-butterfly--hover {
+  animation-name: venus-butterfly-hover;
+}
+
+.venus-butterfly--wander {
+  animation-name: venus-butterfly-wander;
+}
+
+.venus-butterfly--glide {
+  animation-name: venus-butterfly-glide;
+}
+
+.venus-butterfly--rise {
+  animation-name: venus-butterfly-rise;
+}
+
+.venus-butterfly-shadow {
+  animation: venus-butterfly-shadow var(--venus-flight-duration, 8.4s) var(--venus-flight-delay, 0s) infinite;
+  will-change: opacity, transform;
+}
+
+.venus-butterfly-wings {
+  animation: venus-butterfly-wings 2.65s var(--venus-wing-delay, 0.15s) ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.venus-mark-float {
+  animation: venus-mark-float 6.5s ease-in-out infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.venus-wave-drift {
+  animation: venus-wave-drift 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.venus-shine-diagonal {
+  animation: venus-shine-diagonal 14.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.venus-shine-horizontal {
+  animation: venus-shine-horizontal 17s ease-in-out infinite;
+  will-change: transform;
+}
+
+.venus-featured-butterfly {
+  animation-delay: var(--venus-featured-delay, 0s);
+  animation-duration: var(--venus-featured-duration, 3.6s);
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  will-change: transform;
+}
+
+.venus-featured-butterfly--right {
+  animation-name: venus-featured-butterfly-right;
+}
+
+.venus-featured-butterfly--left {
+  animation-name: venus-featured-butterfly-left;
+}
+
+@keyframes venus-butterfly-hover {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg) scale(1); }
+  18% { transform: translate3d(9px, -12px, 0) rotate(1deg) scale(0.98); }
+  38% { transform: translate3d(-7px, -6px, 0) rotate(-2deg) scale(1.02); }
+  58% { transform: translate3d(13px, -18px, 0) rotate(4deg) scale(0.98); }
+  80% { transform: translate3d(-5px, -8px, 0) rotate(0deg) scale(1.01); }
+}
+
+@keyframes venus-butterfly-wander {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-7deg) scale(0.96); }
+  18% { transform: translate3d(36px, -9px, 0) rotate(2deg) scale(1.02); }
+  38% { transform: translate3d(18px, -22px, 0) rotate(6deg) scale(0.98); }
+  58% { transform: translate3d(-24px, -11px, 0) rotate(-4deg) scale(1.04); }
+  80% { transform: translate3d(-10px, -18px, 0) rotate(1deg) scale(1); }
+}
+
+@keyframes venus-butterfly-glide {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg) scale(1); }
+  18% { transform: translate3d(28px, -6px, 0) rotate(-1deg) scale(0.98); }
+  38% { transform: translate3d(54px, -4px, 0) rotate(3deg) scale(0.95); }
+  58% { transform: translate3d(35px, -14px, 0) rotate(1deg) scale(0.98); }
+  80% { transform: translate3d(12px, -9px, 0) rotate(-3deg) scale(1.02); }
+}
+
+@keyframes venus-butterfly-rise {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(5deg) scale(0.94); }
+  18% { transform: translate3d(-18px, -18px, 0) rotate(-2deg) scale(1); }
+  38% { transform: translate3d(8px, -31px, 0) rotate(-6deg) scale(1.05); }
+  58% { transform: translate3d(28px, -21px, 0) rotate(2deg) scale(1.02); }
+  80% { transform: translate3d(12px, -9px, 0) rotate(4deg) scale(0.98); }
+}
+
+@keyframes venus-butterfly-shadow {
+  0%, 100% { opacity: 0.2; transform: scaleX(1); }
+  18% { opacity: 0.1; transform: scaleX(0.76); }
+  38% { opacity: 0.17; transform: scaleX(0.92); }
+  58% { opacity: 0.08; transform: scaleX(0.7); }
+  80% { opacity: 0.15; transform: scaleX(0.86); }
+}
+
+@keyframes venus-butterfly-wings {
+  0%, 52%, 78%, 100% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scaleX(1); }
+  12% { transform: translate3d(0, -1px, 0) rotateX(4deg) rotateY(15deg) scaleX(0.84); }
+  24% { transform: translate3d(0, 0, 0) rotateX(-2deg) rotateY(-4deg) scaleX(0.98); }
+  38% { transform: translate3d(0, -1px, 0) rotateX(5deg) rotateY(11deg) scaleX(0.78); }
+}
+
+@keyframes venus-mark-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateX(5deg) rotateY(-12deg); }
+  50% { transform: translate3d(0, -10px, 0) rotateX(-5deg) rotateY(11deg); }
+}
+
+@keyframes venus-wave-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-10px, -14px, 0) scale(1.025); }
+}
+
+@keyframes venus-shine-diagonal {
+  0% { transform: translate3d(0, -20rem, 0) skewX(-18deg); }
+  83%, 100% { transform: translate3d(180vw, 145rem, 0) skewX(-18deg); }
+}
+
+@keyframes venus-shine-horizontal {
+  0% { transform: translate3d(0, 0, 0) skewX(-18deg); }
+  71%, 100% { transform: translate3d(190vw, 0, 0) skewX(-18deg); }
+}
+
+@keyframes venus-featured-butterfly-right {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(2deg) scaleX(1); }
+  33% { transform: translate3d(-7px, -7px, 0) rotate(-3deg) scaleX(0.84); }
+  66% { transform: translate3d(4px, -2px, 0) rotate(1deg) scaleX(0.96); }
+}
+
+@keyframes venus-featured-butterfly-left {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg) scaleX(1); }
+  33% { transform: translate3d(7px, -7px, 0) rotate(3deg) scaleX(0.84); }
+  66% { transform: translate3d(-4px, -2px, 0) rotate(-1deg) scaleX(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venus-butterfly,
+  .venus-butterfly-shadow,
+  .venus-butterfly-wings,
+  .venus-mark-float,
+  .venus-wave-drift,
+  .venus-shine-diagonal,
+  .venus-shine-horizontal,
+  .venus-featured-butterfly {
+    animation: none !important;
+  }
+}
+
 
 .skip-link {
   position: fixed;

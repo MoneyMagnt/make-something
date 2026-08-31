@@ -3,7 +3,7 @@
 import { Button, Card, CardBody, Link } from "@heroui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import NextImage from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { EventCountdownChip } from "@/components/EventCountdownChip";
 import { EventLineupSection } from "@/components/EventLineupSection";
@@ -23,75 +23,79 @@ const VENUS_TABLE_URL = `https://wa.me/233556877954?text=${encodeURIComponent(
 
 const VENUS_EVENT = EVENTS.find((event) => event.name === "VENUS");
 
+type ButterflyTone = "cyan" | "pink" | "gold" | "violet";
+type ButterflyFlight = "hover" | "wander" | "glide" | "rise";
+
+const BUTTERFLY_SPRITE = "/events/venus/venus-butterflies.webp";
+
+const BUTTERFLY_STYLES = {
+  cyan: {
+    backgroundPosition: "left center",
+    filter: "saturate(1.08) contrast(1.04) drop-shadow(0 8px 7px rgba(18,59,85,.2))",
+  },
+  pink: {
+    backgroundPosition: "right center",
+    filter: "saturate(1.08) contrast(1.04) drop-shadow(0 8px 7px rgba(100,19,72,.2))",
+  },
+  gold: {
+    backgroundPosition: "left center",
+    filter: "hue-rotate(205deg) saturate(1.28) contrast(1.06) drop-shadow(0 8px 7px rgba(115,77,16,.22))",
+  },
+  violet: {
+    backgroundPosition: "right center",
+    filter: "hue-rotate(305deg) saturate(1.18) contrast(1.05) drop-shadow(0 8px 7px rgba(62,26,111,.22))",
+  },
+} satisfies Record<ButterflyTone, { backgroundPosition: string; filter: string }>;
+
 function Butterfly({
   className,
-  color = "#f50096",
+  delay = 0,
+  duration = 8.4,
+  flight = "hover",
+  mirror = false,
+  tone = "pink",
 }: {
   className: string;
-  color?: string;
+  delay?: number;
+  duration?: number;
+  flight?: ButterflyFlight;
+  mirror?: boolean;
+  tone?: ButterflyTone;
 }) {
+  const butterflyStyle = BUTTERFLY_STYLES[tone];
+  const animationVariables = {
+    "--venus-flight-delay": `${delay}s`,
+    "--venus-flight-duration": `${duration}s`,
+    "--venus-wing-delay": `${delay + 0.15}s`,
+  } as CSSProperties;
+
   return (
-    <motion.div
+    <div
       aria-hidden="true"
-      className={`pointer-events-none absolute z-10 h-9 w-11 ${className}`}
-      animate={{ y: [0, -10, 0], rotate: [-7, 7, -7] }}
-      transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+      className={`venus-butterfly venus-butterfly--${flight} pointer-events-none absolute z-10 h-[4.5rem] w-[5.5rem] [perspective:360px] sm:h-[5.5rem] sm:w-[6.75rem] ${className}`}
+      style={animationVariables}
     >
-      <motion.span
-        className="absolute left-0 top-1 h-7 w-6 -rotate-[28deg] rounded-[80%_25%_70%_30%] shadow-[0_7px_12px_rgba(20,38,55,0.22)]"
-        style={{ backgroundColor: color }}
-        animate={{ rotateY: [0, 58, 0] }}
-        transition={{ duration: 0.85, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.span
-        className="absolute right-0 top-1 h-7 w-6 rotate-[28deg] rounded-[25%_80%_30%_70%] shadow-[0_7px_12px_rgba(20,38,55,0.22)]"
-        style={{ backgroundColor: color }}
-        animate={{ rotateY: [0, -58, 0] }}
-        transition={{ duration: 0.85, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <span className="absolute left-1/2 top-2 h-7 w-1 -translate-x-1/2 rounded-full bg-[#123b55]" />
-    </motion.div>
+      <span className="venus-butterfly-shadow absolute bottom-1 left-1/2 h-2.5 w-12 -translate-x-1/2 rounded-full bg-[#123b55]/24 blur-[6px]" />
+
+      <div className={`absolute inset-0 ${mirror ? "[transform:scaleX(-1)]" : ""}`}>
+        <div
+          className="venus-butterfly-wings absolute inset-0 bg-no-repeat"
+          style={{
+            backgroundImage: "url(" + BUTTERFLY_SPRITE + ")",
+            backgroundPosition: butterflyStyle.backgroundPosition,
+            backgroundSize: "200% 100%",
+            filter: butterflyStyle.filter,
+            transformStyle: "preserve-3d",
+          }}
+        />
+      </div>
+    </div>
   );
 }
-
 function Venus3DCanvas() {
   return (
     <div className="absolute inset-0 overflow-hidden [perspective:1100px]">
-      <motion.div
-        className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(18,59,85,0.32)_1px,transparent_1px)] [background-size:58px_58px]"
-        animate={{ backgroundPosition: ["0px 0px", "116px 116px"] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-      />
-
-      <motion.div
-        className="absolute -left-12 top-[8rem] h-32 w-32 rounded-[34%] border border-white/80 bg-[conic-gradient(from_210deg,#ffffff,#7de8e7,#f5fa78,#ff65ad,#ffffff)] opacity-80 shadow-[inset_0_0_28px_white,0_20px_45px_rgba(18,59,85,0.18)] sm:h-52 sm:w-52"
-        animate={{ rotate: [10, 190, 370], y: [0, 18, 0] }}
-        transition={{ rotate: { duration: 18, repeat: Infinity, ease: "linear" }, y: { duration: 5, repeat: Infinity, ease: "easeInOut" } }}
-      />
-      <motion.div
-        className="absolute -right-16 top-[34rem] h-36 w-36 rounded-full border-8 border-white/75 bg-[conic-gradient(#f50096,#ffffff,#00a9d6,#f5fa78,#f50096)] shadow-[inset_0_0_24px_rgba(255,255,255,0.9),0_22px_44px_rgba(18,59,85,0.2)] sm:h-56 sm:w-56"
-        animate={{ rotate: [0, -360], scale: [1, 1.08, 1] }}
-        transition={{ rotate: { duration: 13, repeat: Infinity, ease: "linear" }, scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-      />
-      <motion.div
-        className="absolute -left-20 top-[78rem] h-44 w-44 rounded-full border-[12px] border-white/60 bg-[conic-gradient(#00a9d6,#ffffff,#f50096,#f5fa78,#00a9d6)] opacity-70 shadow-[inset_0_0_32px_white,0_24px_52px_rgba(18,59,85,0.2)] sm:h-64 sm:w-64"
-        animate={{ rotate: [0, 360], x: [0, 28, 0] }}
-        transition={{ duration: 17, repeat: Infinity, ease: "linear" }}
-      />
-
-      <motion.div
-        className="absolute left-1/2 top-[7rem] h-[15rem] w-[22rem] -translate-x-1/2 rounded-[50%] border-2 border-white/70 sm:h-[24rem] sm:w-[42rem]"
-        animate={{ rotateX: [66, 72, 66], rotateZ: [0, 360] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        style={{ transformStyle: "preserve-3d" }}
-      />
-
-      <motion.div
-        className="absolute inset-x-[8%] top-[7rem] z-20 will-change-transform sm:inset-x-[20%] sm:top-[5rem]"
-        animate={{ rotateY: [-12, 11, -12], rotateX: [5, -5, 5], y: [0, -10, 0] }}
-        transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d" }}
-      >
+      <div className="venus-mark-float absolute inset-x-[8%] top-[7rem] z-20 sm:inset-x-[20%] sm:top-[5rem]">
         <NextImage
           src="/events/venus/venus-mark.png"
           alt=""
@@ -100,19 +104,19 @@ function Venus3DCanvas() {
           sizes="(max-width: 640px) 92vw, 720px"
           className="mx-auto h-auto w-full max-w-[45rem] opacity-75 drop-shadow-[0_28px_20px_rgba(18,59,85,0.34)]"
         />
-      </motion.div>
+      </div>
 
-      <Butterfly className="left-[20%] top-[9rem] scale-75 sm:scale-100" color="#00a9d6" />
-      <Butterfly className="right-[18%] top-[12rem] scale-75 sm:scale-100" />
-      <Butterfly className="left-[26%] top-[53rem] scale-75" color="#f50096" />
-      <Butterfly className="right-[17%] top-[88rem] hidden sm:block" color="#00a9d6" />
-      <Butterfly className="left-[48%] top-[112rem] hidden sm:block" />
+      <Butterfly className="left-[18%] top-[9rem] scale-75 sm:scale-100" tone="cyan" flight="wander" duration={8.2} />
+      <Butterfly className="right-[16%] top-[12rem] scale-75 sm:scale-100" flight="hover" mirror delay={0.65} duration={7.1} />
+      <Butterfly className="left-[5%] top-[27rem] scale-[0.58] sm:left-[11%] sm:scale-[0.7]" tone="pink" flight="rise" delay={1.7} duration={8.5} />
+      <Butterfly className="right-[4%] top-[24rem] scale-[0.56] sm:right-[10%] sm:scale-[0.68]" tone="cyan" flight="glide" mirror delay={1.15} duration={9.1} />
+      <Butterfly className="left-[7%] top-[39rem] scale-[0.62] sm:left-[13%] sm:scale-75" tone="gold" flight="glide" delay={1.35} duration={9.6} />
+      <Butterfly className="left-[24%] top-[53rem] scale-[0.68] opacity-90" flight="rise" mirror delay={1.1} duration={8.8} />
+      <Butterfly className="right-[7%] top-[69rem] scale-[0.64] sm:right-[15%] sm:scale-75" tone="violet" flight="wander" mirror delay={0.45} duration={9.2} />
+      <Butterfly className="right-[16%] top-[88rem] hidden opacity-80 sm:block" tone="cyan" flight="glide" delay={0.35} duration={9.4} />
+      <Butterfly className="left-[47%] top-[112rem] hidden opacity-75 sm:block" flight="wander" mirror delay={1.45} duration={8.6} />
 
-      <motion.div
-        className="absolute -left-1/3 top-0 z-30 h-[32rem] w-1/3 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/60 to-transparent blur-xl"
-        animate={{ x: ["0vw", "180vw"], y: ["-20rem", "145rem"] }}
-        transition={{ duration: 12, repeat: Infinity, repeatDelay: 2.5, ease: "easeInOut" }}
-      />
+      <div className="venus-shine-diagonal absolute -left-1/3 top-0 z-30 h-[32rem] w-1/3 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/60 to-transparent blur-xl" />
     </div>
   );
 }
@@ -120,41 +124,21 @@ function Venus3DCanvas() {
 function FlyerBackdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-      <motion.div
-        className="absolute -inset-[20%] will-change-transform [background:radial-gradient(circle_at_8%_12%,rgba(255,255,255,0.92),transparent_16rem),radial-gradient(circle_at_86%_10%,rgba(245,0,150,0.44),transparent_24rem),radial-gradient(circle_at_16%_72%,rgba(0,169,214,0.52),transparent_22rem),linear-gradient(145deg,#fbff7c_0%,#b7f3c7_34%,#55d4df_64%,#ff71b9_100%)]"
-        animate={{ scale: [1, 1.08, 1], rotate: [0, 1.5, 0], x: [0, 24, 0], y: [0, -18, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute -inset-24 opacity-65 mix-blend-overlay"
+      <div
+        className="venus-wave-drift absolute -inset-x-[5%] -inset-y-[2%]"
         style={{
-          backgroundImage:
-            "linear-gradient(135deg, rgba(255,255,255,.88) 0 12%, rgba(255,255,255,.08) 12% 48%, rgba(0,105,172,.28) 48% 52%, rgba(245,0,150,.18) 52% 76%, rgba(255,255,255,.66) 76% 100%)",
-          backgroundSize: "180px 180px",
+          backgroundImage: "url(/events/venus/venus-waves.webp)",
+          backgroundPosition: "center",
+          backgroundSize: "100% 100%",
         }}
-        animate={{ backgroundPosition: ["0px 0px", "360px 180px"] }}
-        transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
       />
-      <motion.div
-        className="absolute -left-1/3 top-0 h-full w-1/2 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/45 to-transparent blur-2xl"
-        animate={{ x: ["0vw", "190vw"] }}
-        transition={{ duration: 9, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
-      />
-      <div className="absolute inset-x-0 top-[30rem] h-[90rem] opacity-50 [background:repeating-radial-gradient(ellipse_at_50%_0%,transparent_0_4rem,rgba(255,255,255,0.68)_4.15rem_7.35rem)] sm:top-[24rem]" />
-      <div className="absolute -left-24 top-10 h-56 w-56 rounded-[38%_62%_57%_43%] border-[0.4rem] border-[#123b55]/70" />
-      <div className="absolute -right-28 top-[34rem] h-72 w-72 rounded-[61%_39%_28%_72%] border-[0.45rem] border-[#123b55]/62" />
-      <div className="absolute left-[5%] top-[64rem] h-64 w-64 rounded-full bg-[#f50096]/15 sm:h-96 sm:w-96" />
-      <svg
-        viewBox="0 0 1600 390"
-        preserveAspectRatio="none"
-        className="absolute inset-x-0 top-[39rem] h-72 w-full opacity-50 sm:top-[33rem] lg:h-96"
-      >
-        <path d="M-90 112C214-58 386 278 710 102S1200-10 1690 135" fill="none" stroke="#fff" strokeOpacity=".76" strokeWidth="58" />
-        <path d="M-90 226C184 42 438 390 785 194S1350 82 1700 254" fill="none" stroke="#00a9c9" strokeOpacity=".32" strokeWidth="42" />
-      </svg>
-      <Butterfly className="left-[4%] top-[18rem]" color="#00a9d6" />
-      <Butterfly className="right-[6%] top-[8rem]" />
-      <Butterfly className="right-[10%] top-[76rem] hidden sm:block" color="#00a9d6" />
+      <div className="venus-shine-horizontal absolute -left-1/3 top-0 h-full w-1/2 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/25 to-transparent blur-2xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.3),transparent_28rem),linear-gradient(to_bottom,rgba(255,255,255,0.06),rgba(39,134,156,0.07))]" />
+      <Butterfly className="left-[3%] top-[18rem] scale-90" tone="cyan" flight="glide" delay={0.25} duration={8.9} />
+      <Butterfly className="right-[5%] top-[8rem] scale-90" flight="rise" mirror delay={0.9} duration={7.8} />
+      <Butterfly className="right-[9%] top-[76rem] hidden scale-75 opacity-70 sm:block" tone="cyan" flight="hover" delay={1.7} duration={9.1} />
+      <Butterfly className="left-[9%] top-[101rem] hidden scale-[0.72] sm:block" tone="gold" flight="rise" mirror delay={0.8} duration={10.1} />
+      <Butterfly className="right-[5%] top-[126rem] hidden scale-[0.78] sm:block" tone="violet" flight="glide" delay={1.9} duration={9.8} />
       <Venus3DCanvas />
     </div>
   );
@@ -229,8 +213,7 @@ function VenusTicketIntro({
             className="absolute inset-0 [background:radial-gradient(circle_at_15%_18%,rgba(0,169,214,0.5),transparent_26rem),radial-gradient(circle_at_86%_14%,rgba(245,0,150,0.42),transparent_28rem),linear-gradient(160deg,#f5fa78_0%,#a7e7ce_54%,#35c4cf_100%)]"
           />
           <motion.video
-            src="/events/venus/venus-intro.mp4"
-            poster="/events/venus/venus-flyer.jpg"
+            poster="/events/venus/venus-flyer-poster.webp"
             autoPlay
             muted
             loop
@@ -240,7 +223,17 @@ function VenusTicketIntro({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="absolute inset-0 h-full w-full object-cover object-center"
-          />
+          >
+            <source
+              src="/events/venus/venus-intro-mobile.mp4"
+              media="(max-width: 640px)"
+              type="video/mp4"
+            />
+            <source
+              src="/events/venus/venus-intro-optimized.mp4"
+              type="video/mp4"
+            />
+          </motion.video>
 
           <button
             type="button"
@@ -382,9 +375,10 @@ export function VenusCampaignSection({
             vibeCard={VENUS_EVENT?.vibeCard}
             sectionClassName="mb-8"
             cardClassName="!border-white/80 !bg-[linear-gradient(145deg,rgba(255,255,255,0.52),rgba(148,234,232,0.28),rgba(255,177,216,0.26))] !backdrop-blur-[2px]"
+            showButterflies
           />
 
-          <section id="event-guide" className="mb-8 scroll-mt-24">
+          <section id="event-guide" className="mb-8 scroll-mt-24 [contain-intrinsic-size:auto_520px] [content-visibility:auto]">
             <Card className="border border-white/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.48),rgba(144,231,229,0.28)_45%,rgba(255,185,221,0.24))] shadow-[0_24px_64px_rgba(18,59,85,0.17)] backdrop-blur-[2px]">
               <CardBody className="gap-4 p-5 sm:p-7">
                 <div>
@@ -419,7 +413,7 @@ export function VenusCampaignSection({
             </Card>
           </section>
 
-          <section className="mb-10">
+          <section className="mb-10 [contain-intrinsic-size:auto_360px] [content-visibility:auto]">
             <Card className="border border-white/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.46),rgba(173,244,239,0.26),rgba(255,171,213,0.22))] shadow-[0_22px_58px_rgba(18,59,85,0.15)] backdrop-blur-[2px]">
               <CardBody className="gap-4 p-5 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-3">

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1200" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="lemon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfb91"/>
+      <stop offset="0.48" stop-color="#f2f58d"/>
+      <stop offset="1" stop-color="#e7f4a0"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c7edb4"/>
+      <stop offset="0.52" stop-color="#a8e4bc"/>
+      <stop offset="1" stop-color="#82d9c9"/>
+    </linearGradient>
+    <linearGradient id="aqua" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#99e1d0"/>
+      <stop offset="0.5" stop-color="#72d1d7"/>
+      <stop offset="1" stop-color="#62c1dc"/>
+    </linearGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.035"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1200" fill="url(#lemon)"/>
+  <path d="M-120 108C99 23 285 39 447 119c179 88 324 93 495 14 162-75 345-83 618 25v263H-120Z" fill="#d9ef9f" opacity=".72"/>
+  <path d="M-140 221c224-109 414-100 593 4 165 96 314 106 493 18 187-92 378-94 618 22v231H-140Z" fill="url(#mint)"/>
+  <path d="M-116 355c228-102 386-72 546 31 166 107 330 105 505 0 190-114 387-112 614 13v229H-116Z" fill="url(#aqua)" opacity=".88"/>
+  <path d="M-95 510c199-91 358-71 521 26 196 116 362 106 545-7 170-105 344-102 565 4v194H-95Z" fill="#d5eea7" opacity=".9"/>
+  <path d="M-128 642c230-116 416-102 600 18 157 102 306 110 483 24 185-90 374-93 596 17v225H-128Z" fill="url(#mint)" opacity=".94"/>
+  <path d="M-102 805c211-113 377-94 552 7 183 106 337 112 517 16 190-102 372-93 578 14v230H-102Z" fill="url(#aqua)" opacity=".86"/>
+  <path d="M-110 986c219-105 393-92 570 4 180 98 339 101 513 13 181-91 362-85 582 25v220H-110Z" fill="#c5e9ad" opacity=".76"/>
+
+  <path d="M-80 285c193-83 350-68 510 27 180 106 340 106 514 3 178-106 353-101 563-2" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="18"/>
+  <path d="M-80 752c193-83 350-68 510 27 180 106 340 106 514 3 178-106 353-101 563-2" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="15"/>
+  <rect width="1440" height="1200" filter="url(#grain)" opacity=".8"/>
+</svg>

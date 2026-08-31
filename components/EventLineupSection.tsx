@@ -2,7 +2,7 @@
 
 import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import type { EventLineupMember, EventVibeCard } from "@/lib/eventsData";
 
 type EventLineupSectionProps = {
@@ -10,7 +10,86 @@ type EventLineupSectionProps = {
   vibeCard?: EventVibeCard;
   sectionClassName?: string;
   cardClassName?: string;
+  showButterflies?: boolean;
 };
+
+const FEATURED_BUTTERFLY_SPRITE = "/events/venus/venus-butterflies.webp";
+
+const getFeaturedButterflyStyle = (role: string, name = "") => {
+  const key = role.toLowerCase();
+  const memberName = name.toLowerCase();
+
+  if (memberName.includes("viperlino")) {
+    return {
+      backgroundPosition: "left center",
+      filter: "hue-rotate(280deg) saturate(1.3) contrast(1.06) drop-shadow(0 8px 7px rgba(22,101,52,.3))",
+    };
+  }
+
+  if (memberName.includes("hollywoode") || memberName.includes("hollywood")) {
+    return {
+      backgroundPosition: "right center",
+      filter: "grayscale(1) brightness(1.65) contrast(.85) drop-shadow(0 8px 8px rgba(255,255,255,.48)) drop-shadow(0 10px 8px rgba(0,0,0,.22))",
+    };
+  }
+
+  if (memberName.includes("tormhe")) {
+    return {
+      backgroundPosition: "left center",
+      filter: "hue-rotate(205deg) saturate(1.5) contrast(1.08) drop-shadow(0 8px 7px rgba(154,79,10,.32))",
+    };
+  }
+
+  if (key === "host") {
+    return {
+      backgroundPosition: "left center",
+      filter: "hue-rotate(205deg) saturate(1.28) contrast(1.06) drop-shadow(0 8px 7px rgba(115,77,16,.28))",
+    };
+  }
+
+  if (key === "mc") {
+    return {
+      backgroundPosition: "left center",
+      filter: "saturate(1.12) contrast(1.05) drop-shadow(0 8px 7px rgba(18,59,85,.28))",
+    };
+  }
+
+  return {
+    backgroundPosition: "right center",
+    filter: "hue-rotate(305deg) saturate(1.2) contrast(1.05) drop-shadow(0 8px 7px rgba(62,26,111,.28))",
+  };
+};
+
+function FeaturedButterfly({
+  index,
+  name,
+  role,
+}: {
+  index: number;
+  name?: string;
+  role: string;
+}) {
+  const style = getFeaturedButterflyStyle(role, name);
+  const isEven = index % 2 === 0;
+  const animationVariables = {
+    "--venus-featured-delay": `${index * 0.22}s`,
+    "--venus-featured-duration": `${3.6 + (index % 3) * 0.45}s`,
+  } as CSSProperties;
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`venus-featured-butterfly venus-featured-butterfly--${isEven ? "right" : "left"} pointer-events-none absolute top-3 z-20 h-[4.5rem] w-[5.5rem] bg-no-repeat sm:h-20 sm:w-24 ${isEven ? "right-2" : "left-2"}`}
+      style={{
+        ...animationVariables,
+        backgroundImage: `url(${FEATURED_BUTTERFLY_SPRITE})`,
+        backgroundPosition: style.backgroundPosition,
+        backgroundSize: "200% 100%",
+        filter: style.filter,
+      }}
+    />
+  );
+}
 
 const getLineupInitials = (name: string) =>
   name
@@ -168,6 +247,7 @@ export function EventLineupSection({
   vibeCard,
   sectionClassName = "mt-8",
   cardClassName = "",
+  showButterflies = false,
 }: EventLineupSectionProps) {
   const railRef = useRef<HTMLDivElement | null>(null);
 
@@ -190,7 +270,10 @@ export function EventLineupSection({
   };
 
   return (
-    <section id="lineup-reel" className={sectionClassName}>
+    <section
+      id="lineup-reel"
+      className={`${sectionClassName} [contain-intrinsic-size:auto_680px] [content-visibility:auto]`}
+    >
       <Card className={`overflow-hidden border border-slate-200/80 bg-white/82 shadow-[0_20px_52px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-slate-700/55 dark:bg-slate-950/58 ${cardClassName}`}>
         <CardBody className="gap-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -216,7 +299,7 @@ export function EventLineupSection({
               ref={railRef}
               className="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto pb-2 pr-5 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              {sortedMembers.map((member) => {
+              {sortedMembers.map((member, index) => {
                 const hasProfile = Boolean(member.socialUrl);
                 const opensInSameTab = member.socialUrl?.includes("snapchat.com") ?? false;
                 const railItemClassName =
@@ -242,6 +325,10 @@ export function EventLineupSection({
                           </p>
                         </div>
                       )}
+
+                      {showButterflies ? (
+                        <FeaturedButterfly index={index} name={member.name} role={member.role} />
+                      ) : null}
 
                       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/94 via-slate-950/68 to-transparent p-3">
                         <div className="flex flex-wrap items-center gap-2">
@@ -296,6 +383,9 @@ export function EventLineupSection({
                         sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem"
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
+                      {showButterflies ? (
+                        <FeaturedButterfly index={sortedMembers.length} role="mc" />
+                      ) : null}
                       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-slate-950/94 via-slate-950/68 to-transparent p-3">
                         <Chip className="border border-cyan-200/80 bg-cyan-300/92 text-slate-950 backdrop-blur-md">
                           {vibeCard.badgeLabel}
