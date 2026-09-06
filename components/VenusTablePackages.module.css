@@ -1,0 +1,178 @@
+.section {
+  --table-ink: #163b50;
+  --table-muted: #425c66;
+  margin: 0 0 2rem;
+  padding: 1.5rem 1rem;
+  scroll-margin-top: 6rem;
+  border: 1px solid rgba(255, 255, 255, .85);
+  border-radius: 1.5rem;
+  color: var(--table-ink);
+  font-family: var(--font-manrope);
+  background: radial-gradient(ellipse at 0 0, #f9ffd5dd, transparent 65%), linear-gradient(140deg, #ffffffb8, #c7f0edc9 45%, #f6d9eac9);
+  box-shadow: 0 24px 64px #123b551a;
+}
+
+.headingRow { margin-bottom: 1.75rem; }
+.eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .15em; color: #82416d; }
+.heading { margin: .8rem 0; font-family: inherit; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.2; letter-spacing: -.025em; }
+.grid { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+.card { --table-accent: #eced87; border: 1px solid #ffffffeb; border-radius: 1rem !important; background: linear-gradient(145deg, #fffff5f5, #f5fcfbf0 60%, #ffeef8eb) !important; color: var(--table-ink) !important; box-shadow: 0 8px 22px #123b550c, inset 0 1px 0 white !important; }
+.card[data-accent="blue"] { --table-accent: #96dbec; }
+.card[data-accent="pink"] { --table-accent: #f2aed7; }
+.cardBody { display: flex; flex-direction: column; padding: 1.35rem !important; gap: 1.15rem; overflow: visible !important; }
+.cardHeading { border-top: 3px solid var(--table-accent); padding-top: 1rem; }
+.packageLabel { font-size: .75rem; letter-spacing: .15em; color: var(--table-muted); }
+.name { margin: .35rem 0 .8rem; font-size: 1.25rem; font-weight: 700; line-height: 1.25; letter-spacing: -.025em; }
+.price { font-size: 1.75rem; line-height: 1.15; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.price span { font-size: .875rem; color: var(--table-muted); letter-spacing: 0; white-space: nowrap; }
+.packageContents { flex: 1; }
+.drinks { list-style: none; padding: 0; margin: 0 0 .75rem; color: var(--table-muted); font-size: .875rem; line-height: 1.65; }
+.accordion { padding: 0 !important; border-top: 1px solid #163b5020; }
+.detailsTrigger { min-height: 2.75rem; padding: .6rem 0 !important; }
+.detailsTitle { color: var(--table-ink) !important; font-size: .875rem !important; font-weight: 700; }
+.detailsIndicator { color: var(--table-ink) !important; }
+.detailsContent { padding: .25rem 0 .65rem !important; }
+.inclusions { list-style: disc; padding-left: 1rem; color: var(--table-muted); font-size: .875rem; line-height: 1.75; }
+.cardAction { margin-top: auto; }
+.reserveButton { min-height: 3rem; width: 100%; height: auto !important; padding: .8rem .75rem !important; border: 1px solid #123b5540; border-radius: .5rem !important; background: #163b50 !important; color: #fffef0 !important; font-size: .875rem !important; font-weight: 700; letter-spacing: .025em; justify-content: space-between; gap: .65rem; white-space: normal; }
+.reserveButton:hover { background: #24566e !important; }
+.reserveButton:focus-visible, .detailsTrigger:focus-visible { outline: 2px solid #a00067; outline-offset: 3px; }
+.icon { width: 1.25rem; height: 1.25rem; flex: 0 0 auto; }
+.serviceNote { margin: 0 0 .9rem; font-size: .875rem; color: #efe990; }
+.bookingNote { margin: 1.4rem auto 0; max-width: 48rem; font-size: .875rem; line-height: 1.65; text-align: center; color: var(--table-muted); }
+.card:last-child { --table-ink: #f9f7e8; --table-muted: #dfcadb; background: radial-gradient(ellipse at 100% 0, #75355780, transparent 65%), linear-gradient(130deg, #211629, #34152c) !important; border-color: #ffe7f080; }
+.card:last-child .cardHeading { border-top-color: #ecdd8c; }
+.card:last-child .accordion { border-top-color: #f9f7e833; }
+.card:last-child .reserveButton { background: linear-gradient(120deg, #f7f5cd, #d7f0ed 55%, #f0d2e9) !important; color: #213e50 !important; }
+.card:last-child .reserveButton:focus-visible { outline-color: #f5eea8; }
+
+/* Experience skins deliberately exclude the unchanged GHS 30,000 package. */
+.card[data-experience] {
+  position: relative;
+  isolation: isolate;
+  border-color: var(--experience-edge);
+  box-shadow: 0 12px 26px #123b5514, inset 0 1px 0 #ffffff24 !important;
+}
+.card[data-experience]::before,
+.card[data-experience]::after { content: ""; position: absolute; pointer-events: none; z-index: 0; }
+.card[data-experience] .cardBody { position: relative; z-index: 1; }
+.card[data-experience] .cardHeading { border-top-color: var(--table-accent); }
+.card[data-experience] .packageLabel { color: var(--experience-label); }
+.card[data-experience] .accordion { border-top-color: var(--experience-edge); }
+.card[data-experience] .reserveButton {
+  background: var(--experience-button) !important;
+  color: var(--experience-button-ink) !important;
+  border-color: var(--experience-edge);
+  box-shadow: inset 0 1px 0 #ffffff35;
+}
+.card[data-experience] .reserveButton:hover { filter: brightness(1.08); }
+.card[data-experience] .reserveButton:focus-visible,
+.card[data-experience] .detailsTrigger:focus-visible { outline-color: var(--table-accent); }
+
+.card[data-experience="frank-lucas"] {
+  --table-ink: #f8f5df;
+  --table-muted: #caddcc;
+  --table-accent: #d9bc75;
+  --experience-label: #ead398;
+  --experience-edge: #bdcf8c55;
+  --experience-button: linear-gradient(115deg, #ead4a0, #faf0ca 55%, #c7a663);
+  --experience-button-ink: #153b2c;
+  background: radial-gradient(ellipse at 100% 0, #2a654b, transparent 65%), linear-gradient(145deg, #103d30, #09291f) !important;
+  border-radius: 1.5rem .5rem 1.5rem .5rem !important;
+}
+.card[data-experience="frank-lucas"]::before { inset: 0; background: repeating-linear-gradient(90deg, transparent 0 26px, #e8d79908 26px 27px); }
+.card[data-experience="frank-lucas"]::after { width: 9rem; height: 9rem; right: -3rem; top: -3rem; border: 1px solid #e4d59b30; border-radius: 50%; box-shadow: 0 0 0 12px #e4d59b0a, 0 0 0 25px #e4d59b09, 0 0 0 38px #e4d59b07; }
+
+.card[data-experience="griselda-blanco"] {
+  --table-ink: #54213e;
+  --table-muted: #71465e;
+  --table-accent: #a12e68;
+  --experience-label: #89245c;
+  --experience-edge: #ad54873d;
+  --experience-button: linear-gradient(110deg, #7f1e51, #a53072);
+  --experience-button-ink: #fff3fa;
+  background: radial-gradient(ellipse at 0 0, #fffcf8, transparent 65%), linear-gradient(140deg, #fbe7ed, #f7d2e6 75%, #eeb5d0) !important;
+  border-radius: 1.75rem !important;
+}
+.card[data-experience="griselda-blanco"]::after { width: 14rem; height: 14rem; right: -8.5rem; top: 1rem; border: 1px solid #aa4c7724; border-radius: 50%; box-shadow: 0 0 0 14px #fff8fc40, 0 0 0 28px #aa4c7710, 0 0 0 43px #fff8fc40; transform: rotate(-30deg) scaleX(.65); }
+.card[data-experience="griselda-blanco"] .cardHeading { border-top-style: double; }
+.card[data-experience="griselda-blanco"] .reserveButton { border-radius: 1.5rem !important; }
+
+.card[data-experience="carrillo-fuentes"] {
+  --table-ink: #49230d;
+  --table-muted: #674021;
+  --table-accent: #91431d;
+  --experience-label: #7d3717;
+  --experience-edge: #85441845;
+  --experience-button: #4c281a;
+  --experience-button-ink: #fff0d0;
+  background: radial-gradient(ellipse at 0 0, #ffe4a2, transparent 60%), linear-gradient(150deg, #f8cc85, #edaa68) !important;
+  border-radius: .5rem 1.75rem .5rem .5rem !important;
+}
+.card[data-experience="carrillo-fuentes"]::before { inset: 0; background: linear-gradient(145deg, transparent 0 74%, #a5471821 74% 80%, transparent 80% 84%, #fff1c838 84% 88%, transparent 88%); }
+.card[data-experience="carrillo-fuentes"]::after { width: 6rem; height: 6rem; right: -2rem; top: -2rem; border: 15px solid #ad53201c; border-radius: 50%; }
+.card[data-experience="carrillo-fuentes"] .reserveButton { border-radius: .25rem !important; box-shadow: 3px 3px 0 #99451d55; }
+
+.card[data-experience="el-chapo"] {
+  --table-ink: #f3f7ff;
+  --table-muted: #cdddf7;
+  --table-accent: #8cddfa;
+  --experience-label: #abe9ff;
+  --experience-edge: #a0caef50;
+  --experience-button: linear-gradient(120deg, #e5f5ff, #abdff4);
+  --experience-button-ink: #102e67;
+  background: radial-gradient(ellipse at 100% 0, #2456a4, transparent 65%), linear-gradient(150deg, #133a79, #0b204c) !important;
+}
+.card[data-experience="el-chapo"]::before { inset: 0; background: radial-gradient(circle, #a5daff20 1px, transparent 1px) 0 0 / 20px 20px; mask-image: linear-gradient(90deg, transparent 55%, black); }
+.card[data-experience="el-chapo"]::after { width: 10rem; height: 10rem; right: -5rem; top: 2.5rem; border: 1px solid #b2ecff38; border-radius: 50%; box-shadow: 0 0 0 20px #a5daff08, 0 0 0 40px #a5daff08; }
+.card[data-experience="el-chapo"] .cardHeading { border-image: linear-gradient(90deg, #b8ecff 35%, #b8ecff00) 1; }
+
+.card[data-experience="el-mayo"] {
+  --table-ink: #433720;
+  --table-muted: #65563c;
+  --table-accent: #956c2c;
+  --experience-label: #78531f;
+  --experience-edge: #a27c434d;
+  --experience-button: linear-gradient(120deg, #684a24, #8a642f);
+  --experience-button-ink: #fff8e5;
+  background: radial-gradient(ellipse at 50% 0, #fffefa, transparent 70%), linear-gradient(135deg, #f8efd9, #eee0bf) !important;
+  border-radius: .5rem !important;
+}
+.card[data-experience="el-mayo"]::before { inset: .45rem; border: 1px solid #a17c4538; border-radius: .2rem; }
+.card[data-experience="el-mayo"]::after { width: 5rem; height: 5rem; right: -2rem; top: -2rem; border: 1px solid #9b783d60; box-shadow: 0 0 0 7px #9b783d0d, 0 0 0 14px #9b783d0a; transform: rotate(45deg); }
+.card[data-experience="el-mayo"] .cardHeading { border-top-style: double; }
+.card[data-experience="el-mayo"] .reserveButton { border-radius: .2rem !important; }
+
+.card[data-experience="carlos-lehder"] {
+  --table-ink: #f6f7f9;
+  --table-muted: #ced2da;
+  --table-accent: #cbd4df;
+  --experience-label: #e5e9f0;
+  --experience-edge: #c1c9d04d;
+  --experience-button: linear-gradient(120deg, #d7dde4, #fcfcfe 42%, #b6c0cd 74%, #e8ecf3);
+  --experience-button-ink: #252c36;
+  background: linear-gradient(135deg, #353e4c, #171c25 65%, #292e39) !important;
+  border-radius: 1rem .35rem 1rem .35rem !important;
+}
+.card[data-experience="carlos-lehder"]::before { inset: 0; background: linear-gradient(130deg, transparent 0 64%, #c5d7ea0f 64% 67%, transparent 67% 70%, #c5d7ea0a 70% 80%, transparent 80%); }
+.card[data-experience="carlos-lehder"]::after { width: 7rem; height: 7rem; right: -2.5rem; top: -3rem; border: 1px solid #d6e1f055; transform: rotate(30deg); box-shadow: 0 0 0 9px #d6e1f00b, 0 0 0 18px #d6e1f009; }
+.card[data-experience="carlos-lehder"] .cardHeading { border-image: linear-gradient(90deg, #909dab, #ffffff, #909dab33) 1; }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card[data-experience] { transition: transform 180ms ease, box-shadow 180ms ease; }
+  .card[data-experience]:hover { transform: translateY(-3px); box-shadow: 0 18px 32px #123b5528 !important; }
+}
+
+@media (min-width: 640px) {
+  .section { padding: 2rem; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card:last-child { grid-column: 1 / -1; }
+  .card:last-child .cardBody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem; }
+  .card:last-child .cardAction { align-self: end; }
+}
+
+@media (min-width: 1280px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .card:last-child .cardBody { grid-template-columns: 1fr 1.15fr 1fr; align-items: start; }
+  .card:last-child .cardAction { align-self: center; }
+}

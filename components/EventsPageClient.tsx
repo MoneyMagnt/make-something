@@ -19,6 +19,7 @@ import {
   type EventFeatureKey,
 } from "@/lib/eventOps";
 import { SITE_URL } from "@/lib/site";
+import { VENUS_TABLE_ENQUIRY_URL } from "@/lib/venusTables";
 
 const ACTIVE_EVENT_STORAGE_KEY = "zyra_events_active_event_v1";
 const WHATSAPP_BASE_URL = "https://wa.me/233556877954";
@@ -83,6 +84,9 @@ const buildCalendarUrl = (event: EventMeta) => {
 };
 
 const buildTableReservationUrl = (event: EventMeta) => {
+  if (event.name === "VENUS") {
+    return VENUS_TABLE_ENQUIRY_URL;
+  }
   const text = `hi zyra, i want to reserve table for ${event.name} on ${event.dateLabel} at ${event.venue}.`;
   return `${WHATSAPP_BASE_URL}?text=${encodeURIComponent(text)}`;
 };

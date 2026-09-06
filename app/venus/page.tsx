@@ -3,6 +3,7 @@
 import { Button, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SITE_URL } from "@/lib/site";
+import { VENUS_TABLE_PACKAGES_HREF } from "@/lib/venusTables";
 
 const VENUS_TICKET_URL =
   "https://egotickets.com/events/venus-the-beginning/register";
@@ -46,13 +47,16 @@ const VENUS_EVENT_SCHEMA = {
 };
 
 export default function VenusTicketLandingPage() {
-  const closeToVenusPage = () => {
+  const rememberIntro = () => {
     try {
       sessionStorage.setItem(VENUS_INTRO_STORAGE_KEY, "true");
     } catch {
       // Navigation should still work if browser storage is unavailable.
     }
+  };
 
+  const closeToVenusPage = () => {
+    rememberIntro();
     window.location.assign("/events/venus");
   };
 
@@ -136,6 +140,13 @@ export default function VenusTicketLandingPage() {
             <span className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,transparent_0_38%,white_44%_54%,transparent_60%_100%)]" />
             <span className="relative z-10 whitespace-normal text-center leading-tight">RESERVE YOUR FREE PASS NOW</span>
           </Button>
+          <Link
+            href={VENUS_TABLE_PACKAGES_HREF}
+            onPress={rememberIntro}
+            className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 text-sm font-bold tracking-[0.06em] !text-white underline underline-offset-4"
+          >
+            EXPLORE TABLE PACKAGES <span aria-hidden="true">&rarr;</span>
+          </Link>
         </div>
       </div>
     </main>

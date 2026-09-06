@@ -35,7 +35,8 @@ export function EventCountdownChip({
   targetIso,
   elapsedLabel = "doors open now",
 }: EventCountdownChipProps) {
-  const [now, setNow] = useState(() => Date.now());
+  // Keep server and first browser render identical; start the clock after mounting.
+  const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
     if (!targetIso) {
@@ -43,14 +44,21 @@ export function EventCountdownChip({
     }
 
     const sync = () => setNow(Date.now());
-    sync();
+    const initialSync = window.setTimeout(sync, 0);
 
     const timer = window.setInterval(sync, 1000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(initialSync);
+      window.clearInterval(timer);
+    };
   }, [targetIso]);
 
-  const units = useMemo(() => getCountdownParts(targetIso, now), [targetIso, now]);
-  const isTickVisible = Math.floor(now / 1000) % 2 === 0;
+  const units = useMemo(() => now === null ? null : getCountdownParts(targetIso, now), [targetIso, now]);
+  const isTickVisible = now !== null && Math.floor(now / 1000) % 2 === 0;
+
+  if (now === null && targetIso) {
+    return <span aria-label="Loading event countdown" className="inline-block h-4 w-44" />;
+  }
 
   if (!units) {
     return <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">tickets live</span>;

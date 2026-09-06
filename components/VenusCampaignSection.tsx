@@ -8,7 +8,9 @@ import { createPortal } from "react-dom";
 import { EventCountdownChip } from "@/components/EventCountdownChip";
 import { EventLineupSection } from "@/components/EventLineupSection";
 import { EventsBrandMark } from "@/components/EventsBrandMark";
+import { VenusTablePackages } from "@/components/VenusTablePackages";
 import { EVENTS } from "@/lib/eventsData";
+import { VENUS_TABLE_ENQUIRY_URL, VENUS_TABLE_SECTION_ID } from "@/lib/venusTables";
 
 const VENUS_REGISTRATION_URL =
   "https://egotickets.com/events/venus-the-beginning/register";
@@ -17,9 +19,6 @@ const VENUS_MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=Jet%20BBL%20Ack%20Lounge%2C%20Ashaley%20Botwe%203rd%20Gate%2C%20Accra";
 const VENUS_CALENDAR_URL =
   "https://calendar.google.com/calendar/render?action=TEMPLATE&text=VENUS%20Accra&dates=20260911T210000Z%2F20260912T030000Z&details=Get%20your%20tickets%20on%20Egotickets.&location=Jet%20BBL%20Ack%20Lounge%2C%20Ashaley%20Botwe%2C%20Accra";
-const VENUS_TABLE_URL = `https://wa.me/233556877954?text=${encodeURIComponent(
-  "hi zyra, i want to reserve a table for VENUS at Jet BBL Ack Lounge on 11 September 2026."
-)}`;
 
 const VENUS_EVENT = EVENTS.find((event) => event.name === "VENUS");
 
@@ -161,6 +160,11 @@ function VenusTicketIntro({
       shouldOpen = true;
     }
 
+    // Direct package links should not be interrupted by the intro, even without storage.
+    if (window.location.hash === `#${VENUS_TABLE_SECTION_ID}`) {
+      shouldOpen = false;
+    }
+
     const timer = window.setTimeout(() => {
       setIsOpen(shouldOpen);
       onOpenChange?.(shouldOpen);
@@ -274,6 +278,13 @@ function VenusTicketIntro({
                 <span className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,transparent_0_38%,white_44%_54%,transparent_60%_100%)]" />
                 <span className="relative z-10 whitespace-normal text-center leading-tight">RESERVE YOUR FREE PASS NOW</span>
               </Button>
+              <Link
+                href={`#${VENUS_TABLE_SECTION_ID}`}
+                onPress={dismiss}
+                className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 text-sm font-bold tracking-[0.06em] !text-white underline underline-offset-4"
+              >
+                EXPLORE TABLE PACKAGES <span aria-hidden="true">&rarr;</span>
+              </Link>
             </motion.div>
           </div>
         </motion.div>
@@ -380,6 +391,8 @@ export function VenusCampaignSection({
             showButterflies
           />
 
+          <VenusTablePackages />
+
           <section id="event-guide" className="mb-8 scroll-mt-24 [contain-intrinsic-size:auto_520px] [content-visibility:auto]">
             <Card className="border border-white/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.48),rgba(144,231,229,0.28)_45%,rgba(255,185,221,0.24))] shadow-[0_24px_64px_rgba(18,59,85,0.17)] backdrop-blur-[2px]">
               <CardBody className="gap-4 p-5 sm:p-7">
@@ -394,7 +407,7 @@ export function VenusCampaignSection({
                   {[
                     ["arrival", "get directions", VENUS_MAPS_URL],
                     ["reminder", "add to calendar", VENUS_CALENDAR_URL],
-                    ["tables", "reserve a table", VENUS_TABLE_URL],
+                    ["tables", "reserve a table", VENUS_TABLE_ENQUIRY_URL],
                   ].map(([label, title, href]) => (
                     <Link
                       key={label}
