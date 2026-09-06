@@ -201,7 +201,7 @@ function VenusTicketIntro({
         <motion.div
           role="dialog"
           aria-modal="true"
-          aria-label="VENUS tickets"
+          aria-label="Reserve your free VENUS pass"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -264,14 +264,15 @@ function VenusTicketIntro({
                 href={VENUS_REGISTRATION_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative isolate min-h-14 w-full overflow-hidden border-2 border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#a8f2ee_28%,#f5fa78_50%,#ff83c5_72%,#ffffff_100%)] px-10 text-lg font-black tracking-[0.08em] text-[#123b55] shadow-[0_10px_0_#123b55,0_20px_40px_rgba(18,59,85,0.25)] transition-transform hover:-translate-y-1"
+                aria-label="Reserve your free VENUS pass now on Egotickets"
+                className="relative isolate min-h-14 w-full overflow-hidden border-2 border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#a8f2ee_28%,#f5fa78_50%,#ff83c5_72%,#ffffff_100%)] px-4 text-sm font-black tracking-[0.08em] text-[#123b55] shadow-[0_10px_0_#123b55,0_20px_40px_rgba(18,59,85,0.25)] transition-transform hover:-translate-y-1 sm:px-10 sm:text-lg"
                 onPress={() => {
                   dismiss();
                   onTicketClick?.();
                 }}
               >
                 <span className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,transparent_0_38%,white_44%_54%,transparent_60%_100%)]" />
-                <span className="relative z-10">GET TICKETS NOW!</span>
+                <span className="relative z-10 whitespace-normal text-center leading-tight">RESERVE YOUR FREE PASS NOW</span>
               </Button>
             </motion.div>
           </div>
@@ -342,11 +343,12 @@ export function VenusCampaignSection({
                           href={VENUS_REGISTRATION_URL}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="relative isolate h-12 w-full overflow-hidden border border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#8be9e7_25%,#f5fa78_48%,#ff70b7_72%,#ffffff_100%)] px-8 text-base font-black tracking-[0.04em] text-[#123b55] shadow-[0_10px_0_#123b55,0_20px_42px_rgba(18,59,85,0.2)] transition-transform hover:-translate-y-1 sm:w-fit"
+                          aria-label="Reserve your free VENUS pass now on Egotickets"
+                          className="relative isolate h-12 w-full overflow-hidden border border-white/90 bg-[linear-gradient(135deg,#ffffff_0%,#8be9e7_25%,#f5fa78_48%,#ff70b7_72%,#ffffff_100%)] px-4 text-sm font-black tracking-[0.04em] text-[#123b55] shadow-[0_10px_0_#123b55,0_20px_42px_rgba(18,59,85,0.2)] transition-transform hover:-translate-y-1 sm:w-fit sm:px-8 sm:text-base"
                           onPress={onPassClick}
                         >
                           <span className="absolute inset-0 opacity-55 [background:linear-gradient(115deg,transparent_0_36%,white_43%_54%,transparent_62%_100%)]" />
-                          <span className="relative z-10">GET TICKETS NOW!</span>
+                          <span className="relative z-10 whitespace-normal text-center leading-tight">RESERVE YOUR FREE PASS NOW</span>
                         </Button>
                       </div>
                     </div>
