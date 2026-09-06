@@ -120,7 +120,7 @@ export const EVENTS: EventMeta[] = [
         name: "Peace",
         image: "/lineup/peace-host.jpeg",
         socialUrl:
-          "https://www.snapchat.com/add/itzz_peaceee?share_id=SsPqtRdVQ964_ktPqBzT9w&locale=en_US@rg=ghzzzz",
+          "https://www.snapchat.com/@itzz_peaceee26",
       },
       {
         role: "mc",

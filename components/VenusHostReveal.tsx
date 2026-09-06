@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
-const HOST_PROFILE_URL = "https://www.snapchat.com/@itzz_peaceee";
+const HOST_PROFILE_URL = "https://www.snapchat.com/@itzz_peaceee26";
 
 function SnapchatGlyph() {
   return (
@@ -201,9 +201,6 @@ export function VenusHostReveal() {
                   <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                     <p className="font-[family-name:var(--font-space-grotesk)] text-3xl font-black sm:text-4xl">
                       Peace
-                    </p>
-                    <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-[#f5fa78]">
-                      @itzz_peaceee
                     </p>
                     <span className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/65 bg-[#fffc00] px-4 py-2 text-[11px] font-black uppercase tracking-[0.15em] text-[#123b55] shadow-lg">
                       <SnapchatGlyph />
