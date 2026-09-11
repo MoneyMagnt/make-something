@@ -217,7 +217,7 @@ function VenusTicketIntro({
             className="absolute inset-0 [background:radial-gradient(circle_at_15%_18%,rgba(0,169,214,0.5),transparent_26rem),radial-gradient(circle_at_86%_14%,rgba(245,0,150,0.42),transparent_28rem),linear-gradient(160deg,#f5fa78_0%,#a7e7ce_54%,#35c4cf_100%)]"
           />
           <motion.video
-            poster="/events/venus/venus-flyer-poster.webp"
+            poster="/events/venus/venus-tonight.jpg"
             autoPlay
             muted
             loop

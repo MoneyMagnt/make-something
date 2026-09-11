@@ -14,9 +14,9 @@ const VENUS_EVENT_SCHEMA = {
   "@type": "Event",
   name: "VENUS",
   description:
-    "+233Events officially opens Jet BBlack Lounge with VENUS for an unforgettable celebration of a major milestone in Accra.",
+    "VENUS is tonight at Jet BBlack Lounge in Ashaley Botwe, Accra. Free entry from 9pm for the official re-opening party.",
   url: `${SITE_URL}/venus`,
-  image: [`${SITE_URL}/events/venus/venus-flyer.jpg`],
+  image: [`${SITE_URL}/events/venus/venus-tonight.jpg`],
   startDate: "2026-09-11T21:00:00+00:00",
   endDate: "2026-09-12T03:00:00+00:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -71,11 +71,10 @@ export default function VenusTicketLandingPage() {
       />
 
       <div className="sr-only">
-        <h1>+233Events opens Jet BBlack Lounge with VENUS</h1>
+        <h1>VENUS is tonight at Jet BBlack Lounge</h1>
         <p>
-          You are invited. +233Events opens Jet BBlack Lounge with VENUS on
-          11 September 2026 at 9pm. Free entry. Reserve your free pass now and
-          be part of the beginning.
+          Join +233Events for VENUS tonight, 11 September 2026 at 9pm. Free
+          entry at Jet BBlack Lounge, Ashaley Botwe, 3rd Gate.
         </p>
       </div>
 
@@ -85,7 +84,7 @@ export default function VenusTicketLandingPage() {
       />
 
       <motion.video
-        poster="/events/venus/venus-flyer-poster.webp"
+        poster="/events/venus/venus-tonight.jpg"
         autoPlay
         muted
         loop

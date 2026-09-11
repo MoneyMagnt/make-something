@@ -30,14 +30,20 @@ export function VenusTablePackages() {
 
       <div className={styles.grid}>
         {VENUS_TABLE_PACKAGES.map((table) => (
-          <Card key={table.id} as="article" className={styles.card} data-accent={table.accent} data-experience={table.price === 30000 ? undefined : table.id}>
+          <Card key={table.id} as="article" className={styles.card} data-accent={table.accent} data-experience={table.price === 30000 ? undefined : table.id} data-premium={table.id === "pablo-escobar" ? "true" : undefined}>
             <CardBody className={styles.cardBody}>
               <div className={styles.cardHeading}>
-                <p className={styles.packageLabel}>TABLE PACKAGE</p>
+                {table.id === "pablo-escobar" ? (
+                  <span className={styles.premiumSeal} aria-hidden="true">
+                    <svg viewBox="0 0 32 32" fill="none"><path d="m5 10 6 5 5-9 5 9 6-5-3 14H8L5 10Zm3 17h16" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /></svg>
+                  </span>
+                ) : null}
+                <p className={styles.packageLabel}>{table.id === "pablo-escobar" ? "THE SIGNATURE TABLE" : "TABLE PACKAGE"}</p>
                 <h3 className={styles.name}>{table.name}</h3>
                 <p className={styles.price}>{formatVenusTablePrice(table.price)} <span>/ table</span></p>
               </div>
               <div className={styles.packageContents}>
+                {table.id === "pablo-escobar" ? <p className={styles.premiumCaption}>THE SELECTION</p> : null}
                 <ul className={styles.drinks} aria-label={`${table.name} drinks`}>
                   {table.drinks.map((drink) => <li key={drink}>{drink}</li>)}
                 </ul>
@@ -50,7 +56,7 @@ export function VenusTablePackages() {
                 </Accordion>
               </div>
               <div className={styles.cardAction}>
-                {table.extras.includes("VIP table service") ? <p className={styles.serviceNote}>Includes VIP table service</p> : null}
+                {table.extras.includes("VIP table service") ? <div className={styles.premiumService}><p className={styles.serviceNote}>VIP table service</p><p className={styles.premiumServiceDetail}>Premium finger foods<br />4 shishas</p></div> : null}
                 <Button as={Link} href={buildVenusTableWhatsAppUrl(table)} target="_blank" rel="noopener noreferrer" className={styles.reserveButton} aria-label={`Reserve the ${table.name} table for ${formatVenusTablePrice(table.price)} on WhatsApp (opens in a new tab)`} endContent={<WhatsAppIcon />}>
                   RESERVE THIS TABLE
                 </Button>

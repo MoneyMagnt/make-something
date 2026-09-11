@@ -94,12 +94,12 @@ export const EVENTS: EventMeta[] = [
     egoticketsEventUrl:
       "https://egotickets.com/events/venus-the-beginning/register",
     description:
-      "VENUS returns to Jet BBL Ack Lounge in Ashaley Botwe, Accra, on 11 September 2026 at 9pm.",
+      "VENUS is tonight at Jet BBL Ack Lounge in Ashaley Botwe, Accra, from 9pm.",
     vibeCard: {
       title: "follow venus updates",
       badgeLabel: "stay connected",
       summary: "passes, lineup updates, and event-night energy in one place.",
-      poster: "/events/venus/venus-flyer.jpg",
+      poster: "/events/venus/venus-tonight.jpg",
       actions: [
         {
           platform: "instagram",

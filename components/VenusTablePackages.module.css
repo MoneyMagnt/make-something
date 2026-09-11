@@ -46,7 +46,7 @@
 .card:last-child .reserveButton { background: linear-gradient(120deg, #f7f5cd, #d7f0ed 55%, #f0d2e9) !important; color: #213e50 !important; }
 .card:last-child .reserveButton:focus-visible { outline-color: #f5eea8; }
 
-/* Experience skins deliberately exclude the unchanged GHS 30,000 package. */
+/* The first six experience skins are separate from the signature package. */
 .card[data-experience] {
   position: relative;
   isolation: isolate;
@@ -175,4 +175,44 @@
   .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .card:last-child .cardBody { grid-template-columns: 1fr 1.15fr 1fr; align-items: start; }
   .card:last-child .cardAction { align-self: center; }
+}
+
+.card[data-premium="true"] {
+  position: relative;
+  isolation: isolate;
+  margin-top: .75rem;
+  border: 1px solid #d9be8299;
+  border-radius: 1.25rem !important;
+  background: radial-gradient(ellipse at 85% 0, #75355799, transparent 60%), radial-gradient(ellipse at 0 100%, #55254180, transparent 65%), linear-gradient(130deg, #211629, #34152c) !important;
+  box-shadow: 0 22px 48px #21162935, inset 0 1px 0 #fbe7b366 !important;
+}
+.card[data-premium="true"]::before { content: ""; position: absolute; inset: .5rem; border: 1px solid #d9be8238; border-radius: .8rem; pointer-events: none; }
+.card[data-premium="true"]::after { content: ""; position: absolute; width: 26rem; height: 26rem; right: -16rem; top: -13rem; border: 1px solid #ebd29530; border-radius: 50%; box-shadow: 0 0 0 18px #ebd29507, 0 0 0 38px #ebd29506, 0 0 0 62px #ebd29505; pointer-events: none; z-index: -1; }
+.card[data-premium="true"] .cardBody { padding: 1.8rem !important; gap: 1.75rem; }
+.card[data-premium="true"] .cardHeading { border-top: 0; padding-top: 0; }
+.premiumSeal { display: grid; place-items: center; width: 3rem; height: 3rem; margin-bottom: 1rem; color: #efd99c; border: 1px solid #d9be8270; border-radius: .65rem; background: linear-gradient(135deg, #f4d69a14, #f4d69a03); }
+.premiumSeal svg { width: 2rem; height: 2rem; }
+.card[data-premium="true"] .packageLabel { color: #e7d09b; font-size: .7rem; letter-spacing: .18em; }
+.card[data-premium="true"] .name { margin: .65rem 0 1rem; font-size: clamp(1.8rem, 3vw, 2.65rem); line-height: 1.1; letter-spacing: -.035em; }
+.card[data-premium="true"] .price { color: #f1dda9; font-size: clamp(1.8rem, 3vw, 2.25rem); }
+.card[data-premium="true"] .price span { color: #dfcadb; }
+.card[data-premium="true"] .packageContents { padding-top: 1.35rem; border-top: 1px solid #e7ce9140; }
+.premiumCaption { color: #e7d09b; font-size: .75rem; letter-spacing: .14em; margin-bottom: 1rem; }
+.card[data-premium="true"] .drinks { font-size: 1rem; line-height: 1.85; color: #f0e5ec; }
+.card[data-premium="true"] .accordion { border-top-color: #e7ce9140; }
+.card[data-premium="true"] .cardAction { margin-top: 0; padding: 1.25rem; border: 1px solid #e7ce9140; border-radius: .75rem; background: linear-gradient(140deg, #ffdf9912, #ffdf9903); }
+.premiumService { margin-bottom: 1.25rem; }
+.card[data-premium="true"] .serviceNote { color: #f0d9a0; font-size: 1rem; margin: 0 0 .6rem; }
+.premiumServiceDetail { font-size: .875rem; color: #dfcadb; line-height: 1.7; }
+.card[data-premium="true"] .reserveButton { background: linear-gradient(115deg, #d2b67c, #fff0bd 45%, #e0c38a) !important; color: #301b2d !important; min-height: 3.25rem; border-color: #f7e2ab; box-shadow: inset 0 1px 0 #fff8de, 0 6px 20px #10081030; }
+.card[data-premium="true"] .reserveButton:hover { filter: brightness(1.07); }
+@media (min-width: 640px) {
+  .card[data-premium="true"] .cardBody { padding: 2.25rem !important; }
+  .card[data-premium="true"] .cardHeading { grid-column: 1 / -1; }
+  .card[data-premium="true"] .cardAction { align-self: center; }
+}
+@media (min-width: 1280px) {
+  .card[data-premium="true"] .cardBody { grid-template-columns: 1.1fr 1fr 1fr; gap: 2rem; align-items: center; padding: 2.75rem !important; }
+  .card[data-premium="true"] .cardHeading { grid-column: auto; }
+  .card[data-premium="true"] .packageContents { border-top: 0; border-left: 1px solid #e7ce9140; padding: 0 0 0 2rem; }
 }

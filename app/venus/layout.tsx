@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 const VENUS_URL = `${SITE_URL}/venus`;
-const VENUS_IMAGE = `${SITE_URL}/events/venus/venus-flyer.jpg`;
-const VENUS_TITLE = "VENUS | +233Events Opens Jet BBlack Lounge";
+const VENUS_IMAGE = `${SITE_URL}/events/venus/venus-tonight.jpg`;
+const VENUS_TITLE = "VENUS Tonight | Jet BBlack Lounge, Accra";
 const VENUS_DESCRIPTION =
-  "Accra, meet VENUS. +233Events officially opens Jet BBlack Lounge with an unforgettable celebration of a major milestone. Get your tickets now and be part of the beginning.";
+  "VENUS is tonight at Jet BBlack Lounge, Ashaley Botwe. Free entry from 9pm. Reserve your pass and join +233Events for the official re-opening party.";
 
 export const metadata: Metadata = {
   title: {
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
         url: VENUS_IMAGE,
         width: 1600,
         height: 2844,
-        alt: "Updated VENUS flyer for +233Events at Jet BBlack Lounge",
+        alt: "VENUS is tonight at Jet BBlack Lounge",
       },
     ],
   },

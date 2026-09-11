@@ -39,24 +39,24 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
   const title = isWeOutside
     ? WE_OUTSIDE_SEO_TITLE
     : isVenus
-      ? "VENUS Accra | 11 September 2026 at Jet BBL Ack Lounge"
+      ? "VENUS Tonight | Jet BBL Ack Lounge, Accra"
       : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
   const description = isWeOutside
     ? WE_OUTSIDE_SEO_DESCRIPTION
     : isVenus
-      ? "VENUS lands at Jet BBL Ack Lounge, Ashaley Botwe, on 11 September 2026 at 9pm. Get your tickets on Egotickets and meet us at 3rd Gate."
+      ? "VENUS is tonight at Jet BBL Ack Lounge, Ashaley Botwe, from 9pm. Free entry. Reserve your pass and meet us at 3rd Gate."
       : `${event.description} venue: ${event.venue}, ${event.city}.`;
   const url = isVenus ? `${SITE_URL}/venus` : `${SITE_URL}/events/${event.slug}`;
   const socialTitle = isVenus
-    ? "VENUS | 11 September 2026 in Accra"
+    ? "VENUS Tonight | Jet BBL Ack Lounge"
     : title;
   const socialDescription = isVenus
-    ? "A bright new night at Jet BBL Ack Lounge, Ashaley Botwe. 9pm sharp. Get your VENUS tickets on Egotickets."
+    ? "Tonight at Jet BBL Ack Lounge, Ashaley Botwe. Free entry from 9pm. Reserve your VENUS pass now."
     : description;
   const imagePath = isWeOutside
     ? WE_OUTSIDE_SOCIAL_IMAGE_PATH
     : isVenus
-      ? "/events/venus/venus-flyer.jpg"
+      ? "/events/venus/venus-tonight.jpg"
       : "/og.jpg?v=20260323a";
 
   return {
