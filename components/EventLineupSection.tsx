@@ -2,7 +2,7 @@
 
 import { Button, Card, CardBody, Chip, Link } from "@heroui/react";
 import Image from "next/image";
-import { useRef, type CSSProperties } from "react";
+import { useRef } from "react";
 import type { EventLineupMember, EventVibeCard } from "@/lib/eventsData";
 
 type EventLineupSectionProps = {
@@ -10,86 +10,8 @@ type EventLineupSectionProps = {
   vibeCard?: EventVibeCard;
   sectionClassName?: string;
   cardClassName?: string;
-  showButterflies?: boolean;
+  theme?: "default" | "venus";
 };
-
-const FEATURED_BUTTERFLY_SPRITE = "/events/venus/venus-butterflies.webp";
-
-const getFeaturedButterflyStyle = (role: string, name = "") => {
-  const key = role.toLowerCase();
-  const memberName = name.toLowerCase();
-
-  if (memberName.includes("viperlino")) {
-    return {
-      backgroundPosition: "left center",
-      filter: "hue-rotate(280deg) saturate(1.3) contrast(1.06) drop-shadow(0 8px 7px rgba(22,101,52,.3))",
-    };
-  }
-
-  if (memberName.includes("hollywoode") || memberName.includes("hollywood")) {
-    return {
-      backgroundPosition: "right center",
-      filter: "grayscale(1) brightness(1.65) contrast(.85) drop-shadow(0 8px 8px rgba(255,255,255,.48)) drop-shadow(0 10px 8px rgba(0,0,0,.22))",
-    };
-  }
-
-  if (memberName.includes("tormhe")) {
-    return {
-      backgroundPosition: "left center",
-      filter: "hue-rotate(205deg) saturate(1.5) contrast(1.08) drop-shadow(0 8px 7px rgba(154,79,10,.32))",
-    };
-  }
-
-  if (key === "host") {
-    return {
-      backgroundPosition: "left center",
-      filter: "hue-rotate(205deg) saturate(1.28) contrast(1.06) drop-shadow(0 8px 7px rgba(115,77,16,.28))",
-    };
-  }
-
-  if (key === "mc") {
-    return {
-      backgroundPosition: "left center",
-      filter: "saturate(1.12) contrast(1.05) drop-shadow(0 8px 7px rgba(18,59,85,.28))",
-    };
-  }
-
-  return {
-    backgroundPosition: "right center",
-    filter: "hue-rotate(305deg) saturate(1.2) contrast(1.05) drop-shadow(0 8px 7px rgba(62,26,111,.28))",
-  };
-};
-
-function FeaturedButterfly({
-  index,
-  name,
-  role,
-}: {
-  index: number;
-  name?: string;
-  role: string;
-}) {
-  const style = getFeaturedButterflyStyle(role, name);
-  const isEven = index % 2 === 0;
-  const animationVariables = {
-    "--venus-featured-delay": `${index * 0.22}s`,
-    "--venus-featured-duration": `${3.6 + (index % 3) * 0.45}s`,
-  } as CSSProperties;
-
-  return (
-    <div
-      aria-hidden="true"
-      className={`venus-featured-butterfly venus-featured-butterfly--${isEven ? "right" : "left"} pointer-events-none absolute top-3 z-20 h-[4.5rem] w-[5.5rem] bg-no-repeat sm:h-20 sm:w-24 ${isEven ? "right-2" : "left-2"}`}
-      style={{
-        ...animationVariables,
-        backgroundImage: `url(${FEATURED_BUTTERFLY_SPRITE})`,
-        backgroundPosition: style.backgroundPosition,
-        backgroundSize: "200% 100%",
-        filter: style.filter,
-      }}
-    />
-  );
-}
 
 const getLineupInitials = (name: string) =>
   name
@@ -157,9 +79,11 @@ const sortLineupMembers = (members: EventLineupMember[]) =>
 function RailArrow({
   direction,
   onPress,
+  theme = "default",
 }: {
   direction: "left" | "right";
   onPress: () => void;
+  theme?: "default" | "venus";
 }) {
   return (
     <Button
@@ -168,7 +92,9 @@ function RailArrow({
       size="sm"
       variant="flat"
       aria-label={direction === "left" ? "see previous lineup card" : "see next lineup card"}
-      className="border border-slate-300/85 bg-white/95 text-slate-950 shadow-[0_10px_24px_rgba(15,23,42,0.08)] dark:border-slate-700/70 dark:bg-slate-900/78 dark:text-slate-100"
+      className={theme === "venus"
+        ? "border border-[#e7c782]/45 bg-[#e7c782]/12 text-[#f5db9b]"
+        : "border border-slate-300/85 bg-white/95 text-slate-950 shadow-[0_10px_24px_rgba(15,23,42,0.08)] dark:border-slate-700/70 dark:bg-slate-900/78 dark:text-slate-100"}
       onPress={onPress}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
@@ -247,9 +173,10 @@ export function EventLineupSection({
   vibeCard,
   sectionClassName = "mt-8",
   cardClassName = "",
-  showButterflies = false,
+  theme = "default",
 }: EventLineupSectionProps) {
   const railRef = useRef<HTMLDivElement | null>(null);
+  const isVenus = theme === "venus";
 
   if (members.length === 0 && !vibeCard) {
     return null;
@@ -278,35 +205,39 @@ export function EventLineupSection({
         <CardBody className="gap-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+              <p className={`text-[11px] uppercase tracking-[0.18em] ${isVenus ? "text-[#e7c782]" : "text-slate-500 dark:text-slate-400"}`}>
                 lineup
               </p>
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <h2 className={isVenus
+                ? "font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-[#f8f0df]"
+                : "font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-slate-900 dark:text-slate-100"}>
                 featured
               </h2>
             </div>
             <div className="hidden items-center gap-2 sm:flex">
-              <RailArrow direction="left" onPress={() => scrollRail("left")} />
-              <RailArrow direction="right" onPress={() => scrollRail("right")} />
+              <RailArrow direction="left" onPress={() => scrollRail("left")} theme={theme} />
+              <RailArrow direction="right" onPress={() => scrollRail("right")} theme={theme} />
             </div>
           </div>
 
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-10 bg-gradient-to-r from-white to-transparent dark:from-slate-950/90 sm:block" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l from-white to-transparent dark:from-slate-950/90 sm:block" />
+            <div className={`pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-10 bg-gradient-to-r to-transparent sm:block ${isVenus ? "from-[#2b0f11]" : "from-white dark:from-slate-950/90"}`} />
+            <div className={`pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l to-transparent sm:block ${isVenus ? "from-[#2b0f11]" : "from-white dark:from-slate-950/90"}`} />
 
             <div
               ref={railRef}
               className="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto pb-2 pr-5 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              {sortedMembers.map((member, index) => {
-                const hasProfile = Boolean(member.socialUrl);
+              {sortedMembers.map((member) => {
+                const hasProfile = Boolean(member.socialUrl) && !member.socialLinks?.length;
                 const opensInSameTab = member.socialUrl?.includes("snapchat.com") ?? false;
                 const railItemClassName =
                   "group flex w-[82%] min-w-[82%] snap-start sm:w-[19rem] sm:min-w-[19rem] lg:w-[21rem] lg:min-w-[21rem]";
 
                 const cardBody = (
-                  <Card className="h-full w-full overflow-hidden border border-slate-200/85 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-shadow duration-300 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-slate-700/55 dark:bg-slate-950/70">
+                  <Card className={`h-full w-full overflow-hidden transition-shadow duration-300 ${isVenus
+                    ? "border border-[#e7c782]/45 bg-[#1d0d0e] shadow-[0_16px_34px_rgba(0,0,0,0.24)] group-hover:shadow-[0_18px_48px_rgba(126,35,31,0.24)]"
+                    : "border border-slate-200/85 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-slate-700/55 dark:bg-slate-950/70"}`}>
                     <div className="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-slate-900">
                       {member.image ? (
                         <Image
@@ -314,7 +245,7 @@ export function EventLineupSection({
                           alt={member.name}
                           fill
                           sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] ${isVenus ? "sepia-[.22] saturate-[.85] contrast-[1.06]" : ""}`}
                         />
                       ) : (
                         <div
@@ -326,27 +257,39 @@ export function EventLineupSection({
                         </div>
                       )}
 
-                      {showButterflies ? (
-                        <FeaturedButterfly index={index} name={member.name} role={member.role} />
-                      ) : null}
-
                       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/94 via-slate-950/68 to-transparent p-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <Chip className={`${getRoleChipClass(member.role)} backdrop-blur-md`}>
+                          <Chip className={`${isVenus ? "border border-[#f4db9e] bg-[#e7c782] text-[#240c0b]" : getRoleChipClass(member.role)} backdrop-blur-md`}>
                             {getRoleLabel(member.role)}
                           </Chip>
-                          {hasProfile ? (
+                          {hasProfile || member.socialLinks?.length ? (
                             <Chip className="border border-white/24 bg-white/18 text-white backdrop-blur-md">
-                              open profile
+                              {hasProfile ? "open profile" : "follow host"}
                             </Chip>
                           ) : null}
                         </div>
                       </div>
                     </div>
                     <CardBody className="min-h-[8rem] justify-start p-4">
-                      <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                      <h3 className={`font-[family-name:var(--font-space-grotesk)] text-lg font-bold ${isVenus ? "text-[#f8f0df]" : "text-slate-900 dark:text-slate-100"}`}>
                         {member.name}
                       </h3>
+                      {member.socialLinks?.length ? (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {member.socialLinks.map((social) => (
+                            <Link
+                              key={social.url}
+                              href={social.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Open ${member.name} on ${social.label} (opens in a new tab)`}
+                              className="inline-flex min-h-10 items-center rounded-full border border-[#e7c782]/45 bg-[#e7c782]/10 px-3 text-xs font-bold text-[#f5db9b] transition-colors hover:bg-[#e7c782]/20"
+                            >
+                              {social.label}
+                            </Link>
+                          ))}
+                        </div>
+                      ) : null}
                     </CardBody>
                   </Card>
                 );
@@ -374,7 +317,9 @@ export function EventLineupSection({
 
               {vibeCard ? (
                 <div key={`vibe-${vibeCard.title}`} className="group flex w-[82%] min-w-[82%] snap-start sm:w-[19rem] sm:min-w-[19rem] lg:w-[21rem] lg:min-w-[21rem]">
-                  <Card className="h-full w-full overflow-hidden border border-cyan-300/70 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] transition-shadow duration-300 group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-cyan-500/35 dark:bg-slate-950/72">
+                  <Card className={`h-full w-full overflow-hidden transition-shadow duration-300 ${isVenus
+                    ? "border border-[#e7c782]/45 bg-[#1d0d0e] shadow-[0_16px_34px_rgba(0,0,0,0.24)] group-hover:shadow-[0_18px_48px_rgba(126,35,31,0.24)]"
+                    : "border border-cyan-300/70 bg-white/94 shadow-[0_16px_34px_rgba(15,23,42,0.08)] group-hover:shadow-[0_18px_48px_rgba(14,165,233,0.16)] dark:border-cyan-500/35 dark:bg-slate-950/72"}`}>
                     <div className="relative aspect-[4/5] overflow-hidden bg-slate-950">
                       <Image
                         src={vibeCard.poster}
@@ -383,11 +328,8 @@ export function EventLineupSection({
                         sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem"
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
-                      {showButterflies ? (
-                        <FeaturedButterfly index={sortedMembers.length} role="mc" />
-                      ) : null}
                       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-slate-950/94 via-slate-950/68 to-transparent p-3">
-                        <Chip className="border border-cyan-200/80 bg-cyan-300/92 text-slate-950 backdrop-blur-md">
+                        <Chip className={isVenus ? "border border-[#f4db9e] bg-[#e7c782] text-[#240c0b]" : "border border-cyan-200/80 bg-cyan-300/92 text-slate-950 backdrop-blur-md"}>
                           {vibeCard.badgeLabel}
                         </Chip>
                         <div className="flex items-center gap-2">
@@ -403,10 +345,10 @@ export function EventLineupSection({
                       </div>
                     </div>
                     <CardBody className="min-h-[8rem] space-y-2 p-4">
-                      <h3 className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-slate-900 dark:text-slate-100">
+                      <h3 className={`font-[family-name:var(--font-space-grotesk)] text-lg font-bold ${isVenus ? "text-[#f8f0df]" : "text-slate-900 dark:text-slate-100"}`}>
                         {vibeCard.title}
                       </h3>
-                      <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      <p className={`text-sm leading-6 ${isVenus ? "text-[#c7b6a8]" : "text-slate-600 dark:text-slate-300"}`}>
                         {vibeCard.summary}
                       </p>
                     </CardBody>

@@ -1,11 +1,13 @@
 ﻿export type EventName = "We Outside" | "VENUS";
 export type EventSlug = "we-outside" | "venus";
+import { VENUS_EVENT } from "@/lib/venusEvent";
 
 export type EventLineupMember = {
   role: string;
   name: string;
   image?: string;
   socialUrl?: string;
+  socialLinks?: { label: string; url: string }[];
 };
 
 export type EventVibeClip = {
@@ -79,27 +81,25 @@ export const EVENTS: EventMeta[] = [
   {
     name: "VENUS",
     slug: "venus",
-    day: "11",
-    month: "SEP",
-    dateLabel: "11 September 2026",
+    day: "23",
+    month: "OCT",
+    dateLabel: VENUS_EVENT.date,
     timeLabel: "9pm sharp",
-    startDateIso: "2026-09-11T21:00:00+00:00",
-    venue: "Jet BBL Ack Lounge",
-    city: "Ashaley Botwe, 3rd Gate, Accra",
-    logo: "/VENUS_logo.PNG",
-    bannerTone: "from-[#f5fa78] to-[#58d2db]",
-    auraA: "rgba(245,250,120,0.58)",
-    auraB: "rgba(245,0,150,0.32)",
-    fallbackPrice: "Get tickets on Egotickets",
-    egoticketsEventUrl:
-      "https://egotickets.com/events/venus-the-beginning/register",
-    description:
-      "VENUS is tonight at Jet BBL Ack Lounge in Ashaley Botwe, Accra, from 9pm.",
+    startDateIso: VENUS_EVENT.startDate,
+    venue: VENUS_EVENT.venue,
+    city: VENUS_EVENT.address,
+    logo: VENUS_EVENT.webFlyer,
+    bannerTone: "from-[#4c0c10] to-[#130708]",
+    auraA: "rgba(157,23,29,0.48)",
+    auraB: "rgba(231,199,130,0.22)",
+    fallbackPrice: "Free pass",
+    egoticketsEventUrl: VENUS_EVENT.registrationUrl,
+    description: VENUS_EVENT.description,
     vibeCard: {
       title: "follow venus updates",
       badgeLabel: "stay connected",
-      summary: "passes, lineup updates, and event-night energy in one place.",
-      poster: "/events/venus/venus-tonight.jpg",
+      summary: "VENUS with Manlikegreg. 23 October 2026, 9pm.",
+      poster: VENUS_EVENT.flyer,
       actions: [
         {
           platform: "instagram",
@@ -117,31 +117,9 @@ export const EVENTS: EventMeta[] = [
     lineup: [
       {
         role: "host",
-        name: "Peace",
-        image: "/lineup/peace-host.jpeg",
-        socialUrl:
-          "https://www.snapchat.com/@itzz_peaceee26",
-      },
-      {
-        role: "mc",
-        name: "Viperlino",
-        image: "/lineup/viperlino.jpg",
-        socialUrl: "https://www.tiktok.com/@viperlinogh",
-      },
-      {
-        role: "mc",
-        name: "Hollywoode",
-        image: "/lineup/mr-hollywoode.jpg",
-      },
-      {
-        role: "dj",
-        name: "Debowy",
-      },
-      {
-        role: "dj",
-        name: "Tormhe",
-        image: "/lineup/tormhe.jpg",
-        socialUrl: "https://www.tiktok.com/@iamdjtormhe",
+        name: VENUS_EVENT.host,
+        image: VENUS_EVENT.hostImage,
+        socialLinks: [...VENUS_EVENT.hostSocials],
       },
     ],
   },
@@ -155,9 +133,9 @@ export const DEFAULT_EVENT_TICKETS: Record<EventName, TicketItem[]> = {
   VENUS: [
     {
       id: "venus-pass",
-      name: "VENUS tickets",
-      price: "Egotickets",
-      link: "https://egotickets.com/events/venus-the-beginning/register",
+      name: "VENUS free pass",
+      price: "GHS 0",
+      link: VENUS_EVENT.registrationUrl,
     },
   ],
 };

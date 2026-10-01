@@ -8,6 +8,7 @@ import {
   getEventBySlug,
 } from "@/lib/eventsData";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { VENUS_METADATA, VENUS_EVENT_SCHEMA } from "@/lib/venusEvent";
 import {
   WE_OUTSIDE_FAQS,
   WE_OUTSIDE_SEO_DESCRIPTION,
@@ -34,30 +35,20 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     };
   }
 
-  const isVenus = event.slug === "venus";
+  if (event.slug === "venus") return VENUS_METADATA;
   const isWeOutside = event.slug === "we-outside";
   const title = isWeOutside
     ? WE_OUTSIDE_SEO_TITLE
-    : isVenus
-      ? "VENUS Tonight | Jet BBL Ack Lounge, Accra"
-      : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
+    : `${event.name} tickets | ${event.dateLabel} at ${event.venue}`;
   const description = isWeOutside
     ? WE_OUTSIDE_SEO_DESCRIPTION
-    : isVenus
-      ? "VENUS is tonight at Jet BBL Ack Lounge, Ashaley Botwe, from 9pm. Free entry. Reserve your pass and meet us at 3rd Gate."
-      : `${event.description} venue: ${event.venue}, ${event.city}.`;
-  const url = isVenus ? `${SITE_URL}/venus` : `${SITE_URL}/events/${event.slug}`;
-  const socialTitle = isVenus
-    ? "VENUS Tonight | Jet BBL Ack Lounge"
-    : title;
-  const socialDescription = isVenus
-    ? "Tonight at Jet BBL Ack Lounge, Ashaley Botwe. Free entry from 9pm. Reserve your VENUS pass now."
-    : description;
+    : `${event.description} venue: ${event.venue}, ${event.city}.`;
+  const url = `${SITE_URL}/events/${event.slug}`;
+  const socialTitle = title;
+  const socialDescription = description;
   const imagePath = isWeOutside
     ? WE_OUTSIDE_SOCIAL_IMAGE_PATH
-    : isVenus
-      ? "/events/venus/venus-tonight.jpg"
-      : "/og.jpg?v=20260323a";
+    : "/og.jpg?v=20260323a";
 
   return {
     title: {
@@ -81,8 +72,8 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
       images: [
         {
           url: `${SITE_URL}${imagePath}`,
-          width: isWeOutside ? 1080 : isVenus ? 1600 : 1200,
-          height: isWeOutside ? 1536 : isVenus ? 2844 : 630,
+          width: isWeOutside ? 1080 : 1200,
+          height: isWeOutside ? 1536 : 630,
           alt: isWeOutside
             ? "We Outside Ghana returns this year"
             : `${event.name} by Zyra`,
@@ -109,7 +100,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   const isWeOutside = event.slug === "we-outside";
   const isVenus = event.slug === "venus";
   const pageUrl = isVenus ? `${SITE_URL}/venus` : `${SITE_URL}/events/${event.slug}`;
-  const eventSchema =
+  const eventSchema = isVenus ? VENUS_EVENT_SCHEMA :
     event.startDateIso
       ? {
           "@context": "https://schema.org",
@@ -134,14 +125,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
             name: SITE_NAME,
             url: SITE_URL,
           },
-          offers: isVenus
-            ? {
-                "@type": "Offer",
-                availability: "https://schema.org/InStock",
-                url: "https://egotickets.com/events/venus-the-beginning/register",
-                name: "Get VENUS tickets on Egotickets",
-              }
-            : DEFAULT_EVENT_TICKETS[event.name].map((ticket) => ({
+          offers: DEFAULT_EVENT_TICKETS[event.name].map((ticket) => ({
                 "@type": "Offer",
                 priceCurrency: "GHS",
                 price: ticket.price.replace("GHS ", ""),

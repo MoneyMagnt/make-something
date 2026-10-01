@@ -1,0 +1,175 @@
+.campaign {
+  --venus-gold: #e7c782;
+  --venus-ivory: #f8f0df;
+  --venus-muted: #c7b6a8;
+  --venus-edge: rgba(231, 199, 130, .3);
+  color: var(--venus-ivory);
+  font-family: var(--font-manrope);
+  background: #090405;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 72% 24% at 50% 8%, rgba(182, 12, 18, .62), transparent 78%),
+    radial-gradient(ellipse 48% 24% at 100% 43%, rgba(131, 8, 17, .3), transparent 78%),
+    radial-gradient(ellipse 44% 18% at 0 77%, rgba(116, 8, 15, .24), transparent 80%),
+    linear-gradient(180deg, #100405 0%, #280609 26%, #150507 58%, #070405 100%);
+}
+
+.waves {
+  position: absolute;
+  inset: -2% -5%;
+  background: url('/events/venus/venus-waves.webp') center / 100% 100% no-repeat;
+  filter: grayscale(1) brightness(.4);
+  mix-blend-mode: soft-light;
+  opacity: .33;
+  animation: venus-wave-drift 22s ease-in-out infinite;
+}
+
+.lightSweep {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 65rem;
+  background:
+    radial-gradient(ellipse 34% 22% at 50% 4%, rgba(255, 60, 38, .3), transparent 76%),
+    linear-gradient(112deg, transparent 23%, rgba(184, 20, 23, .14) 37%, transparent 49%),
+    linear-gradient(68deg, transparent 48%, rgba(178, 14, 24, .12) 61%, transparent 76%);
+  mask-image: linear-gradient(180deg, black, transparent 96%);
+  animation: venus-light-sweep 10s ease-in-out infinite alternate;
+}
+
+.mark {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1.5rem;
+  width: min(84%, 45rem);
+  margin-inline: auto;
+  aspect-ratio: 780 / 560;
+  animation: venus-mark-float 6.5s ease-in-out infinite;
+}
+
+.markImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 14px 16px rgba(7, 2, 1, .65));
+  opacity: .9;
+}
+
+.surface {
+  position: relative;
+  border: 1px solid var(--venus-edge) !important;
+  background: radial-gradient(circle at 0 0, rgba(115, 22, 24, .27), transparent 48%), linear-gradient(155deg, rgba(45, 11, 14, .96), rgba(14, 7, 8, .97) 76%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 190, .09), 0 22px 60px rgba(0, 0, 0, .3) !important;
+}
+
+.surface::before {
+  content: "";
+  position: absolute;
+  inset: 0 17% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 227, 155, .8), transparent);
+  pointer-events: none;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(240, 206, 137, .62) !important;
+  background: linear-gradient(130deg, rgba(24, 4, 6, .38), rgba(63, 8, 12, .29) 55%, rgba(12, 5, 6, .53)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 236, 184, .13), 0 28px 80px rgba(0, 0, 0, .4) !important;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: .5rem;
+  border: 1px solid rgba(234, 197, 126, .16);
+  border-radius: .65rem;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0 22% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #fff0b4, transparent);
+  box-shadow: 0 0 20px rgba(251, 188, 73, .56);
+  pointer-events: none;
+}
+
+.goldButton {
+  border: 1px solid #f7e7b5 !important;
+  background: linear-gradient(115deg, #c49a53 0%, #f8e8af 45%, #d6ad62 100%) !important;
+  color: #25100d !important;
+  box-shadow: 0 7px 0 #705225, 0 18px 34px rgba(0, 0, 0, .28) !important;
+}
+
+.goldButton:hover { filter: brightness(1.08); }
+.goldButton:focus-visible { outline: 2px solid #fff3cb; outline-offset: 4px; }
+
+.detail {
+  border: 1px solid rgba(231, 199, 130, .28);
+  background: linear-gradient(125deg, rgba(110, 23, 25, .7), rgba(22, 8, 10, .87));
+  box-shadow: inset 0 1px 0 rgba(255, 235, 190, .12), 0 12px 28px rgba(0, 0, 0, .22);
+}
+
+.detail:first-child { border-left: 2px solid #e7c782; }
+
+.action {
+  border: 1px solid rgba(231, 199, 130, .28);
+  background: linear-gradient(125deg, rgba(86, 25, 27, .52), rgba(18, 10, 11, .82));
+  box-shadow: inset 0 1px 0 rgba(255, 235, 190, .07);
+}
+
+.action::after {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  bottom: .6rem;
+  width: 2.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, #e7c782, transparent);
+  pointer-events: none;
+}
+
+.action:hover { border-color: rgba(231, 199, 130, .65); background-color: rgba(114, 31, 31, .4); }
+.action:focus-visible { outline: 2px solid #f7e7b5; outline-offset: 3px; }
+
+.selectedEvent {
+  border: 1px solid rgba(231, 199, 130, .65);
+  background: linear-gradient(110deg, #5c1718, #2c0e10 63%, #140809);
+}
+
+.otherEvent {
+  border: 1px solid rgba(231, 199, 130, .22);
+  background: linear-gradient(115deg, rgba(58, 30, 29, .92), rgba(20, 12, 13, .96));
+}
+
+@keyframes venus-mark-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateX(5deg) rotateY(-12deg); }
+  50% { transform: translate3d(0, -10px, 0) rotateX(-5deg) rotateY(11deg); }
+}
+
+@keyframes venus-wave-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-10px, -14px, 0) scale(1.025); }
+}
+
+@keyframes venus-light-sweep {
+  0% { opacity: .6; }
+  100% { opacity: 1; }
+}
+
+@media (min-width: 640px) {
+  .mark { width: min(60%, 45rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark, .waves, .lightSweep { animation: none; }
+}

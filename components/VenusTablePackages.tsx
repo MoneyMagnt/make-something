@@ -1,6 +1,6 @@
 "use client";
 
-import { Accordion, AccordionItem, Button, Card, CardBody, Link } from "@heroui/react";
+import { Button, Card, CardBody, Link } from "@heroui/react";
 import {
   buildVenusTableWhatsAppUrl,
   formatVenusTablePrice,
@@ -24,7 +24,7 @@ export function VenusTablePackages() {
       <div className={styles.headingRow}>
         <p className={styles.eyebrow}>VENUS / TABLE RESERVATIONS</p>
         <h2 id="venus-tables-heading" className={styles.heading}>
-          pick your don let&apos;s party in style
+          choose your table
         </h2>
       </div>
 
@@ -38,26 +38,10 @@ export function VenusTablePackages() {
                     <svg viewBox="0 0 32 32" fill="none"><path d="m5 10 6 5 5-9 5 9 6-5-3 14H8L5 10Zm3 17h16" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /></svg>
                   </span>
                 ) : null}
-                <p className={styles.packageLabel}>{table.id === "pablo-escobar" ? "THE SIGNATURE TABLE" : "TABLE PACKAGE"}</p>
-                <h3 className={styles.name}>{table.name}</h3>
-                <p className={styles.price}>{formatVenusTablePrice(table.price)} <span>/ table</span></p>
-              </div>
-              <div className={styles.packageContents}>
-                {table.id === "pablo-escobar" ? <p className={styles.premiumCaption}>THE SELECTION</p> : null}
-                <ul className={styles.drinks} aria-label={`${table.name} drinks`}>
-                  {table.drinks.map((drink) => <li key={drink}>{drink}</li>)}
-                </ul>
-                <Accordion isCompact className={styles.accordion} itemClasses={{ trigger: styles.detailsTrigger, title: styles.detailsTitle, content: styles.detailsContent, indicator: styles.detailsIndicator }}>
-                  <AccordionItem key="inclusions" HeadingComponent="h4" aria-label={`View all ${table.name} package inclusions`} title={<span>Full package inclusions<span className="sr-only"> for {table.name}</span></span>}>
-                    <ul className={styles.inclusions}>
-                      {table.extras.map((item) => <li key={item}>{item}</li>)}
-                    </ul>
-                  </AccordionItem>
-                </Accordion>
+                <h3 className={styles.price}>{formatVenusTablePrice(table.price)}</h3>
               </div>
               <div className={styles.cardAction}>
-                {table.extras.includes("VIP table service") ? <div className={styles.premiumService}><p className={styles.serviceNote}>VIP table service</p><p className={styles.premiumServiceDetail}>Premium finger foods<br />4 shishas</p></div> : null}
-                <Button as={Link} href={buildVenusTableWhatsAppUrl(table)} target="_blank" rel="noopener noreferrer" className={styles.reserveButton} aria-label={`Reserve the ${table.name} table for ${formatVenusTablePrice(table.price)} on WhatsApp (opens in a new tab)`} endContent={<WhatsAppIcon />}>
+                <Button as={Link} href={buildVenusTableWhatsAppUrl(table)} target="_blank" rel="noopener noreferrer" className={styles.reserveButton} aria-label={`Reserve the ${formatVenusTablePrice(table.price)} table on WhatsApp (opens in a new tab)`} endContent={<WhatsAppIcon />}>
                   RESERVE THIS TABLE
                 </Button>
               </div>

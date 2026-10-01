@@ -176,10 +176,13 @@ export function EventDetailClient({
 
   if (event.name === "VENUS") {
     return (
-      <div className="relative min-h-screen overflow-x-clip bg-[#f5fa78] text-[#123b55]">
+      <div className="relative min-h-screen overflow-x-clip bg-[#100607] text-[#f8f0df]">
         <ZyraSiteNav
           active="events"
-          navbarClassName="border-b border-[#123b55]/15 bg-gradient-to-r from-[#f5fa78]/96 via-[#8ee4df]/94 to-[#f50096]/88 backdrop-blur-lg"
+          navbarClassName="!border-b !border-[#e7c782]/30 !bg-[#1b0a0c]/94 max-sm:!bg-[#1b0a0c]/96"
+          brandClassName="rounded-full border border-[#e7c782]/35 bg-[#f1e4c9] px-3 py-1.5"
+          linkClassName="!text-[#f8f0df]/80 hover:!text-[#f5db9b]"
+          activeLinkClassName="!text-[#f5db9b] after:!bg-[#e7c782]"
           brand={<EventsBrandMark />}
         />
         <main id="main-content" className="relative z-10 w-full">
