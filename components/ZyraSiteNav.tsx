@@ -18,7 +18,7 @@ type NavKey = "home" | "events" | "services" | "admin";
 
 const BASE_NAV_ITEMS: Array<{ key: Exclude<NavKey, "admin">; label: string; href: string }> = [
   { key: "home", label: "Home", href: "/" },
-  { key: "events", label: "Events", href: "/events" },
+  { key: "events", label: "Events", href: "/events/venus" },
   { key: "services", label: "Services", href: "/services" },
 ];
 const ADMIN_NAV_ITEM = { key: "admin" as const, label: "Admin", href: ADMIN_PRIVATE_PATH };

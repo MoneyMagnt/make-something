@@ -80,7 +80,7 @@ export const VENUS_EVENT_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "Event",
   "@id": `${VENUS_EVENT.url}#event-2026-10-23`,
-  name: "VENUS",
+  name: "VENUS with Mhan Like Greg",
   description: VENUS_EVENT.description,
   url: VENUS_EVENT.url,
   image: [`${SITE_URL}${VENUS_EVENT.previewFlyer}`],
