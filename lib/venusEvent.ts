@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 export const VENUS_EVENT = {
   date: "23 October 2026",
   startDate: "2026-10-23T21:00:00+00:00",
-  host: "Manlikegreg",
+  host: "Mhan Like Greg",
   hostSocials: [
     { label: "TikTok", url: "https://www.tiktok.com/@mhan_like_g.r.e.g1" },
     { label: "Snapchat", url: "https://www.snapchat.com/@mhanlikegreg" },
@@ -16,11 +16,12 @@ export const VENUS_EVENT = {
   registrationUrl: "https://egotickets.com/events/venus-x-astro-sys/register",
   flyer: "/events/venus/venus-october-2026.jpg",
   webFlyer: "/events/venus/venus-october-2026.webp",
+  previewFlyer: "/events/venus/mhan-like-greg-preview.jpg",
   hostImage: "/events/venus/manlikegreg-flyer.webp",
   url: `${SITE_URL}/events/venus`,
-  title: "Manlikegreg Hosts VENUS | Accra Party, 23 Oct 2026",
+  title: "Mhan Like Greg Hosts VENUS | Accra Party, 23 Oct 2026",
   description:
-    "Manlikegreg (Mhan Like Greg) hosts VENUS on Friday, 23 October 2026 at 9pm. Join the free-entry Accra party at Jet BBlack Lounge, Ashaley Botwe. Reserve your pass.",
+    "Mhan Like Greg (Manlikegreg) hosts VENUS on Friday, 23 October 2026 at 9pm. Join the free-entry Accra party at Jet BBlack Lounge, Ashaley Botwe. Reserve your pass.",
   mapsUrl:
     "https://www.google.com/maps/search/?api=1&query=Jet%20BBlack%20Lounge%2C%20Ashaley%20Botwe%2C%203rd%20Gate%2C%20Accra",
 } as const;
@@ -53,10 +54,10 @@ export const VENUS_METADATA: Metadata = {
     locale: "en_GH",
     images: [
       {
-        url: `${SITE_URL}${VENUS_EVENT.flyer}`,
+        url: `${SITE_URL}${VENUS_EVENT.previewFlyer}`,
         width: 1440,
         height: 2560,
-        alt: "VENUS, 23 October 2026, hosted by Manlikegreg at Jet BBlack Lounge",
+        alt: "VENUS, 23 October 2026, hosted by Mhan Like Greg at Jet BBlack Lounge",
       },
     ],
   },
@@ -64,7 +65,7 @@ export const VENUS_METADATA: Metadata = {
     card: "summary_large_image",
     title: VENUS_EVENT.title,
     description: VENUS_EVENT.description,
-    images: [`${SITE_URL}${VENUS_EVENT.flyer}`],
+    images: [`${SITE_URL}${VENUS_EVENT.previewFlyer}`],
   },
   category: "events",
 };
@@ -82,7 +83,7 @@ export const VENUS_EVENT_SCHEMA = {
   name: "VENUS",
   description: VENUS_EVENT.description,
   url: VENUS_EVENT.url,
-  image: [`${SITE_URL}${VENUS_EVENT.flyer}`],
+  image: [`${SITE_URL}${VENUS_EVENT.previewFlyer}`],
   startDate: VENUS_EVENT.startDate,
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
@@ -101,7 +102,7 @@ export const VENUS_EVENT_SCHEMA = {
     "@type": "Person",
     "@id": `${VENUS_EVENT.url}#host`,
     name: VENUS_EVENT.host,
-    alternateName: "Mhan Like Greg",
+    alternateName: "Manlikegreg",
     image: `${SITE_URL}${VENUS_EVENT.hostImage}`,
     url: VENUS_EVENT.hostSocials[0].url,
     sameAs: VENUS_EVENT.hostSocials.map((social) => social.url),

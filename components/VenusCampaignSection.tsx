@@ -218,7 +218,7 @@ export function VenusCampaignSection({
                       </span>
                     </div>
 
-                    <h1 className="sr-only">VENUS hosted by Manlikegreg</h1>
+                    <h1 className="sr-only">VENUS hosted by Mhan Like Greg</h1>
 
                     <div className="space-y-3 border-t border-[#e7c782]/25 pt-4">
                       <div className="flex flex-wrap items-center gap-2">

@@ -23,7 +23,7 @@ export default function VenusTicketLandingPage() {
       className="fixed inset-0 z-[2147483000] isolate overflow-hidden bg-[#100607] text-[#f8f0df]"
     >
       <div className="sr-only">
-        <h1>VENUS with Manlikegreg at Jet BBlack Lounge</h1>
+        <h1>VENUS with Mhan Like Greg at Jet BBlack Lounge</h1>
         <p>
           Join +233Events for VENUS on {VENUS_EVENT.date} at 9pm. Free entry at
           Jet BBlack Lounge, Ashaley Botwe, 3rd Gate.
