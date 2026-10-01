@@ -50,7 +50,7 @@ export function VenusTablePackages() {
         ))}
       </div>
 
-      <p className={styles.bookingNote}>Table packages are optional and priced in Ghana cedis. Your table is only reserved once our team confirms the booking on WhatsApp.</p>
+      <p className={styles.bookingNote}>Tables are optional. Our team will confirm your reservation on WhatsApp.</p>
     </section>
   );
 }
