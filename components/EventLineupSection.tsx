@@ -265,7 +265,7 @@ export function EventLineupSection({
                           alt={member.name}
                           fill
                           sizes="(max-width: 640px) 82vw, (max-width: 1024px) 19rem, 21rem"
-                          className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] ${isVenus ? "sepia-[.22] saturate-[.85] contrast-[1.06]" : ""}`}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         />
                       ) : (
                         <div

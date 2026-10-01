@@ -16,7 +16,7 @@ export const VENUS_EVENT = {
   registrationUrl: "https://egotickets.com/events/venus-x-astro-sys/register",
   flyer: "/events/venus/venus-october-2026.jpg",
   webFlyer: "/events/venus/venus-october-2026.webp",
-  hostImage: "/events/venus/manlikegreg.webp",
+  hostImage: "/events/venus/manlikegreg-flyer.webp",
   url: `${SITE_URL}/events/venus`,
   title: "Manlikegreg Hosts VENUS | Accra Party, 23 Oct 2026",
   description:
