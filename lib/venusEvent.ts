@@ -59,7 +59,7 @@ const VENUS_BASE_METADATA: Metadata = {
   openGraph: {
     type: "website",
     url: VENUS_EVENT.url,
-    title: "VENUS × MHAN LIKE GREG — 23 OCT",
+    title: "VENUS × MHAN LIKE GREG · 23 OCT",
     description:
       "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
     siteName: "+233Events",
@@ -75,7 +75,7 @@ const VENUS_BASE_METADATA: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "VENUS × MHAN LIKE GREG — 23 OCT",
+    title: "VENUS × MHAN LIKE GREG · 23 OCT",
     description:
       "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
     images: [`${SITE_URL}${VENUS_EVENT.previewFlyer}`],
@@ -94,13 +94,13 @@ export const VENUS_METADATA: Metadata = {
     "VENUS Accra, Mhan Like Greg, Manlikegreg, Accra nightlife October 2026, Jet BBlack Lounge Ashaley Botwe, free entry Accra party, VENUS free pass, Accra Gen Z events, +233Events",
   openGraph: {
     ...VENUS_BASE_METADATA.openGraph,
-    title: "VENUS × MHAN LIKE GREG — 23 OCT",
+    title: "VENUS × MHAN LIKE GREG · 23 OCT",
     description:
       "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
   },
   twitter: {
     ...VENUS_BASE_METADATA.twitter,
-    title: "VENUS × MHAN LIKE GREG — 23 OCT",
+    title: "VENUS × MHAN LIKE GREG · 23 OCT",
     description:
       "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
   },
