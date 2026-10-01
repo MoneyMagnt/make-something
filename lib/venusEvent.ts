@@ -59,9 +59,9 @@ const VENUS_BASE_METADATA: Metadata = {
   openGraph: {
     type: "website",
     url: VENUS_EVENT.url,
-    title: "VENUS × Mhan Like Greg — Free Entry. 23 Oct. Jet BBlack Lounge, Accra.",
+    title: "VENUS × MHAN LIKE GREG — 23 OCT",
     description:
-      "He's hosting. Entry is free. Tables available from GHS 2,000. Jet BBlack Lounge, Ashaley Botwe — 9pm sharp. Don't say you weren't told.",
+      "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
     siteName: "+233Events",
     locale: "en_GH",
     images: [
@@ -75,9 +75,9 @@ const VENUS_BASE_METADATA: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "VENUS × Mhan Like Greg — Free Entry. Oct 23. Accra.",
+    title: "VENUS × MHAN LIKE GREG — 23 OCT",
     description:
-      "Mhan Like Greg runs VENUS on 23 Oct at Jet BBlack Lounge, Accra. Free entry. Tables from GHS 2K. Reserve your pass — link in bio but make it IRL.",
+      "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
     images: [`${SITE_URL}${VENUS_EVENT.previewFlyer}`],
   },
   category: "events",
@@ -94,15 +94,15 @@ export const VENUS_METADATA: Metadata = {
     "VENUS Accra, Mhan Like Greg, Manlikegreg, Accra nightlife October 2026, Jet BBlack Lounge Ashaley Botwe, free entry Accra party, VENUS free pass, Accra Gen Z events, +233Events",
   openGraph: {
     ...VENUS_BASE_METADATA.openGraph,
-    title: "VENUS × Mhan Like Greg — Free Entry. Oct 23. Accra.",
+    title: "VENUS × MHAN LIKE GREG — 23 OCT",
     description:
-      "He's hosting. Entry's free. The table's yours if you want it. Jet BBlack Lounge, 9pm. Don't say you weren't told.",
+      "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
   },
   twitter: {
     ...VENUS_BASE_METADATA.twitter,
-    title: "VENUS × Mhan Like Greg — Free Entry. Oct 23. Accra.",
+    title: "VENUS × MHAN LIKE GREG — 23 OCT",
     description:
-      "Mhan Like Greg runs VENUS on Oct 23 at Jet BBlack Lounge, Accra. Free entry. Tables from GHS 2K. Reserve your pass — link in bio energy but make it IRL.",
+      "Greg dey come Venus… chale, prepare yourself 😭😂 23 October at Jet BBlack Lounge. Get your tickets fast",
   },
 };
 
