@@ -18,9 +18,9 @@ export const VENUS_EVENT = {
   webFlyer: "/events/venus/venus-october-2026.webp",
   hostImage: "/events/venus/manlikegreg.webp",
   url: `${SITE_URL}/events/venus`,
-  title: "VENUS with Manlikegreg | Accra Party, 23 Oct 2026",
+  title: "Manlikegreg Hosts VENUS | Accra Party, 23 Oct 2026",
   description:
-    "VENUS is a free-entry Accra nightlife party hosted by Manlikegreg (Mhan Like Greg) on 23 October 2026 at 9pm. Jet BBlack Lounge, Ashaley Botwe. Reserve a pass.",
+    "Manlikegreg (Mhan Like Greg) hosts VENUS on Friday, 23 October 2026 at 9pm. Join the free-entry Accra party at Jet BBlack Lounge, Ashaley Botwe. Reserve your pass.",
   mapsUrl:
     "https://www.google.com/maps/search/?api=1&query=Jet%20BBlack%20Lounge%2C%20Ashaley%20Botwe%2C%203rd%20Gate%2C%20Accra",
 } as const;
@@ -78,7 +78,8 @@ export const VENUS_LANDING_METADATA: Metadata = {
 export const VENUS_EVENT_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "Event",
-  name: "VENUS with Manlikegreg",
+  "@id": `${VENUS_EVENT.url}#event-2026-10-23`,
+  name: "VENUS",
   description: VENUS_EVENT.description,
   url: VENUS_EVENT.url,
   image: [`${SITE_URL}${VENUS_EVENT.flyer}`],
@@ -98,8 +99,11 @@ export const VENUS_EVENT_SCHEMA = {
   },
   performer: {
     "@type": "Person",
+    "@id": `${VENUS_EVENT.url}#host`,
     name: VENUS_EVENT.host,
     alternateName: "Mhan Like Greg",
+    image: `${SITE_URL}${VENUS_EVENT.hostImage}`,
+    url: VENUS_EVENT.hostSocials[0].url,
     sameAs: VENUS_EVENT.hostSocials.map((social) => social.url),
   },
   organizer: { "@type": "Organization", name: "+233Events", url: SITE_URL },

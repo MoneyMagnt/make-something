@@ -220,10 +220,10 @@ export function VenusCampaignSection({
 
                     <div className="max-w-xl rounded-xl border border-[#e7c782]/20 bg-[#160607]/80 px-4 py-3 shadow-[0_12px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm">
                       <h1 className="font-[family-name:var(--font-space-grotesk)] text-xl font-bold tracking-tight text-[#f8e9c2] sm:text-2xl">
-                        VENUS with Manlikegreg
+                        Manlikegreg hosts VENUS
                       </h1>
                       <p className="mt-1 text-xs leading-relaxed text-[#f8f0df]/85 sm:text-sm">
-                        An Accra nightlife party at Jet BBlack Lounge. Free entry with registration.
+                        Mhan Like Greg hosts VENUS in Accra on Friday, 23 October 2026 at Jet BBlack Lounge. Free entry at 9pm with a reserved pass.
                       </p>
                     </div>
 

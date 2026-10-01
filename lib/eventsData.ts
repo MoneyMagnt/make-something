@@ -25,7 +25,7 @@ export type EventVibeAction = {
 export type EventVibeCard = {
   title: string;
   badgeLabel: string;
-  summary: string;
+  summary?: string;
   poster: string;
   actions: EventVibeAction[];
   clips?: EventVibeClip[];
@@ -98,7 +98,6 @@ export const EVENTS: EventMeta[] = [
     vibeCard: {
       title: "follow venus updates",
       badgeLabel: "stay connected",
-      summary: "VENUS with Manlikegreg. 23 October 2026, 9pm.",
       poster: VENUS_EVENT.flyer,
       actions: [
         {
