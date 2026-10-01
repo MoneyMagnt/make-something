@@ -125,8 +125,6 @@ export function VenusCampaignSection({
             theme="venus"
           />
 
-          <VenusTablePackages />
-
           <section id="event-guide" className="mb-8 scroll-mt-24 [contain-intrinsic-size:auto_520px] [content-visibility:auto]">
             <Card className={styles.surface}>
               <CardBody className="gap-4 p-5 sm:p-7">
@@ -161,6 +159,8 @@ export function VenusCampaignSection({
               </CardBody>
             </Card>
           </section>
+
+          <VenusTablePackages />
 
           <section className="mb-10 [contain-intrinsic-size:auto_360px] [content-visibility:auto]">
             <Card className={styles.surface}>
