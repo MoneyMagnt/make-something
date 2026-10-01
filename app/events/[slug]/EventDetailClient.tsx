@@ -193,6 +193,23 @@ export function EventDetailClient({
             }}
           />
         </main>
+        <footer>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "rgba(255,255,255,0.3)",
+              maxWidth: "52rem",
+              margin: "2rem auto",
+              textAlign: "center",
+              lineHeight: 1.6,
+            }}
+          >
+            VENUS is one of Accra&apos;s most anticipated October 2026 nightlife
+            events, hosted by Mhan Like Greg (Manlikegreg) at Jet BBlack Lounge,
+            Ashaley Botwe, Accra on Friday 23 October 2026 at 9pm. Free entry
+            passes available. An +233Events experience by Zyra.
+          </p>
+        </footer>
       </div>
     );
   }
