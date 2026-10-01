@@ -26,7 +26,7 @@ export const VENUS_EVENT = {
     "https://www.google.com/maps/search/?api=1&query=Jet%20BBlack%20Lounge%2C%20Ashaley%20Botwe%2C%203rd%20Gate%2C%20Accra",
 } as const;
 
-export const VENUS_METADATA: Metadata = {
+const VENUS_BASE_METADATA: Metadata = {
   title: { absolute: VENUS_EVENT.title },
   description: VENUS_EVENT.description,
   alternates: { canonical: VENUS_EVENT.url },
@@ -66,9 +66,9 @@ export const VENUS_METADATA: Metadata = {
     locale: "en_GH",
     images: [
       {
-        url: `${SITE_URL}/events/opengraph-image`,
-        width: 1200,
-        height: 630,
+        url: `${SITE_URL}${VENUS_EVENT.previewFlyer}`,
+        width: 1440,
+        height: 2560,
         alt: "VENUS, 23 October 2026, hosted by Mhan Like Greg at Jet BBlack Lounge",
       },
     ],
@@ -78,15 +78,38 @@ export const VENUS_METADATA: Metadata = {
     title: "VENUS × Mhan Like Greg — Free Entry. Oct 23. Accra.",
     description:
       "Mhan Like Greg runs VENUS on 23 Oct at Jet BBlack Lounge, Accra. Free entry. Tables from GHS 2K. Reserve your pass — link in bio but make it IRL.",
-    images: [`${SITE_URL}/events/opengraph-image`],
+    images: [`${SITE_URL}${VENUS_EVENT.previewFlyer}`],
   },
   category: "events",
 };
 
+export const VENUS_METADATA: Metadata = {
+  ...VENUS_BASE_METADATA,
+  title: {
+    absolute: "VENUS is his night. Mhan Like Greg. 23 Oct. Jet BBlack. Free entry.",
+  },
+  description:
+    "Mhan Like Greg is taking over VENUS. Free entry. 23 October. Jet BBlack Lounge, Ashaley Botwe. If you know, you know — grab your pass before it's gone.",
+  keywords:
+    "VENUS Accra, Mhan Like Greg, Manlikegreg, Accra nightlife October 2026, Jet BBlack Lounge Ashaley Botwe, free entry Accra party, VENUS free pass, Accra Gen Z events, +233Events",
+  openGraph: {
+    ...VENUS_BASE_METADATA.openGraph,
+    title: "VENUS × Mhan Like Greg — Free Entry. Oct 23. Accra.",
+    description:
+      "He's hosting. Entry's free. The table's yours if you want it. Jet BBlack Lounge, 9pm. Don't say you weren't told.",
+  },
+  twitter: {
+    ...VENUS_BASE_METADATA.twitter,
+    title: "VENUS × Mhan Like Greg — Free Entry. Oct 23. Accra.",
+    description:
+      "Mhan Like Greg runs VENUS on Oct 23 at Jet BBlack Lounge, Accra. Free entry. Tables from GHS 2K. Reserve your pass — link in bio energy but make it IRL.",
+  },
+};
+
 export const VENUS_LANDING_METADATA: Metadata = {
-  ...VENUS_METADATA,
+  ...VENUS_BASE_METADATA,
   robots: { index: false, follow: true },
-  openGraph: { ...VENUS_METADATA.openGraph, url: `${SITE_URL}/venus` },
+  openGraph: { ...VENUS_BASE_METADATA.openGraph, url: `${SITE_URL}/venus` },
 };
 
 export const VENUS_EVENT_SCHEMA = {
